@@ -1,0 +1,352 @@
+/* ── Background ──────────────────────────────── */
+body {
+  background-color: #fff8f0;
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(249,115,22,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 85% 90%, rgba(239,68,68,0.06) 0%, transparent 50%);
+}
+
+/* ── Loading screen ─────────────────────────── */
+#loading-screen {
+  transition: opacity 0.5s ease;
+}
+#loading-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── App entrance ───────────────────────────── */
+.app-enter {
+  animation: fadeInUp 0.45s ease both;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Meal tabs ──────────────────────────────── */
+.meal-tab {
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: white;
+  color: #6b7280;
+  border: 1.5px solid #e5e7eb;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.meal-tab.active,
+.meal-tab:hover {
+  background: #f97316;
+  color: white;
+  border-color: #f97316;
+  box-shadow: 0 2px 8px rgba(249,115,22,0.35);
+}
+
+/* ── Wheel wrapper ──────────────────────────── */
+.wheel-wrapper {
+  position: relative;
+  width: 320px;
+  height: 320px;
+}
+.wheel-wrapper canvas {
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 6px #1f2937,
+    0 0 0 10px rgba(249,115,22,0.45),
+    0 14px 44px rgba(0,0,0,0.18);
+  display: block;
+}
+
+/* CSS triangle pointer */
+.wheel-pointer {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 13px solid transparent;
+  border-right: 13px solid transparent;
+  border-top: 26px solid #1f2937;
+  filter: drop-shadow(0 3px 5px rgba(0,0,0,0.35));
+  z-index: 10;
+}
+
+/* ── View items button ──────────────────────── */
+.view-items-btn {
+  padding: 7px 18px;
+  border-radius: 999px;
+  background: white;
+  border: 1.5px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.view-items-btn:hover {
+  background: #fff7ed;
+  border-color: #f97316;
+  color: #ea580c;
+}
+
+/* ── Spin button ────────────────────────────── */
+.spin-btn {
+  min-width: 150px;
+  padding: 16px 44px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(249,115,22,0.45);
+  transition: transform 0.15s, box-shadow 0.15s, animation 0s;
+  user-select: none;
+}
+.spin-btn:not(:disabled) {
+  animation: spin-pulse 2.5s ease-in-out infinite;
+}
+@keyframes spin-pulse {
+  0%, 100% { box-shadow: 0 6px 24px rgba(249,115,22,0.45); }
+  50%       { box-shadow: 0 8px 36px rgba(249,115,22,0.65), 0 0 0 6px rgba(249,115,22,0.12); }
+}
+.spin-btn:hover:not(:disabled) {
+  transform: scale(1.06);
+  animation: none;
+  box-shadow: 0 10px 32px rgba(249,115,22,0.55);
+}
+.spin-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.spin-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  animation: none;
+}
+
+/* ── Filter panel ───────────────────────────── */
+.filter-panel {
+  background: white;
+  border-radius: 18px;
+  padding: 14px 16px;
+  border: 1.5px solid #f3f4f6;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+.filter-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: #374151;
+  list-style: none;
+}
+.filter-summary::-webkit-details-marker { display: none; }
+
+.filter-badge {
+  color: #f97316;
+  font-size: 0.7rem;
+}
+
+.filter-chip {
+  padding: 5px 13px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: #f9fafb;
+  color: #6b7280;
+  border: 1.5px solid #e5e7eb;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.filter-chip.active,
+.filter-chip:hover {
+  background: #6366f1;
+  color: white;
+  border-color: #6366f1;
+}
+
+/* ── Items modal ────────────────────────────── */
+.items-card {
+  animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: #f9fafb;
+  transition: background 0.15s, opacity 0.15s;
+}
+.item-row:has(.item-chk:not(:checked)) {
+  background: #fef2f2;
+  opacity: 0.6;
+}
+.item-chk {
+  width: 18px;
+  height: 18px;
+  accent-color: #f97316;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+/* ── Result modal ───────────────────────────── */
+.result-slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(40px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Result emoji circle */
+.result-emoji-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fff7ed, #fef3c7);
+  border: 2px solid #fed7aa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(249,115,22,0.15);
+}
+
+/* ── Badges ─────────────────────────────────── */
+.badge-cuisine, .badge-price, .badge-location {
+  display: inline-block;
+  padding: 3px 11px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.badge-cuisine  { background: #fef3c7; color: #92400e; }
+.badge-price    { background: #dcfce7; color: #166534; }
+.badge-location { background: #ede9fe; color: #4c1d95; }
+
+/* ── Toast ──────────────────────────────────── */
+#toast {
+  transition: opacity 0.3s ease;
+}
+#toast.show {
+  display: block !important;
+  animation: toastIn 0.3s ease both;
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── Falling pineapples ─────────────────────── */
+.falling-pineapple {
+  position: fixed;
+  top: -64px;
+  user-select: none;
+  pointer-events: none;
+  z-index: 0;
+  animation: pineapple-fall linear forwards;
+}
+@keyframes pineapple-fall {
+  0%   { transform: translateY(0) rotate(-15deg);  opacity: 0; }
+  8%   { opacity: 0.75; }
+  90%  { opacity: 0.6; }
+  100% { transform: translateY(110vh) rotate(25deg); opacity: 0; }
+}
+
+/* ── Utility ────────────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Ripple ─────────────────────────────────────── */
+.ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.45);
+  transform: scale(0);
+  animation: ripple-expand 0.65s linear forwards;
+  pointer-events: none;
+}
+@keyframes ripple-expand {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* ── Confetti ───────────────────────────────────── */
+.confetti-piece {
+  position: fixed;
+  top: -16px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 998;
+  animation: confetti-fall linear forwards;
+}
+@keyframes confetti-fall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(105vh) rotate(540deg); opacity: 0; }
+}
+
+/* ── Particle burst ─────────────────────────────── */
+@keyframes particle-burst {
+  0%   { transform: translate(-50%,-50%) scale(0.5); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--tx,0px)), calc(-50% + var(--ty,0px))) scale(0); opacity: 0; }
+}
+
+/* ── Wheel flash ────────────────────────────────── */
+@keyframes wheel-flash-anim {
+  0%,100% { box-shadow: 0 0 0 6px #1f2937, 0 0 0 10px rgba(249,115,22,0.45), 0 14px 44px rgba(0,0,0,0.18); }
+  25%     { box-shadow: 0 0 0 9px #f97316, 0 0 0 20px rgba(249,115,22,0.9), 0 0 72px rgba(249,115,22,0.65); }
+}
+.wheel-wrapper.wheel-flash canvas {
+  animation: wheel-flash-anim 1s ease-out;
+}
+
+/* ── Lucky spin button ──────────────────────────── */
+.lucky-btn {
+  padding: 16px 22px;
+  border-radius: 999px;
+  background: white;
+  border: 2px solid #6366f1;
+  color: #6366f1;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 3px 12px rgba(99,102,241,0.2);
+}
+.lucky-btn:hover:not(:disabled) {
+  background: #6366f1;
+  color: white;
+  transform: scale(1.04);
+  box-shadow: 0 6px 20px rgba(99,102,241,0.4);
+}
+.lucky-btn:active:not(:disabled) { transform: scale(0.97); }
+.lucky-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ── Map link ───────────────────────────────────── */
+.map-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border-radius: 14px;
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  color: #2563eb;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+  margin-top: 14px;
+}
+.map-btn:hover { background: #dbeafe; border-color: #93c5fd; }
