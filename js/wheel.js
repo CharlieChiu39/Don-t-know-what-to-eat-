@@ -84,12 +84,17 @@ class Wheel {
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // Center question mark
+    // Center text: item count or spin icon
     ctx.fillStyle = '#f97316';
-    ctx.font = 'bold 24px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('?', cx, cy);
+    if (items.length > 0) {
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillText(items.length + '間', cx, cy);
+    } else {
+      ctx.font = 'bold 24px sans-serif';
+      ctx.fillText('?', cx, cy);
+    }
   }
 
   /**

@@ -7,6 +7,7 @@ const state = {
   meal:       'all',
   price:      'all',
   cuisine:    'all',
+  openOnly:   true,
   blockedIds: [],
   lastResult: null,
 };
@@ -27,6 +28,7 @@ const resultCuisine  = $('result-cuisine');
 const resultPrice    = $('result-price');
 const resultLocation = $('result-location');
 const resultNote     = $('result-note');
+const resultHours    = $('result-hours');
 const blockBtn       = $('block-btn');
 const respinBtn      = $('respin-btn');
 const closeResultBtn = $('close-result-btn');
@@ -45,6 +47,7 @@ const itemsList      = $('items-list');
 const closeItemsBtn  = $('close-items-btn');
 const luckyBtn       = $('lucky-btn');
 const mapBtn         = $('map-btn');
+const openOnlyToggle = $('open-only-toggle');
 
 // ── Wheel setup ───────────────────────────────────────────────────
 const canvas = $('wheel-canvas');
@@ -59,34 +62,78 @@ function loadBlocked() {
   catch { state.blockedIds = []; }
 }
 
+// ── Open Hours parsing ────────────────────────────────────────────
+const DAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
+function parseTime(str) {
+  const [h, m] = str.split(':').map(Number);
+  return h * 60 + (m || 0);
+}
+
+function isInTimeRange(rangeStr, nowMin) {
+  const parts = rangeStr.split('、');
+  return parts.some(part => {
+    const [start, end] = part.split('-').map(s => parseTime(s.trim()));
+    if (end < start) {
+      // 跨日 (e.g. 18:00-02:00)
+      return nowMin >= start || nowMin < end;
+    }
+    return nowMin >= start && nowMin < end;
+  });
+}
+
+function isOpenNow(restaurant) {
+  if (!restaurant.openHours) return true;
+  const now = new Date();
+  const dayKey = DAY_KEYS[now.getDay()];
+  const hours = restaurant.openHours[dayKey];
+  if (hours === null || hours === undefined) return true; // 資料不明，視為開
+  if (hours === '休息') return false;
+  if (hours === '24小時營業') return true;
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  return isInTimeRange(hours, nowMin);
+}
+
+function getTodayHoursText(restaurant) {
+  if (!restaurant.openHours) return null;
+  const now = new Date();
+  const dayKey = DAY_KEYS[now.getDay()];
+  const hours = restaurant.openHours[dayKey];
+  if (hours === null || hours === undefined) return null;
+  if (hours === '休息') return '今日公休';
+  if (hours === '24小時營業') return '24小時營業';
+  return hours;
+}
+
+// ── Filtering ─────────────────────────────────────────────────────
 function getFiltered() {
   return window.RESTAURANTS.filter(r =>
     (state.meal    === 'all' || r.meals.includes(state.meal)) &&
     (state.price   === 'all' || r.price_range === state.price) &&
     (state.cuisine === 'all' || r.cuisine === state.cuisine) &&
+    (!state.openOnly || isOpenNow(r)) &&
     !state.blockedIds.includes(r.id)
   );
 }
 
-const MAX_WHEEL_ITEMS = 20;
-
 function updateWheel() {
   const filtered = getFiltered();
-  let items = filtered;
-  if (items.length > MAX_WHEEL_ITEMS) {
-    items = [...filtered].sort(() => Math.random() - 0.5).slice(0, MAX_WHEEL_ITEMS);
-  }
-  wheel.setItems(items);
-  wheelCountEl.textContent = items.length;
+  wheel.setItems(filtered);
+  wheelCountEl.textContent = filtered.length;
   noResults.classList.toggle('hidden', filtered.length > 0);
   spinBtn.disabled = filtered.length === 0;
 }
 
 // ── Items modal ───────────────────────────────────────────────────
 function showItemsModal() {
+  const filtered = getFiltered();
   itemsList.innerHTML = '';
-  wheel.items.forEach((r) => {
+  filtered.forEach((r) => {
     const id = `item-chk-${r.id}`;
+    const hoursText = getTodayHoursText(r);
+    const openBadge = isOpenNow(r)
+      ? '<span class="open-badge">開</span>'
+      : '<span class="closed-badge">休</span>';
     const li = document.createElement('li');
     li.className = 'item-row';
     li.dataset.id = r.id;
@@ -95,8 +142,11 @@ function showItemsModal() {
       `<label for="${id}" class="flex items-center gap-3 flex-1 min-w-0 cursor-pointer">` +
         `<span class="text-xl">${CUISINE_EMOJI[r.cuisine] || '🍽️'}</span>` +
         `<div class="flex-1 min-w-0">` +
-          `<p class="font-semibold text-gray-800 text-sm truncate">${r.name}</p>` +
-          `<p class="text-xs text-gray-400">${r.cuisine} · ${PRICE_LABEL[r.price_range]}</p>` +
+          `<div class="flex items-center gap-1.5">` +
+            `<p class="font-semibold text-gray-800 text-sm truncate">${r.name}</p>` +
+            openBadge +
+          `</div>` +
+          `<p class="text-xs text-gray-400">${r.cuisine} · ${PRICE_LABEL[r.price_range]}${hoursText ? ' · ' + hoursText : ''}</p>` +
         `</div>` +
       `</label>`;
     itemsList.appendChild(li);
@@ -107,7 +157,8 @@ function showItemsModal() {
 function hideItemsModal() {
   const checkedIds = [...itemsList.querySelectorAll('.item-chk:checked')]
     .map(el => Number(el.closest('li').dataset.id));
-  const next = wheel.items.filter(r => checkedIds.includes(r.id));
+  const allFiltered = getFiltered();
+  const next = allFiltered.filter(r => checkedIds.includes(r.id));
   if (next.length > 0) {
     wheel.setItems(next);
     wheelCountEl.textContent = next.length;
@@ -121,7 +172,7 @@ function updateBlockedUI() {
 }
 
 function updateFilterBadge() {
-  const active = state.meal !== 'all' || state.price !== 'all' || state.cuisine !== 'all';
+  const active = state.meal !== 'all' || state.price !== 'all' || state.cuisine !== 'all' || !state.openOnly;
   filterBadge.classList.toggle('hidden', !active);
 }
 
@@ -235,6 +286,13 @@ function showResult(restaurant) {
   resultPrice.textContent    = PRICE_LABEL[restaurant.price_range] || restaurant.price_range;
   resultLocation.textContent = restaurant.location;
   resultNote.textContent     = restaurant.note || '';
+  const hoursText = getTodayHoursText(restaurant);
+  if (hoursText) {
+    resultHours.textContent = '🕐 今日：' + hoursText;
+    resultHours.classList.remove('hidden');
+  } else {
+    resultHours.classList.add('hidden');
+  }
   mapBtn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(restaurant.name + ' 嘉義')}`;
   shareBtn.classList.remove('hidden');
   resultModal.classList.remove('hidden');
@@ -335,6 +393,14 @@ document.querySelectorAll('.filter-chip').forEach(btn => {
     updateWheel();
     updateFilterBadge();
   });
+});
+
+// Open-only toggle
+openOnlyToggle.checked = state.openOnly;
+openOnlyToggle.addEventListener('change', () => {
+  state.openOnly = openOnlyToggle.checked;
+  updateWheel();
+  updateFilterBadge();
 });
 
 // Spin button
