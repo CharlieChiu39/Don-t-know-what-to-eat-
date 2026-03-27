@@ -229,7 +229,7 @@ function setupRipples() {
 // ── Confetti ──────────────────────────────────────────────────────
 function launchConfetti() {
   const colors = ['#f97316','#ef4444','#6366f1','#10b981','#f59e0b','#ec4899','#3b82f6','#FFD93D'];
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 120; i++) {
     const el = document.createElement('div');
     el.className = 'confetti-piece';
     el.style.left = (Math.random() * 100) + 'vw';
@@ -246,12 +246,12 @@ function launchConfetti() {
 
 // ── Particle burst ────────────────────────────────────────────────
 function spawnResultParticles(emoji) {
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 18; i++) {
     const el = document.createElement('span');
     el.textContent = i % 3 === 0 ? '✨' : emoji;
     el.style.cssText = `position:fixed;left:50%;top:38%;font-size:${1+Math.random()}rem;pointer-events:none;z-index:300;`;
-    const angle = (i / 10) * 2 * Math.PI;
-    const dist = 70 + Math.random() * 60;
+    const angle = (i / 18) * 2 * Math.PI;
+    const dist = 70 + Math.random() * 80;
     el.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
     el.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
     el.style.animation = `particle-burst ${0.6 + Math.random()*0.3}s ease-out ${i*0.04}s forwards`;
@@ -260,13 +260,44 @@ function spawnResultParticles(emoji) {
   }
 }
 
-// ── Wheel flash ───────────────────────────────────────────────────
+// ── Wheel flash + shake ───────────────────────────────────────────
 function flashWheel() {
   const wrapper = document.querySelector('.wheel-wrapper');
+  // 閃光
   wrapper.classList.remove('wheel-flash');
   void wrapper.offsetWidth;
   wrapper.classList.add('wheel-flash');
   setTimeout(() => wrapper.classList.remove('wheel-flash'), 1000);
+  // 震動
+  wrapper.classList.remove('wheel-shake');
+  void wrapper.offsetWidth;
+  wrapper.classList.add('wheel-shake');
+  setTimeout(() => wrapper.classList.remove('wheel-shake'), 600);
+}
+
+// ── Screen flash ──────────────────────────────────────────────────
+function screenFlash() {
+  const el = document.getElementById('screen-flash');
+  el.classList.remove('flash-active');
+  void el.offsetWidth;
+  el.classList.add('flash-active');
+}
+
+// ── Food click particles ──────────────────────────────────────────
+const FOOD_CLICK_EMOJIS = ['🍜','🍕','🍱','🍣','🍔','🌮','🍛','🍝','🍦','🍰','🥗','🍲','🍗','🍤','🧋','🍙'];
+function spawnFoodClick(x, y) {
+  const count = 2 + Math.floor(Math.random() * 2);
+  for (let i = 0; i < count; i++) {
+    const el = document.createElement('span');
+    el.textContent = FOOD_CLICK_EMOJIS[Math.floor(Math.random() * FOOD_CLICK_EMOJIS.length)];
+    el.className = 'food-click-particle';
+    const offsetX = (Math.random() - 0.5) * 40;
+    const floatDist = 60 + Math.random() * 30;
+    const dur = 0.8 + Math.random() * 0.3;
+    el.style.cssText = `left:${x + offsetX}px;top:${y}px;font-size:${1.2 + Math.random()*0.6}rem;--fy:-${floatDist}px;animation-duration:${dur}s;animation-delay:${i*0.06}s`;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), (dur + 0.3) * 1000);
+  }
 }
 
 // ── Result modal ──────────────────────────────────────────────────
@@ -319,6 +350,7 @@ function doSpin() {
     spinBtnText.textContent = '轉！';
     luckyBtn.disabled = false;
     flashWheel();
+    screenFlash();
     setTimeout(() => showResult(winner), 200);
     const url = new URL(location.href);
     url.searchParams.set('result', winner.id);
@@ -460,6 +492,12 @@ function spawnPineapple() {
 
 for (let i = 0; i < 8; i++) spawnPineapple();
 setInterval(spawnPineapple, 800);
+
+// ── Click food particles ──────────────────────────────────────────
+document.addEventListener('click', e => {
+  if (e.target.closest('#items-modal, #result-modal, #loading-screen')) return;
+  spawnFoodClick(e.clientX, e.clientY);
+});
 
 // ── Init ──────────────────────────────────────────────────────────
 loadBlocked();

@@ -426,6 +426,50 @@ body {
   transform: translateX(13px);
 }
 
+/* ── Food click particle ────────────────────── */
+.food-click-particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 500;
+  animation: food-float-up ease-out forwards;
+  transform-origin: center;
+}
+@keyframes food-float-up {
+  0%   { transform: translateY(0) scale(1);          opacity: 1; }
+  70%  { opacity: 0.85; }
+  100% { transform: translateY(var(--fy,-70px)) scale(0.5); opacity: 0; }
+}
+
+/* ── Screen flash ───────────────────────────── */
+#screen-flash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0;
+}
+#screen-flash.flash-active {
+  animation: screen-flash-anim 0.55s ease-out forwards;
+}
+@keyframes screen-flash-anim {
+  0%   { background: rgba(249,115,22,0.5); opacity: 1; }
+  100% { background: rgba(249,115,22,0);   opacity: 0; }
+}
+
+/* ── Wheel shake ────────────────────────────── */
+@keyframes wheel-shake {
+  0%,100% { transform: translateX(0); }
+  15%     { transform: translateX(-7px); }
+  30%     { transform: translateX(7px); }
+  45%     { transform: translateX(-5px); }
+  60%     { transform: translateX(5px); }
+  75%     { transform: translateX(-3px); }
+  90%     { transform: translateX(3px); }
+}
+.wheel-wrapper.wheel-shake {
+  animation: wheel-shake 0.5s ease-out;
+}
+
 /* ── Open / Closed badges in items list ────────────────────── */
 .open-badge {
   font-size: 0.6rem;
