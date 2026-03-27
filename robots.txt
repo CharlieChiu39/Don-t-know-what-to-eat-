@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://charliechiu39.github.io/Don-t-know-what-to-eat-/sitemap.xml

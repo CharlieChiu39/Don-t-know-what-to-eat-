@@ -3,7 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-  <title>中正大學吃什麼？</title>
+  <title>中正大學吃什麼？ — 嘉義 CCU 美食轉盤</title>
+
+  <!-- SEO: Primary -->
+  <meta name="description" content="中正大學學生必備！用轉盤隨機決定今天吃什麼，涵蓋校內、神農路、裕農路超過 80 間餐廳，支援早午晚宵夜篩選與即時營業狀態查詢。" />
+  <meta name="keywords" content="中正大學美食,嘉義吃什麼,中正大學餐廳,神農路美食,裕農路美食,CCU美食,食物輪盤,隨機餐廳" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://charliechiu39.github.io/Don-t-know-what-to-eat-/" />
+
+  <!-- SEO: Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/" />
+  <meta property="og:title"       content="中正大學吃什麼？🎡" />
+  <meta property="og:description" content="轉出你今天的命運餐廳！80+ 間嘉義中正大學周邊美食，即時篩選營業中店家。" />
+  <meta property="og:image"       content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/assets/assetsbg.jpg" />
+  <meta property="og:locale"      content="zh_TW" />
+
+  <!-- SEO: Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="中正大學吃什麼？🎡" />
+  <meta name="twitter:description" content="轉出你今天的命運餐廳！80+ 間嘉義中正大學周邊美食。" />
+  <meta name="twitter:image"       content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/assets/assetsbg.jpg" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎡</text></svg>" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -208,9 +232,28 @@
     <div class="bg-gray-800 text-white px-5 py-3 rounded-full text-sm font-medium shadow-lg" id="toast-text"></div>
   </div>
 
+  <!-- Screen flash overlay -->
+  <div id="screen-flash"></div>
+
   <!-- Scripts -->
   <script src="data/restaurants.js"></script>
   <script src="js/wheel.js"></script>
   <script src="js/app.js"></script>
+
+  <!-- JSON-LD 結構化資料 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "中正大學吃什麼？",
+    "description": "幫助中正大學學生用轉盤隨機決定今天吃什麼，涵蓋嘉義中正大學校園周邊 80 間以上餐廳",
+    "url": "https://charliechiu39.github.io/Don-t-know-what-to-eat-/",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Web Browser",
+    "inLanguage": "zh-TW",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TWD" },
+    "author": { "@type": "Person", "name": "CharlieChiu39" }
+  }
+  </script>
 </body>
 </html>
