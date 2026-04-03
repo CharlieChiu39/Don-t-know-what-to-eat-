@@ -14,11 +14,11 @@ class Wheel {
     this.animId  = null;
     this.spinning = false;
 
-    // Colour palette (vivid, food-friendly)
+    // Colour palette (dark neon, ZUTOMAYO-style)
     this.colors = [
-      '#FF6B6B','#FFD93D','#6BCB77','#4D96FF','#FF922B',
-      '#CC5DE8','#20C997','#F06595','#74C0FC','#FFA94D',
-      '#A9E34B','#63E6BE','#FF8787','#748FFC','#FFEC99',
+      '#003d5c','#1a0533','#00334d','#2d0050','#001f3d',
+      '#1f0041','#002233','#350060','#00293d','#280048',
+      '#004466','#1a0040','#003348','#220044','#001a2e',
     ];
   }
 
@@ -38,11 +38,11 @@ class Wheel {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (!items || items.length === 0) {
-      ctx.fillStyle = '#e5e7eb';
+      ctx.fillStyle = '#12121a';
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = '#9ca3af';
+      ctx.fillStyle = 'rgba(0,187,255,0.4)';
       ctx.font = 'bold 14px sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -63,8 +63,8 @@ class Wheel {
       ctx.closePath();
       ctx.fillStyle = colors[i % colors.length];
       ctx.fill();
-      ctx.strokeStyle = 'white';
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'rgba(0,0,0,0.4)';
+      ctx.lineWidth = 1.5;
       ctx.stroke();
 
     });
@@ -72,20 +72,20 @@ class Wheel {
     // Center glow ring
     ctx.beginPath();
     ctx.arc(cx, cy, 32, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.fillStyle = 'rgba(0,187,255,0.15)';
     ctx.fill();
 
-    // Center white circle
+    // Center circle
     ctx.beginPath();
     ctx.arc(cx, cy, 26, 0, Math.PI * 2);
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = '#0a0a0f';
     ctx.fill();
-    ctx.strokeStyle = '#f97316';
+    ctx.strokeStyle = '#00bbff';
     ctx.lineWidth = 3;
     ctx.stroke();
 
     // Center text: item count or spin icon
-    ctx.fillStyle = '#f97316';
+    ctx.fillStyle = '#00bbff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     if (items.length > 0) {
