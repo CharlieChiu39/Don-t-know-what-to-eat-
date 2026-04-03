@@ -107,12 +107,13 @@ function getTodayHoursText(restaurant) {
 
 // ── Filtering ─────────────────────────────────────────────────────
 function getFiltered() {
+  const blockedSet = new Set(state.blockedIds);
   return window.RESTAURANTS.filter(r =>
     (state.meal    === 'all' || r.meals.includes(state.meal)) &&
     (state.price   === 'all' || r.price_range === state.price) &&
     (state.cuisine === 'all' || r.cuisine === state.cuisine) &&
     (!state.openOnly || isOpenNow(r)) &&
-    !state.blockedIds.includes(r.id)
+    !blockedSet.has(r.id)
   );
 }
 
@@ -120,8 +121,20 @@ function updateWheel() {
   const filtered = getFiltered();
   wheel.setItems(filtered);
   wheelCountEl.textContent = filtered.length;
-  noResults.classList.toggle('hidden', filtered.length > 0);
+  if (filtered.length === 0) {
+    noResults.classList.remove('hidden');
+    const allBlocked = state.blockedIds.length > 0 &&
+      state.meal === 'all' && state.price === 'all' && state.cuisine === 'all';
+    noResults.innerHTML = allBlocked
+      ? '<p class="text-4xl mb-2">🔒</p><p>所有餐廳都被封鎖了！</p><button onclick="document.getElementById(\'clear-blocked-btn\').click()" class="mt-2 text-xs underline" style="color:#00bbff;">點這裡清除封鎖清單</button>'
+      : '<p class="text-4xl mb-2">😵</p><p>沒有符合條件的店家，試著放寬篩選條件！</p>';
+  } else {
+    noResults.classList.add('hidden');
+  }
   spinBtn.disabled = filtered.length === 0;
+  // 只剩 1 間時提示
+  viewItemsBtn.style.color = filtered.length === 1 ? '#00ff88' : '';
+  viewItemsBtn.title = filtered.length === 1 ? '目前只有唯一選擇！' : '';
 }
 
 // ── Items modal ───────────────────────────────────────────────────
@@ -143,10 +156,10 @@ function showItemsModal() {
         `<span class="text-xl">${CUISINE_EMOJI[r.cuisine] || '🍽️'}</span>` +
         `<div class="flex-1 min-w-0">` +
           `<div class="flex items-center gap-1.5">` +
-            `<p class="font-semibold text-gray-800 text-sm truncate">${r.name}</p>` +
+            `<p class="font-semibold text-sm truncate" style="color:#ddd;">${r.name}</p>` +
             openBadge +
           `</div>` +
-          `<p class="text-xs text-gray-400">${r.cuisine} · ${PRICE_LABEL[r.price_range]}${hoursText ? ' · ' + hoursText : ''}</p>` +
+          `<p class="text-xs" style="color:#555;">${r.cuisine} · ${PRICE_LABEL[r.price_range]}${hoursText ? ' · ' + hoursText : ''}</p>` +
         `</div>` +
       `</label>`;
     itemsList.appendChild(li);
@@ -228,7 +241,7 @@ function setupRipples() {
 
 // ── Confetti ──────────────────────────────────────────────────────
 function launchConfetti() {
-  const colors = ['#f97316','#ef4444','#6366f1','#10b981','#f59e0b','#ec4899','#3b82f6','#FFD93D'];
+  const colors = ['#00bbff','#9b5de5','#00ff88','#ff6b6b','#bf8fff','#00e5ff','#7c3aed','#34d399'];
   for (let i = 0; i < 120; i++) {
     const el = document.createElement('div');
     el.className = 'confetti-piece';
@@ -248,7 +261,8 @@ function launchConfetti() {
 function spawnResultParticles(emoji) {
   for (let i = 0; i < 18; i++) {
     const el = document.createElement('span');
-    el.textContent = i % 3 === 0 ? '✨' : emoji;
+    el.textContent = i % 3 === 0 ? '★' : emoji;
+    if (i % 3 === 0) el.style.color = '#00bbff';
     el.style.cssText = `position:fixed;left:50%;top:38%;font-size:${1+Math.random()}rem;pointer-events:none;z-index:300;`;
     const angle = (i / 18) * 2 * Math.PI;
     const dist = 70 + Math.random() * 80;
@@ -285,7 +299,10 @@ function screenFlash() {
 
 // ── Food click particles ──────────────────────────────────────────
 const FOOD_CLICK_EMOJIS = ['🍜','🍕','🍱','🍣','🍔','🌮','🍛','🍝','🍦','🍰','🥗','🍲','🍗','🍤','🧋','🍙'];
+let clickParticleCount = 0;
+const MAX_CLICK_PARTICLES = 60;
 function spawnFoodClick(x, y) {
+  if (clickParticleCount >= MAX_CLICK_PARTICLES) return;
   const count = 2 + Math.floor(Math.random() * 2);
   for (let i = 0; i < count; i++) {
     const el = document.createElement('span');
@@ -295,8 +312,9 @@ function spawnFoodClick(x, y) {
     const floatDist = 60 + Math.random() * 30;
     const dur = 0.8 + Math.random() * 0.3;
     el.style.cssText = `left:${x + offsetX}px;top:${y}px;font-size:${1.2 + Math.random()*0.6}rem;--fy:-${floatDist}px;animation-duration:${dur}s;animation-delay:${i*0.06}s`;
+    clickParticleCount++;
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), (dur + 0.3) * 1000);
+    setTimeout(() => { el.remove(); clickParticleCount--; }, (dur + 0.3) * 1000);
   }
 }
 
@@ -360,7 +378,7 @@ function doSpin() {
 
 // ── Lucky Spin ────────────────────────────────────────────────────
 function doLuckySpin() {
-  if (wheel.spinning || !wheel.items.length) return;
+  if (wheel.spinning || !wheel.items.length || spinBtn.disabled) return;
   spinBtn.disabled = true;
   luckyBtn.disabled = true;
   let count = 3;
@@ -476,22 +494,33 @@ clearBlockedBtn.addEventListener('click', () => {
   showToast('封鎖清單已清除');
 });
 
-// ── Falling pineapples ────────────────────────────────────────────
+// ── Falling particles (ZUTOMAYO geometric symbols) ────────────────
+const ZUTO_SYMBOLS = ['✦', '◆', '✧', '◇', '★', '⬡', '⬢'];
+const NEON_COLORS  = ['#00bbff', '#9b5de5', '#00ff88', '#bf8fff'];
+const MAX_PARTICLES = 15;
+let particleCount = 0;
+let particleInterval = null;
+
 function spawnPineapple() {
+  if (particleCount >= MAX_PARTICLES) return;
+  particleCount++;
   const el = document.createElement('span');
-  el.textContent = '🍍';
+  el.textContent = ZUTO_SYMBOLS[Math.floor(Math.random() * ZUTO_SYMBOLS.length)];
   el.className = 'falling-pineapple';
   el.style.left = (Math.random() * 100) + 'vw';
-  el.style.fontSize = (1.2 + Math.random() * 1.6) + 'rem';
+  el.style.fontSize = (0.6 + Math.random() * 0.8) + 'rem';
+  const color = NEON_COLORS[Math.floor(Math.random() * NEON_COLORS.length)];
+  el.style.color = color;
+  el.style.textShadow = `0 0 6px ${color}`;
   const duration = 5 + Math.random() * 6;
   el.style.animationDuration = duration + 's';
   el.style.animationDelay = (Math.random() * -2) + 's';
   document.body.appendChild(el);
-  setTimeout(() => el.remove(), (duration + 2) * 1000);
+  setTimeout(() => { el.remove(); particleCount--; }, (duration + 2) * 1000);
 }
 
 for (let i = 0; i < 8; i++) spawnPineapple();
-setInterval(spawnPineapple, 800);
+particleInterval = setInterval(spawnPineapple, 800);
 
 // ── Click food particles ──────────────────────────────────────────
 document.addEventListener('click', e => {
