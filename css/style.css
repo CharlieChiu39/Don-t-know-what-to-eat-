@@ -1016,6 +1016,12 @@ dialog[open] {
   font-size: 10px;
   color: var(--muted);
 }
+.result-hours small { display: block; margin-top: 10px; }
+#result-address { font-size: 12px; line-height: 1.7; color: var(--muted); }
+.result-provenance { text-align: left; font-size: 12px; line-height: 1.8; margin: 0 0 20px; }
+.result-provenance summary { cursor: pointer; color: var(--muted); padding: 8px 0; }
+.result-provenance p { margin: 8px 0; }
+.result-provenance a, .result-hours a { text-underline-offset: 4px; overflow-wrap: anywhere; }
 .result-actions {
   display: flex;
   gap: 10px;

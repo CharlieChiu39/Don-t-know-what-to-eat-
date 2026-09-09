@@ -7,6 +7,7 @@ const priceLabels = {
   cheap: '< 80 元',
   medium: '80–150 元',
   expensive: '> 150 元',
+  unknown: '價格待確認',
 };
 const cuisineMarks = {
   台式: '飯',
@@ -145,7 +146,7 @@ function renderList(items, date) {
     : null;
   const sorted = [...items];
   if (state.sort === 'price') {
-    const rank = { cheap: 0, medium: 1, expensive: 2 };
+      const rank = { cheap: 0, medium: 1, expensive: 2, unknown: 3 };
     sorted.sort((a, b) => rank[a.price_range] - rank[b.price_range]);
   } else if (state.sort === 'name')
     sorted.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
@@ -270,8 +271,27 @@ function updateResult() {
   $('result-status').className = `status ${status.state}`;
   $('result-status').textContent = status.label;
   $('result-hours').textContent = status.hours || '尚無營業時間資料';
+  $('result-hours-note').textContent = r.hoursNote || (r.verification?.source
+    ? '依店家網站列載時段，臨時異動請另向店家確認。'
+    : '時刻表尚待確認，出發前請查詢店家近況。');
+  $('result-address').textContent = [r.address, r.phone].filter(Boolean).join(' · ');
+  $('result-address').hidden = !r.address && !r.phone;
+  const info = r.verification;
+  $('result-verification').textContent = info?.source
+    ? `來源查閱 ${info.checkedAt} · 核對：${info.fields}。${info.note}`
+    : (info?.note || '現行資料待確認。');
+  $('result-price-note').textContent = r.priceNote || (r.price_range === 'unknown'
+    ? '尚未取得可確認的價格。' : '價格分類為舊資料估計，尚未核對現行菜單。');
+  $('result-source').hidden = !info?.source;
+  if (info?.source) {
+    $('result-source').href = info.source;
+    $('result-source').textContent = `${info.label} ↗`;
+  }
+  const noticeSource = status.source || (Object.hasOwn(r.specialHours || {}, new Date(Date.now() + 28800000).toISOString().slice(0, 10)) ? r.specialHoursSource : null);
+  $('result-notice').hidden = !noticeSource;
+  if (noticeSource) $('result-notice').href = noticeSource;
   $('map-link').href =
-    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${r.name} 嘉義 民雄 ${r.location === '校內' ? '中正大學' : r.location}`)}`;
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${r.name} ${r.address || `嘉義 民雄 ${r.location === '校內' ? '中正大學' : r.location}`}`)}`;
   const saved = state.savedIds.includes(r.id);
   $('save-result').textContent = saved ? '♥ 已收藏' : '♡ 收藏這間';
   $('save-result').setAttribute('aria-pressed', String(saved));
@@ -523,6 +543,8 @@ for (const cuisine of new Set(restaurants.map((r) => r.cuisine))) {
   $('cuisine').append(option);
 }
 $('total-count').textContent = restaurants.length;
+const sourcedCount = restaurants.filter((r) => r.verification?.source).length;
+$('data-coverage').textContent = `2026.09.10 資料查核 · ${sourcedCount} 間附來源 · ${restaurants.length - sourcedCount} 間待確認`;
 renderRecent();
 render();
 document.fonts?.ready.then(() => {

@@ -7,7 +7,7 @@
     <title>食間 — 中正大學，今天吃什麼？</title>
     <meta
       name="description"
-      content="把猶豫留給轉盤，把時間留給好好吃飯。探索中正大學周邊 81 間餐廳，依餐別、預算、區域篩選，收藏與分享今天的選擇。"
+      content="把猶豫留給轉盤，把時間留給好好吃飯。探索中正大學周邊餐廳，查看資料來源，依餐別、預算、區域篩選，收藏與分享今天的選擇。"
     />
     <link
       rel="canonical"
@@ -21,11 +21,11 @@
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="zh_TW" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="css/style.css" />
-    <script defer src="data/restaurants.js"></script>
-    <script defer src="js/core.js"></script>
+    <link rel="stylesheet" href="css/style.css?v=20260910" />
+    <script defer src="data/restaurants.js?v=20260910"></script>
+    <script defer src="js/core.js?v=20260910"></script>
     <script defer src="js/wheel.js"></script>
-    <script defer src="js/app.js?v=3"></script>
+    <script defer src="js/app.js?v=20260910"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">跳至主要內容</a>
@@ -52,7 +52,7 @@
           <div class="hero-bottom">
             <p>把猶豫留給轉盤，<br />把時間留給好好吃飯。</p>
             <span class="hero-number"
-              ><strong id="total-count">81</strong
+              ><strong id="total-count">84</strong
               ><span>間餐廳<br />等你遇見</span></span
             >
           </div>
@@ -161,7 +161,7 @@
             <label class="switch-label" for="open-only"
               ><span
                 >只選現在營業的店<small
-                  >依時刻表推估，排除時間未知店家</small
+                  >依有來源的時刻表推估，排除待確認店家</small
                 ></span
               ><input id="open-only" type="checkbox" role="switch" /><span
                 class="switch-track"
@@ -174,7 +174,7 @@
           <div class="roulette-top">
             <p class="eyebrow">LET CHANCE CHOOSE</p>
             <span class="live-pill"
-              ><i></i><span id="pool-count">81</span> 間待選</span
+              ><i></i><span id="pool-count">84</span> 間待選</span
             >
           </div>
           <div class="wheel-stage">
@@ -230,7 +230,7 @@
         <div class="list-toolbar">
           <div class="list-tabs" aria-label="餐廳清單範圍">
             <button data-view="all" aria-pressed="true">
-              全部餐廳 <span id="list-count">81</span></button
+              全部餐廳 <span id="list-count">84</span></button
             ><button data-view="saved" aria-pressed="false">口袋名單</button
             ><button data-view="blocked" aria-pressed="false">
               暫不考慮 <span id="blocked-count">0</span>
@@ -273,7 +273,7 @@
     <footer>
       <a class="footer-brand" href="#decide">食間 <span>SHI JIAN</span></a>
       <p>
-        中正大學・日常食誌<br />價格與營業時間沿用專案資料，出發前請向店家確認。
+        中正大學・日常食誌<br /><span id="data-coverage"></span><br />價格多為估計，詳情附來源；出發前請確認店家公告。
       </p>
       <a
         class="linkline"
@@ -297,11 +297,20 @@
       <h2 id="result-name"></h2>
       <div class="result-tags" id="result-tags"></div>
       <p id="result-note"></p>
+      <p id="result-address"></p>
       <div class="result-hours">
         <span id="result-status"></span>
         <p id="result-hours"></p>
+        <p id="result-hours-note"></p>
+        <a id="result-notice" target="_blank" rel="noopener noreferrer" hidden>查看當日異動公告 ↗</a>
         <small>依台灣時間推估，實際營業以店家公告為準。</small>
       </div>
+      <details class="result-provenance">
+        <summary>資料來源與價格說明</summary>
+        <p id="result-verification"></p>
+        <p id="result-price-note"></p>
+        <a id="result-source" target="_blank" rel="noopener noreferrer" hidden></a>
+      </details>
       <a
         id="map-link"
         class="primary-button"

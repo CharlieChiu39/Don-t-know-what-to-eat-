@@ -38,9 +38,22 @@ const FoodCore = (() => {
     return ranges.some((range) => range === null) ? null : ranges;
   }
   function openingStatus(restaurant, date = new Date()) {
+    const alert = restaurant.serviceAlerts?.find(
+      (item) => date >= new Date(item.from) && date < new Date(item.to),
+    );
+    if (alert) return { state: 'unknown', label: '臨時營業待確認', hours: alert.note, source: alert.source };
     const { day, minute } = taipeiTime(date);
-    const today = restaurant.openHours?.[dayKeys[day]];
-    const previous = restaurant.openHours?.[dayKeys[(day + 6) % 7]];
+    // 台灣無夏令時間，前一個曆日可由減去 24 小時取得。
+    const dateKey = (value) => new Date(value.getTime() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    const todayKey = dateKey(date);
+    const previousKey = dateKey(new Date(date.getTime() - 86400000));
+    const hasSpecial = Object.hasOwn(restaurant.specialHours || {}, todayKey);
+    const today = hasSpecial ? restaurant.specialHours[todayKey] : restaurant.openHours?.[dayKeys[day]];
+    const previous = Object.hasOwn(restaurant.specialHours || {}, previousKey)
+      ? restaurant.specialHours[previousKey] : restaurant.openHours?.[dayKeys[(day + 6) % 7]];
+    if (hasSpecial && today === '休息') return {
+      state: 'closed', label: '今日臨時店休', hours: '依當日公告暫停營業', source: restaurant.specialHoursSource,
+    };
     const currentRanges = parseHours(today);
     const previousRanges = parseHours(previous);
     const spill = previousRanges?.some(
@@ -64,7 +77,7 @@ const FoodCore = (() => {
       return {
         state: 'unknown',
         label: '營業時間待確認',
-        hours: today || '尚無營業時間資料',
+        hours: today || '尚無完整的每週營業時間',
       };
     }
     return {
