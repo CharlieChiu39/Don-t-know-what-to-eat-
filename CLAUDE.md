@@ -1,88 +1,23 @@
-# Food Roulette — 中正大學吃什麼？
+# 食間 — 開發與審查指引
 
-## Project Overview
-靜態網頁應用，幫助中正大學學生用轉盤隨機決定吃什麼。無 build tools、無 Node.js，直接開 `index.html` 即可使用。
+## 範圍與設計
 
-## Tech Stack
-- Vanilla HTML5 / CSS3 / JavaScript (ES6+)
-- Tailwind CSS via CDN（含自訂色系擴充：neon / cyber / void）
-- Canvas API（轉盤動畫）
-- Google Fonts: Noto Sans TC + Orbitron
-- Ably Realtime SDK（多人房間功能，尚未整合）
+這是中正大學周邊選餐的靜態網站。維持原生 HTML / CSS / JavaScript，不需要 build 或伺服器憑證。使用者要求參考 dessertProject 的美感；目前視覺採暖紙色、柿色、襯線標題及留白，主要 tokens 在 css/style.css。
 
-## Design Style
-**ZUTOMAYO 暗色賽博龐克主題**
-- 背景：深黑 `#0a0a0f` + 霓虹藍/紫光暈
-- 主色：霓虹藍 `#00bbff`、電紫 `#9b5de5`
-- 功能色：霓虹綠 `#00ff88`（營業中）、軟紅 `#ff6b6b`（封鎖/休息）
-- 卡片/面板底色：`#12121a`，邊框：`#1e1e2e`
-- 標題：CSS Glitch 動畫（`::before/::after` + `clip-path` + `attr(data-text)`）
-- 按鈕：Neon Glow（多層 `box-shadow` 模擬霓虹燈管）
-- 轉盤：深色底霓虹系扇形（藍/紫交錯），霓虹藍光環外框
-- 粒子特效：幾何符號（✦ ◆ ✧ ◇ ★ ⬡ ⬢）+ 隨機霓虹色 + `textShadow` 發光
+UI 與註解使用繁體中文；JS 使用 camelCase、單引號與分號。動畫必須保留 prefers-reduced-motion 分支，表單及結果對話框要能用鍵盤操作。
 
-## File Structure
-```
-├── index.html           # 主 UI — layout, modals, HTML 結構
-├── css/style.css        # 自訂樣式、動畫、元件 class（ZUTOMAYO 暗色主題）
-├── js/app.js            # 核心邏輯 — state, 篩選, 事件, UI, 特效
-├── js/wheel.js          # Wheel class — Canvas 轉盤動畫
-├── js/room.js           # RoomManager class — Ably 多人房間（未整合）
-├── data/restaurants.js  # window.RESTAURANTS 陣列 — 餐廳資料庫（81 間）
-├── assets/assetsbg.jpg  # Loading 畫面背景圖
-├── robots.txt           # SEO
-├── sitemap.xml          # SEO
-└── CLAUDE.md
-```
+## 修改前
 
-**Script 載入順序** (in index.html): `restaurants.js` → `wheel.js` → `app.js`
+先讀實際受影響的程式。js/core.js 是時段判斷、篩選及 ID 驗證的唯一來源；js/app.js 負責 DOM 與持久化；js/wheel.js 負責畫面與落點。更動任何篩選時，同時核對清單與轉盤的選項一致。
 
-## Restaurant Data Schema
-每筆 `window.RESTAURANTS` 資料格式：
-```js
-{
-  id: Number,            // 唯一、從 1 開始
-  name: String,          // 店名（繁體中文）
-  cuisine: String,       // 台式|日式|韓式|越式|泰式|西式|亞洲|速食|火鍋|飲料|甜點|咖啡|素食|清真|便利商店
-  meals: String[],       // ["breakfast","lunch","dinner","latenight"]
-  price_range: String,   // "cheap"(<80)|"medium"(80-150)|"expensive"(>150)
-  location: String,      // "校內"|"神農路"|"裕農路"
-  note: String,          // 簡短描述
-  openHours: Object      // { mon:"11:00-21:00", tue:..., ... } 或 null/"休息"/"24小時營業"
-}
-```
+餐廳時刻均以 Asia/Taipei 判斷，跨夜看前一天；未知時間保持 unknown。不得把既有資料描述成即時查證結果。新增店家要驗證唯一 ID；料理選單從資料自動產生。
 
-## Architecture
-- **State**: `app.js` 中的 `state` 物件（meal, price, cuisine, blockedIds, openOnly, lastResult）
-- **Persistence**: localStorage key `food_blocked`
-- **DOM**: `const $ = id => document.getElementById(id)` helper
-- **Filtering**: `getFiltered()` 結合餐別/價位/料理/封鎖/營業狀態（封鎖清單使用 `Set` 查詢）
-- **Wheel**: 純裝飾性動畫轉盤，從所有篩選結果中隨機選取
-- **Particles**: 全域計數器控制上限（落下粒子 MAX 15、點擊粒子 MAX 60），防止 DOM 爆炸
+food_blocked 是舊版保留的 storage key。新 key 為 food_saved、food_recent，讀取需驗證陣列與 ID；儲存失敗仍保持頁面可用。DOM 中的店名與備註使用 textContent。
 
-## Tailwind 擴充色系
-在 `index.html` 的 `<script>` 中定義：
-```js
-tailwind.config = {
-  theme: { extend: { colors: {
-    neon:  { DEFAULT: '#00bbff', dim: '#0077aa' },
-    cyber: { DEFAULT: '#9b5de5', dark: '#6a35b0' },
-    void:  { DEFAULT: '#0a0a0f', card: '#12121a', border: '#1e1e2e' },
-  }}}
-}
-```
+js/room.js 為未載入的歷史草稿。修改主站不代表多人房間已實作，公開前端不得放私密 Ably key。
 
-## Coding Conventions
-- UI 文字與註解：繁體中文
-- 變數/函式名：英文 camelCase
-- CSS class：kebab-case
-- 一致使用分號、單引號
-- Tailwind 用於 HTML layout；自訂元件樣式在 style.css
-- 暗色主題的文字顏色：優先用 inline `style` 覆蓋 Tailwind 淺色 class
+## 完成前
 
-## Development
-- 啟動：VS Code Live Server（port 5500）或任意靜態伺服器
-- 測試：手動瀏覽器測試，無測試框架
-- 新增餐廳：使用 `/add-restaurant` skill 或手動加入 `data/restaurants.js`
-- 新增料理類型：同時更新 `CUISINE_EMOJI`（app.js）和 `#cuisine-chips`（index.html）
-- 修改配色：主要改 `css/style.css`；轉盤色盤在 `js/wheel.js` 的 `this.colors`；特效顏色在 `js/app.js` 的 `NEON_COLORS` / confetti colors
+執行 node --test tests/core.test.cjs tests/wheel.test.cjs 及 node --check js/app.js。使用靜態伺服器實際驗證桌面／手機版、篩選、空清單、收藏保存、排除恢復、連續抽選、分享、Escape 與焦點。新文字若使用子集字型，檢查是否意外落到不同 fallback 字型。
+
+本次改版的基準、已驗證項目及限制見 docs/review.md；面向使用者的執行方式見 README.md。所有程式碼由使用者安排 Claude Code 審查；只有實際收到審查結果才可宣稱審查通過。
