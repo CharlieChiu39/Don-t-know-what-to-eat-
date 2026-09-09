@@ -20,4 +20,4 @@ js/room.js 為未載入的歷史草稿。修改主站不代表多人房間已實
 
 執行 node --test tests/core.test.cjs tests/wheel.test.cjs 及 node --check js/app.js。使用靜態伺服器實際驗證桌面／手機版、篩選、空清單、收藏保存、排除恢復、連續抽選、分享、Escape 與焦點。新文字若使用子集字型，檢查是否意外落到不同 fallback 字型。
 
-本次改版的基準、已驗證項目及限制見 docs/review.md；面向使用者的執行方式見 README.md。所有程式碼由使用者安排 Claude Code 審查；只有實際收到審查結果才可宣稱審查通過。
+本次改版的基準、已驗證項目及限制見 docs/review.md；面向使用者的執行方式見 README.md。依使用者最新指示，不使用 Claude Code 或 Superpowers；輔助審查使用 Antigravity 與 OpenCode 的 Grok。只有實際收到並核對審查結果才可宣稱完成審查。

@@ -62,8 +62,8 @@
 - 剪貼簿成功路徑有實際操作；拒絕權限的降級 UI 尚未用真實權限拒絕測試。
 - 沒有宣稱通過 Safari、實體手機、螢幕閱讀器或 Lighthouse 全面稽核。
 - 視覺已完成本機檢視，最終美感仍由使用者判斷。
-- 使用者安排的 Claude Code 審查尚未執行，不將其他工具的核對當作該審查結果。
+- 使用者最新指定改用 Antigravity 與 OpenCode 的 Grok，不使用 Claude Code。
 
 ## 輔助文件核對
 
-Antigravity 已完成 README／CLAUDE 與主要程式的靜態對照，唯一回報為 docs/review.md 不存在；主代理隨後以實際檔案確認該文件已存在。此核對不等於測試或 Claude Code 審查。OpenCode 因 Computer Use 無法辨識前景程序，未成功派送任務。
+Antigravity 已完成 README／CLAUDE 與主要程式的靜態對照，唯一回報為 docs/review.md 不存在；主代理隨後以實際檔案確認該文件已存在。此核對不等於測試。OpenCode 視窗及輸入焦點已恢復，已成功送出 Grok 4.6 唯讀程式審查任務；結果尚待取得與驗證。
