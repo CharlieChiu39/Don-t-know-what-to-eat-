@@ -1,160 +1,94 @@
-/**
- * Wheel.js — Canvas spinning wheel
- * Usage:
- *   const wheel = new Wheel(canvas, items)
- *   wheel.spin(targetIndex, onDone)   // targetIndex = which item to land on
- */
+'use strict';
 
 class Wheel {
   constructor(canvas) {
-    this.canvas  = canvas;
-    this.ctx     = canvas.getContext('2d');
-    this.items   = [];
-    this.angle   = 0;          // current rotation (radians)
-    this.animId  = null;
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.items = [];
+    this.angle = 0;
     this.spinning = false;
-
-    // Colour palette (dark neon, ZUTOMAYO-style)
     this.colors = [
-      '#003d5c','#1a0533','#00334d','#2d0050','#001f3d',
-      '#1f0041','#002233','#350060','#00293d','#280048',
-      '#004466','#1a0040','#003348','#220044','#001a2e',
+      '#d5bea0',
+      '#785a40',
+      '#b18b62',
+      '#e5d4b9',
+      '#95734f',
+      '#c6a77e',
     ];
   }
-
-  /** Set items to draw on wheel */
   setItems(items) {
-    this.items = items;
+    if (this.spinning) return;
+    this.items = [...items];
     this.draw();
   }
-
-  /** Draw current state */
   draw() {
-    const { ctx, canvas, items, angle, colors } = this;
-    const cx = canvas.width  / 2;
-    const cy = canvas.height / 2;
-    const r  = cx - 4;
-
+    const { ctx, canvas, items } = this;
+    const c = canvas.width / 2;
+    const radius = c - 3;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (!items || items.length === 0) {
-      ctx.fillStyle = '#12121a';
+    const count = items.length || 1;
+    const slice = (Math.PI * 2) / count;
+    for (let i = 0; i < count; i++) {
+      const start = this.angle + i * slice - Math.PI / 2;
       ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(0,187,255,0.4)';
-      ctx.font = 'bold 14px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('沒有符合條件的店家', cx, cy);
-      return;
-    }
-
-    const sliceAngle = (Math.PI * 2) / items.length;
-
-    items.forEach((_item, i) => {
-      const start = angle + i * sliceAngle - Math.PI / 2;
-      const end   = start + sliceAngle;
-
-      // Sector
-      ctx.beginPath();
-      ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, r, start, end);
+      ctx.moveTo(c, c);
+      ctx.arc(c, c, radius, start, start + slice);
       ctx.closePath();
-      ctx.fillStyle = colors[i % colors.length];
+      ctx.fillStyle = items.length
+        ? this.colors[i % this.colors.length]
+        : '#544330';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(0,0,0,0.4)';
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#302319';
+      ctx.lineWidth = 1;
       ctx.stroke();
-
-    });
-
-    // Center glow ring
-    ctx.beginPath();
-    ctx.arc(cx, cy, 32, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(0,187,255,0.15)';
-    ctx.fill();
-
-    // Center circle
-    ctx.beginPath();
-    ctx.arc(cx, cy, 26, 0, Math.PI * 2);
-    ctx.fillStyle = '#0a0a0f';
-    ctx.fill();
-    ctx.strokeStyle = '#00bbff';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-    // Center text: item count or spin icon
-    ctx.fillStyle = '#00bbff';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    if (items.length > 0) {
-      ctx.font = 'bold 16px sans-serif';
-      ctx.fillText(items.length + '間', cx, cy);
-    } else {
-      ctx.font = 'bold 24px sans-serif';
-      ctx.fillText('?', cx, cy);
+      if (count > 1 && count <= 16) {
+        ctx.save();
+        ctx.translate(c, c);
+        ctx.rotate(start + slice / 2);
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.font = '25px ShiJianSerif, serif';
+        ctx.fillStyle = i % 6 === 1 || i % 6 === 4 ? '#fff2dd' : '#322217';
+        const label =
+          items[i].name.length > 7
+            ? `${items[i].name.slice(0, 6)}…`
+            : items[i].name;
+        ctx.fillText(label, radius - 35, 0, radius - 200);
+        ctx.restore();
+      }
     }
+    ctx.beginPath();
+    ctx.arc(c, c, radius - 20, 0, Math.PI * 2);
+    ctx.strokeStyle = '#eee0c366';
+    ctx.stroke();
   }
-
-  /**
-   * Spin to the target item index.
-   * @param {number} targetIndex  - which item should land under pointer
-   * @param {function} onDone     - callback with the winning item
-   */
-  spin(targetIndex, onDone) {
-    if (this.spinning || !this.items.length) return;
+  spin(targetIndex, onDone, reducedMotion = false) {
+    if (this.spinning || !this.items[targetIndex]) return;
     this.spinning = true;
-
-    const items      = this.items;
-    const sliceAngle = (Math.PI * 2) / items.length;
-
-    // We want the TARGET slice centre to end up at the top (angle = 0 → top of canvas).
-    // Current rotation is `this.angle`. We need to find how much more to rotate.
-    // Pointer sits at top = -Math.PI/2 in canvas coords; but our draw() already offsets by -Math.PI/2.
-    // So target angle offset = -(targetIndex * sliceAngle + sliceAngle/2)
-    const targetOffset = -(targetIndex * sliceAngle + sliceAngle / 2);
-    // Full rotations (5–8) plus the offset
-    const extraSpins   = (5 + Math.floor(Math.random() * 4)) * Math.PI * 2;
-    const startAngle   = this.angle;
-    const endAngle     = targetOffset + extraSpins;  // always positive spin
-
-    const duration = 4000 + Math.random() * 1000;   // 4-5 seconds
-    let   startTime = null;
-
-    const easeOut = t => 1 - Math.pow(1 - t, 4);
-
-    const step = (ts) => {
-      if (!startTime) startTime = ts;
-      const elapsed = ts - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      this.angle = startAngle + endAngle * easeOut(progress);
+    const winner = this.items[targetIndex];
+    const full = Math.PI * 2;
+    const target =
+      (full - ((targetIndex + 0.5) * full) / this.items.length) % full;
+    const start = this.angle;
+    // 每次均以目前角度計算位移，確保連續抽選仍落在正確扇形。
+    const distance = ((target - start + full) % full) + full * 4;
+    const duration = reducedMotion ? 0 : 2800;
+    let started;
+    const frame = (timestamp) => {
+      if (started === undefined) started = timestamp;
+      const progress = duration
+        ? Math.min((timestamp - started) / duration, 1)
+        : 1;
+      this.angle = start + distance * (1 - (1 - progress) ** 4);
       this.draw();
-
-      if (progress < 1) {
-        this.animId = requestAnimationFrame(step);
-      } else {
-        this.angle   = ((startAngle + endAngle) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+      if (progress < 1) requestAnimationFrame(frame);
+      else {
+        this.angle = target;
         this.spinning = false;
-        if (onDone) onDone(items[targetIndex]);
+        onDone(winner);
       }
     };
-
-    this.animId = requestAnimationFrame(step);
-  }
-
-  /** Stop any running animation */
-  stop() {
-    if (this.animId) cancelAnimationFrame(this.animId);
-    this.spinning = false;
+    requestAnimationFrame(frame);
   }
 }
-
-// Seeded random number generator (LCG) — same seed → same sequence
-function seededRandom(seed) {
-  let s = seed;
-  return function () {
-    s = (s * 1664525 + 1013904223) & 0xffffffff;
-    return (s >>> 0) / 0xffffffff;
-  };
-}
+if (typeof module !== 'undefined') module.exports = Wheel;
