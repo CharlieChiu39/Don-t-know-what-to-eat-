@@ -61,9 +61,16 @@ const dialog = $('result-dialog');
 let toastTimer;
 let returnFocus;
 let resultIsDraw = false;
+let shareRequest = 0;
 
 function toast(message) {
   clearTimeout(toastTimer);
+  if (dialog.open) {
+    $('toast').hidden = true;
+    $('result-feedback').textContent = message;
+    $('result-feedback').hidden = false;
+    return;
+  }
   $('toast').textContent = message;
   $('toast').hidden = false;
   toastTimer = setTimeout(() => {
@@ -274,10 +281,14 @@ function updateResult() {
   $('respin').disabled = !wheel.items.length || state.busy;
 }
 function showResult(restaurant, fromDraw = false) {
-  if (!dialog.open) returnFocus = document.activeElement;
+  shareRequest++;
+  if (!dialog.open)
+    returnFocus = fromDraw ? $('spin-btn') : document.activeElement;
   state.lastResult = restaurant;
   resultIsDraw = fromDraw;
   $('share-fallback').hidden = true;
+  $('share-result').textContent = '分享這間 ↗';
+  $('result-feedback').hidden = true;
   updateResult();
   if (!dialog.open) dialog.showModal();
 }
@@ -338,11 +349,15 @@ function spin() {
   );
 }
 function reset() {
+  const fromEmptyState = document.activeElement === $('empty-reset');
   Object.assign(state, defaults, { limit: 12 });
   render();
+  if (fromEmptyState) $('search').focus({ preventScroll: true });
 }
 async function shareResult() {
   if (!state.lastResult) return;
+  const request = ++shareRequest;
+  const isCurrent = () => dialog.open && request === shareRequest;
   const url = new URL(location.href);
   url.search = '';
   url.hash = '';
@@ -351,8 +366,13 @@ async function shareResult() {
     if (!navigator.clipboard?.writeText)
       throw new Error('Clipboard unavailable');
     await navigator.clipboard.writeText(url.href);
+    if (!isCurrent()) return;
     $('share-result').textContent = '已複製連結 ✓';
+    $('share-fallback').hidden = true;
   } catch {
+    if (!isCurrent()) return;
+    $('share-result').textContent = '請手動複製連結';
+    toast('無法自動複製，請複製下方連結。');
     $('share-fallback').hidden = false;
     $('share-url').value = url.href;
     $('share-url').focus();
@@ -453,8 +473,16 @@ dialog.addEventListener('click', (event) => {
     closeResult();
 });
 dialog.addEventListener('close', () => {
+  shareRequest++;
+  if (!$('result-feedback').hidden) {
+    const message = $('result-feedback').textContent;
+    $('result-feedback').hidden = true;
+    toast(message);
+  }
   $('share-result').textContent = '分享這間 ↗';
-  if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true });
+  if (returnFocus === document.body)
+    $('spin-btn').focus({ preventScroll: true });
+  else if (returnFocus?.isConnected) returnFocus.focus({ preventScroll: true });
   else if (returnFocus?.dataset.id) {
     const { action, id } = returnFocus.dataset;
     const replacement = document.querySelector(

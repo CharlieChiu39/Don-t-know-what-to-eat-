@@ -43,6 +43,16 @@ node --check js/app.js
 
 本次驗收紀錄與審查入口：[docs/review.md](docs/review.md)。
 
+另有可選的 DOM 回歸檢查，需要可解析的 `jsdom` 套件；不影響網站或上述 Node 測試：
+
+```sh
+node tests/dom-check.cjs
+# 或指定已安裝 jsdom 的絕對路徑
+node tests/dom-check.cjs /path/to/node_modules/jsdom
+```
+
+此檢查模擬剪貼簿延遲與失敗、儲存失敗及空結果重設。JSDOM 的 dialog 使用替身，不能取代原生瀏覽器焦點驗證。
+
 ## 字型與設計
 
 `assets/fonts/shi-jian-serif.ttf` 為 Google Fonts Noto Serif TC 400 的文字子集，使用 SIL Open Font License，授權位於同目錄的 `OFL.txt`。新增字元若不在子集內，會使用系統襯線字型。

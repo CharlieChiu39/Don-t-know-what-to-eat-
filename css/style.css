@@ -1034,6 +1034,14 @@ dialog[open] {
   font-size: 12px;
   margin-top: 14px;
 }
+#result-feedback {
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 12px;
+  line-height: 1.7;
+}
 #share-url {
   display: block;
   width: 100%;
