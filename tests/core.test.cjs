@@ -29,8 +29,8 @@ const shop = (hours) => ({
   },
 });
 
-test('84 筆餐廳資料可用且 ID 唯一，所有現行時段皆可解析', () => {
-  assert.equal(restaurants.length, 84);
+test('92 筆餐廳資料可用且 ID 唯一，所有現行時段皆可解析', () => {
+  assert.equal(restaurants.length, 92);
   assert.equal(new Set(restaurants.map((r) => r.id)).size, restaurants.length);
   for (const r of restaurants) {
     assert.ok(r.name && r.cuisine && r.meals.length && r.location);
@@ -42,16 +42,56 @@ test('84 筆餐廳資料可用且 ID 唯一，所有現行時段皆可解析', (
 });
 test('未核實舊時刻表不會混入營業中，新店保留來源及未知欄位', () => {
   const unconfirmed = restaurants.filter(r => r.verification.status === 'unconfirmed');
-  assert.equal(unconfirmed.length, 64);
+  assert.equal(unconfirmed.length, 65);
   for (const r of unconfirmed) {
     assert.ok(r.legacyOpenHours);
-    assert.equal(openingStatus(r, date('2026-09-10T12:00:00')).state, 'unknown');
+    const status = openingStatus(r, date('2026-09-10T12:00:00'));
+    assert.equal(status.state, 'unknown');
+    assert.equal(status.hours, '');
+    assert.equal(status.label, '請向店家確認');
   }
   for (const r of restaurants.filter(r => r.verification.status === 'sourced')) {
     assert.ok(new URL(r.verification.source).protocol === 'https:');
-    assert.equal(r.verification.checkedAt, '2026-09-10');
+    assert.ok(['2026-09-10', '2026-09-15'].includes(r.verification.checkedAt));
   }
+  const big4 = restaurants.find((r) => r.id === 85);
+  assert.equal(big4.verification.status, 'sourced');
+  assert.equal(big4.address, '嘉義縣民雄鄉正義一街66號');
+  assert.equal(openingStatus(big4, date('2026-09-15T12:00:00')).state, 'open');
+  const gigi = restaurants.find((r) => r.id === 86);
+  assert.equal(gigi.verification.status, 'sourced');
+  assert.equal(openingStatus(gigi, date('2026-09-15T10:00:00')).state, 'open');
+  const simplefit = restaurants.find((r) => r.id === 87);
+  assert.equal(simplefit.verification.status, 'sourced');
+  assert.equal(openingStatus(simplefit, date('2026-09-15T12:00:00')).state, 'open');
+  const shengjian = restaurants.find((r) => r.id === 88);
+  assert.equal(shengjian.verification.status, 'sourced');
+  assert.equal(openingStatus(shengjian, date('2026-09-15T12:00:00')).state, 'open');
+  const teas = restaurants.find((r) => r.id === 44);
+  assert.equal(teas.verification.status, 'sourced');
+  assert.equal(teas.address, '嘉義縣民雄鄉神農路129-1號');
+  assert.equal(openingStatus(teas, date('2026-09-15T12:00:00')).state, 'unknown');
+  const tea = restaurants.find((r) => r.id === 48);
+  assert.equal(tea.verification.status, 'sourced');
+  assert.equal(tea.address, '嘉義縣民雄鄉神農二街9號');
+  assert.equal(openingStatus(tea, date('2026-09-15T12:00:00')).state, 'unknown');
+  const zao = restaurants.find((r) => r.id === 58);
+  assert.equal(zao.verification.status, 'sourced');
+  assert.equal(zao.address, '嘉義縣民雄鄉三興村神農路91號');
+  assert.equal(zao.phone, '05-2720155');
+  assert.equal(openingStatus(zao, date('2026-09-09T12:00:00')).state, 'unknown');
+  assert.equal(openingStatus(zao, date('2026-09-15T12:00:00')).state, 'closed');
   assert.equal(openingStatus(restaurants.find(r => r.id === 84), date('2026-09-10T09:00:00')).state, 'unknown');
+  const veg = restaurants.find((r) => r.id === 63);
+  const ramen = restaurants.find((r) => r.id === 76);
+  const igabi = restaurants.find((r) => r.id === 71);
+  assert.equal(veg.name, '意素佳 創意蔬食料理');
+  assert.equal(veg.address, '嘉義縣民雄鄉神農一街12號之2');
+  assert.equal(ramen.cuisine, '韓式');
+  assert.equal(igabi.location, '裕農路');
+  assert.ok(
+    filterRestaurants(restaurants, { query: '神農一街12' }).some((r) => r.id === 63),
+  );
 });
 test('日期限定時段以台灣日期生效，結束後恢復一般時刻表', () => {
   const louisa = restaurants.find(r => r.id === 6);

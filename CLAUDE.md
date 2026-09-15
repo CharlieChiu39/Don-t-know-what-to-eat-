@@ -2,13 +2,13 @@
 
 ## 範圍與設計
 
-這是中正大學周邊選餐的靜態網站。維持原生 HTML / CSS / JavaScript，不需要 build 或伺服器憑證。使用者要求參考 dessertProject 的美感；目前視覺採暖紙色、柿色、襯線標題及留白，主要 tokens 在 css/style.css。
+這是中正大學周邊選餐的靜態網站。維持原生 HTML / CSS / JavaScript，不需要 build 或伺服器憑證。使用者要求參考 dessertProject 的美感；目前視覺採暖紙色、柿色、襯線標題、情境攝影與卡片揭曉，主要 tokens 在 css/style.css。
 
-UI 與註解使用繁體中文；JS 使用 camelCase、單引號與分號。動畫必須保留 prefers-reduced-motion 分支，表單及結果對話框要能用鍵盤操作。
+UI 與註解使用繁體中文；JS 使用 camelCase、單引號與分號。動畫必須保留 prefers-reduced-motion 分支，表單及結果對話框要能用鍵盤操作。避免模板式英文標語。
 
 ## 修改前
 
-先讀實際受影響的程式。js/core.js 是時段判斷、篩選及 ID 驗證的唯一來源；js/app.js 負責 DOM 與持久化；js/wheel.js 負責畫面與落點。更動任何篩選時，同時核對清單與轉盤的選項一致。
+先讀實際受影響的程式。js/core.js 是時段判斷、篩選及 ID 驗證的唯一來源；js/app.js 負責 DOM 與持久化；js/card-draw.js 負責揭曉動畫與本輪選項鎖定。更動任何篩選時，同時核對清單與抽選的選項一致。
 
 餐廳時刻均以 Asia/Taipei 判斷，跨夜看前一天；未知時間保持 unknown。不得把既有資料描述成即時查證結果。新增店家要驗證唯一 ID；料理選單從資料自動產生。
 
@@ -18,6 +18,6 @@ js/room.js 為未載入的歷史草稿。修改主站不代表多人房間已實
 
 ## 完成前
 
-執行 node --test tests/core.test.cjs tests/wheel.test.cjs 及 node --check js/app.js。使用靜態伺服器實際驗證桌面／手機版、篩選、空清單、收藏保存、排除恢復、連續抽選、分享、Escape 與焦點。新文字若使用子集字型，檢查是否意外落到不同 fallback 字型。
+執行 node --test tests/core.test.cjs tests/card-draw.test.cjs 及 node --check js/app.js。使用靜態伺服器實際驗證桌面／手機版、篩選、空清單、收藏保存、排除恢復、連續抽選、分享、Escape 與焦點。新文字若使用子集字型，檢查是否意外落到不同 fallback 字型。
 
 本次改版的基準、已驗證項目及限制見 docs/review.md；面向使用者的執行方式見 README.md。依使用者最新指示，不使用 Claude Code 或 Superpowers；輔助審查使用 Antigravity 與 OpenCode 的 Grok。只有實際收到並核對審查結果才可宣稱完成審查。

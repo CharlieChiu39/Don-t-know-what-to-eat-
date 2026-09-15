@@ -21,7 +21,7 @@ w.HTMLDialogElement.prototype.close = function () {
   this.dispatchEvent(new w.Event('close'));
 };
 w.eval(
-  ['data/restaurants.js', 'js/core.js', 'js/wheel.js', 'js/app.js']
+  ['data/restaurants.js', 'js/core.js', 'js/card-draw.js', 'js/app.js']
     .map((file) => fs.readFileSync(path.join(root, file), 'utf8'))
     .join('\n'),
 );

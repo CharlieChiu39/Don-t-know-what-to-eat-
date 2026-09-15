@@ -7,8 +7,20 @@ const priceLabels = {
   cheap: '< 80 元',
   medium: '80–150 元',
   expensive: '> 150 元',
-  unknown: '價格待確認',
+  unknown: '',
 };
+function isStaffCopy(text) {
+  return /本輪|不恢復|雇主頁|聚合頁|聚合地圖|不能用招工|不能刪除|不能捏造|不能宣稱|不能套用|歷史線索|尚未取得可核對|字號|已排除|不是品牌|不是現場|不是2026|無來源更新日|登錄不能|SipSpot|Uber Eats|foodpanda|LINE熱點|查閱日期|核對：|現行資料待確認|時間保持未確認/.test(
+    text || '',
+  );
+}
+function visitorNote(restaurant) {
+  const note = (restaurant.note || '').trim();
+  if (!note) return '';
+  if (!isStaffCopy(note)) return note;
+  const first = note.split('。')[0].trim();
+  return first && !isStaffCopy(first) && first.length < 40 ? first : '';
+}
 const cuisineMarks = {
   台式: '飯',
   日式: '和',
@@ -57,8 +69,17 @@ const state = {
   savedIds: readIds(storageKeys.savedIds),
   recentIds: readIds(storageKeys.recentIds).slice(0, 5),
 };
-const wheel = new Wheel($('wheel-canvas'));
+const draw = new CardDraw($('draw-stage'));
 const dialog = $('result-dialog');
+let resultMotion;
+let closingResult = false;
+let keyboardInput = false;
+document.addEventListener('keydown', () => {
+  keyboardInput = true;
+});
+document.addEventListener('pointerdown', () => {
+  keyboardInput = false;
+});
 let toastTimer;
 let returnFocus;
 let resultIsDraw = false;
@@ -101,6 +122,23 @@ function currentItems(date = new Date()) {
   return filterRestaurants(restaurants, state, date);
 }
 function syncControls() {
+  const meals = {
+    breakfast: '早餐',
+    lunch: '午餐',
+    dinner: '晚餐',
+    latenight: '宵夜',
+  };
+  const selected = [
+    meals[state.meal],
+    priceLabels[state.price],
+    state.location === 'all' ? '' : state.location,
+    state.cuisine === 'all' ? '' : state.cuisine,
+    state.openOnly ? '目前營業' : '',
+  ].filter(Boolean);
+  $('filter-label').textContent = selected.length
+    ? selected.join(' · ')
+    : '調整餐別、預算與區域';
+
   document.querySelectorAll('[data-filter]').forEach((group) => {
     group
       .querySelectorAll('button')
@@ -135,7 +173,7 @@ function renderRecent() {
   $('recent-list').replaceChildren(
     ...(content.length
       ? content
-      : [makeElement('span', 'muted', '還沒有紀錄，讓轉盤幫你開個頭。')]),
+      : [makeElement('span', 'muted', '選過的餐廳會留在這裡。')]),
   );
   $('clear-history').hidden = !content.length;
 }
@@ -146,7 +184,7 @@ function renderList(items, date) {
     : null;
   const sorted = [...items];
   if (state.sort === 'price') {
-      const rank = { cheap: 0, medium: 1, expensive: 2, unknown: 3 };
+    const rank = { cheap: 0, medium: 1, expensive: 2, unknown: 3 };
     sorted.sort((a, b) => rank[a.price_range] - rank[b.price_range]);
   } else if (state.sort === 'name')
     sorted.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
@@ -167,7 +205,9 @@ function renderList(items, date) {
       makeElement(
         'p',
         'card-meta',
-        `${r.cuisine} · ${r.location} · ${priceLabels[r.price_range]}`,
+        [r.cuisine, r.location, priceLabels[r.price_range]]
+          .filter(Boolean)
+          .join(' · '),
       ),
     );
     const saved = state.savedIds.includes(r.id);
@@ -185,7 +225,10 @@ function renderList(items, date) {
     top.append(icon, heading, favorite);
     const bottom = makeElement('div', 'card-bottom');
     const status = openingStatus(r, date);
-    bottom.append(makeElement('span', `status ${status.state}`, status.label));
+    if (status.state !== 'unknown')
+      bottom.append(
+        makeElement('span', `status ${status.state}`, status.label),
+      );
     bottom.append(
       actionButton(
         state.view === 'blocked' ? 'restore' : 'details',
@@ -194,7 +237,8 @@ function renderList(items, date) {
         'card-details',
       ),
     );
-    card.append(top, makeElement('p', 'card-note', r.note), bottom);
+    const note = visitorNote(r);
+    card.append(top, ...(note ? [makeElement('p', 'card-note', note)] : []), bottom);
     return card;
   });
   $('restaurant-grid').replaceChildren(...cards);
@@ -220,7 +264,7 @@ function renderList(items, date) {
     date,
   ).length;
   $('list-summary').textContent =
-    `共 ${items.length} 間・${state.view === 'blocked' ? '這份清單不參與抽選' : '清單與轉盤使用相同條件'}・營業狀態為時刻表推估`;
+    `共 ${items.length} 間`;
   if (focus) {
     const replacement = $('restaurant-grid').querySelector(
       `[data-action="${focus.action}"][data-id="${focus.id}"]`,
@@ -236,17 +280,17 @@ function render() {
   syncControls();
   if (!state.busy) {
     const pool = state.view === 'blocked' ? [] : items;
-    wheel.setItems(pool);
-    $('pool-count').textContent = pool.length;
+    draw.setItems(pool);
+    $('spin-btn').dataset.count = pool.length;
     $('spin-btn').disabled = !pool.length;
     $('spin-label').textContent =
-      pool.length === 1 ? '就是這一間' : '讓食間，選一間';
+      pool.length === 1 ? '就是這一間' : '幫我選一間';
     $('spin-hint').textContent =
       state.view === 'blocked'
         ? '先恢復店家，或切回全部餐廳再抽選。'
         : !pool.length
           ? '暫無符合的選項，試著重設條件或恢復店家。'
-          : '每間餐廳機會均等，把驚喜留給下一秒。';
+          : `目前 ${pool.length} 間符合條件 · 抽選機會相同`;
   }
   renderList(items, date);
 }
@@ -255,39 +299,55 @@ function updateResult() {
   if (!r) return;
   $('result-name').textContent = r.name;
   $('result-emoji').textContent = cuisineMarks[r.cuisine] || '食';
-  $('result-kicker').textContent = resultIsDraw
-    ? 'THE CHOSEN ONE'
-    : 'THE NEIGHBORHOOD EDIT';
+  $('result-kicker').textContent = resultIsDraw ? '本次選餐' : '餐廳詳情';
   $('result-intro').textContent = resultIsDraw
     ? '今天，就吃這間。'
-    : '下一餐，也許在這裡。';
+    : '店家資訊';
   $('result-tags').replaceChildren(
-    ...[r.cuisine, priceLabels[r.price_range], r.location].map((text) =>
-      makeElement('span', '', text),
-    ),
+    ...[r.cuisine, priceLabels[r.price_range], r.location]
+      .filter(Boolean)
+      .map((text) => makeElement('span', '', text)),
   );
-  $('result-note').textContent = r.note;
+  const note = visitorNote(r);
+  $('result-note').textContent = note;
+  $('result-note').hidden = !note;
   const status = openingStatus(r);
   $('result-status').className = `status ${status.state}`;
   $('result-status').textContent = status.label;
-  $('result-hours').textContent = status.hours || '尚無營業時間資料';
-  $('result-hours-note').textContent = r.hoursNote || (r.verification?.source
-    ? '依店家網站列載時段，臨時異動請另向店家確認。'
-    : '時刻表尚待確認，出發前請查詢店家近況。');
-  $('result-address').textContent = [r.address, r.phone].filter(Boolean).join(' · ');
+  $('result-hours').textContent = status.hours || '';
+  $('result-hours').hidden = !status.hours;
+  const hoursNote =
+    r.hoursNote && !isStaffCopy(r.hoursNote) ? r.hoursNote : '';
+  $('result-hours-note').textContent = hoursNote;
+  $('result-hours-note').hidden = !hoursNote;
+  $('result-address').textContent = [r.address, r.phone]
+    .filter(Boolean)
+    .join(' · ');
   $('result-address').hidden = !r.address && !r.phone;
   const info = r.verification;
   $('result-verification').textContent = info?.source
-    ? `來源查閱 ${info.checkedAt} · 核對：${info.fields}。${info.note}`
-    : (info?.note || '現行資料待確認。');
-  $('result-price-note').textContent = r.priceNote || (r.price_range === 'unknown'
-    ? '尚未取得可確認的價格。' : '價格分類為舊資料估計，尚未核對現行菜單。');
+    ? `資料來自${info.label}`
+    : '';
+  $('result-verification').hidden = !info?.source;
+  $('result-price-note').textContent = r.priceNote || '';
+  $('result-price-note').hidden = !r.priceNote;
   $('result-source').hidden = !info?.source;
   if (info?.source) {
     $('result-source').href = info.source;
     $('result-source').textContent = `${info.label} ↗`;
   }
-  const noticeSource = status.source || (Object.hasOwn(r.specialHours || {}, new Date(Date.now() + 28800000).toISOString().slice(0, 10)) ? r.specialHoursSource : null);
+  $('hours-disclaimer').hidden =
+    status.state === 'unknown' && !status.hours && !hoursNote;
+  document.querySelector('.result-provenance').hidden =
+    $('result-verification').hidden && $('result-price-note').hidden;
+  const noticeSource =
+    status.source ||
+    (Object.hasOwn(
+      r.specialHours || {},
+      new Date(Date.now() + 28800000).toISOString().slice(0, 10),
+    )
+      ? r.specialHoursSource
+      : null);
   $('result-notice').hidden = !noticeSource;
   if (noticeSource) $('result-notice').href = noticeSource;
   $('map-link').href =
@@ -298,9 +358,13 @@ function updateResult() {
   $('block-result').textContent = state.blockedIds.includes(r.id)
     ? '恢復這間餐廳'
     : '暫時不考慮';
-  $('respin').disabled = !wheel.items.length || state.busy;
+  $('respin').disabled = !draw.items.length || state.busy;
 }
 function showResult(restaurant, fromDraw = false) {
+  const origin = fromDraw
+    ? $('spin-btn')
+    : document.activeElement?.closest('.restaurant-card');
+  const originRect = origin?.getBoundingClientRect();
   shareRequest++;
   if (!dialog.open)
     returnFocus = fromDraw ? $('spin-btn') : document.activeElement;
@@ -310,10 +374,53 @@ function showResult(restaurant, fromDraw = false) {
   $('share-result').textContent = '分享這間 ↗';
   $('result-feedback').hidden = true;
   updateResult();
-  if (!dialog.open) dialog.showModal();
+  if (!dialog.open) {
+    dialog.showModal();
+    dialog.scrollTop = 0;
+    dialog.querySelector('details').open = false;
+    animateResult(originRect);
+  }
 }
-function closeResult() {
-  dialog.close();
+function closeResult(immediate = false) {
+  if (!dialog.open || closingResult) return;
+  const target = returnFocus?.isConnected ? returnFocus : $('spin-btn');
+  const source = target.getBoundingClientRect();
+  if (
+    immediate ||
+    keyboardInput ||
+    matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    !dialog.animate
+  ) {
+    resultMotion?.cancel();
+    dialog.close();
+    return;
+  }
+  closingResult = true;
+  resultMotion?.cancel();
+  const rect = dialog.getBoundingClientRect();
+  const dx = source.left + source.width / 2 - rect.left - rect.width / 2;
+  const dy = source.top + source.height / 2 - rect.top - rect.height / 2;
+  resultMotion = dialog.animate(
+    [
+      { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+      {
+        transform: `translate(${dx * 0.15}px, ${dy * 0.15}px) scale(.94)`,
+        opacity: 0,
+      },
+    ],
+    {
+      duration: 180,
+      easing: 'cubic-bezier(0.23, 1, 0.32, 1)',
+      fill: 'forwards',
+    },
+  );
+  resultMotion.finished
+    .catch(() => {})
+    .then(() => {
+      dialog.close();
+      resultMotion?.cancel();
+      closingResult = false;
+    });
 }
 function toggleSave(id) {
   state.savedIds = state.savedIds.includes(id)
@@ -345,13 +452,13 @@ function spin() {
   if (state.busy) return;
   // 重新確認時刻，並將整輪選項固定到動畫結束。
   render();
-  if (!wheel.items.length) return;
-  if (dialog.open) closeResult();
+  if (!draw.items.length) return;
+  if (dialog.open) closeResult(true);
   setBusy(true);
-  $('spin-label').textContent = '好食，正在路上…';
-  $('spin-hint').textContent = '正在為你選一間。';
-  const targetIndex = Math.floor(Math.random() * wheel.items.length);
-  wheel.spin(
+  $('spin-label').textContent = '正在揭曉…';
+  $('spin-hint').textContent = '請稍候，這一餐正在選定。';
+  const targetIndex = Math.floor(Math.random() * draw.items.length);
+  draw.spin(
     targetIndex,
     (winner) => {
       setBusy(false);
@@ -365,7 +472,8 @@ function spin() {
       showResult(winner, true);
     },
     matchMedia('(prefers-reduced-motion: reduce)').matches ||
-      wheel.items.length === 1,
+      keyboardInput ||
+      draw.items.length === 1,
   );
 }
 function reset() {
@@ -480,7 +588,7 @@ $('restore-blocked').addEventListener('click', () => {
 });
 $('spin-btn').addEventListener('click', spin);
 $('respin').addEventListener('click', spin);
-$('close-result').addEventListener('click', closeResult);
+$('close-result').addEventListener('click', () => closeResult());
 dialog.addEventListener('click', (event) => {
   const rect = dialog.getBoundingClientRect();
   if (
@@ -543,13 +651,51 @@ for (const cuisine of new Set(restaurants.map((r) => r.cuisine))) {
   $('cuisine').append(option);
 }
 $('total-count').textContent = restaurants.length;
-const sourcedCount = restaurants.filter((r) => r.verification?.source).length;
-$('data-coverage').textContent = `2026.09.10 資料查核 · ${sourcedCount} 間附來源 · ${restaurants.length - sourcedCount} 間待確認`;
 renderRecent();
 render();
-document.fonts?.ready.then(() => {
-  if (!state.busy) wheel.draw();
-});
 const sharedId = Number(new URLSearchParams(location.search).get('result'));
 const sharedRestaurant = restaurants.find((r) => r.id === sharedId);
 if (sharedRestaurant) showResult(sharedRestaurant);
+
+function animateResult(origin) {
+  resultMotion?.cancel();
+  if (
+    keyboardInput ||
+    matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    !dialog.animate
+  )
+    return;
+  const end = dialog.getBoundingClientRect();
+  const dx = origin
+    ? origin.left + origin.width / 2 - end.left - end.width / 2
+    : 0;
+  const dy = origin
+    ? origin.top + origin.height / 2 - end.top - end.height / 2
+    : 30;
+  resultMotion = dialog.animate(
+    [
+      { transform: `translate(${dx}px, ${dy}px) scale(.94)`, opacity: 0 },
+      { transform: 'translate(0, 0) scale(1)', opacity: 1 },
+    ],
+    { duration: 280, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' },
+  );
+}
+if (
+  'IntersectionObserver' in window &&
+  !matchMedia('(prefers-reduced-motion: reduce)').matches
+) {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries)
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+    },
+    { threshold: 0.12 },
+  );
+  document.querySelectorAll('.explore-heading, .recent-strip').forEach((el) => {
+    el.classList.add('reveal-on-scroll');
+    observer.observe(el);
+  });
+}

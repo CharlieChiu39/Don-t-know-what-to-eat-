@@ -41,7 +41,7 @@ const FoodCore = (() => {
     const alert = restaurant.serviceAlerts?.find(
       (item) => date >= new Date(item.from) && date < new Date(item.to),
     );
-    if (alert) return { state: 'unknown', label: '臨時營業待確認', hours: alert.note, source: alert.source };
+    if (alert) return { state: 'unknown', label: '請先確認是否營業', hours: alert.note, source: alert.source };
     const { day, minute } = taipeiTime(date);
     // 台灣無夏令時間，前一個曆日可由減去 24 小時取得。
     const dateKey = (value) => new Date(value.getTime() + 8 * 60 * 60 * 1000).toISOString().slice(0, 10);
@@ -62,22 +62,22 @@ const FoodCore = (() => {
     if (spill)
       return {
         state: 'open',
-        label: '推估營業中',
-        hours: `前一日延續：${previous}`,
+        label: '營業中',
+        hours: previous,
       };
     if (
       currentRanges?.some(
         ([start, end]) => minute >= start && (end < start || minute < end),
       )
     ) {
-      return { state: 'open', label: '推估營業中', hours: today };
+      return { state: 'open', label: '營業中', hours: today };
     }
     // 前一天資料未知時，無法排除跨日營業；不把不確定狀態當成已休息。
     if (currentRanges === null || previousRanges === null) {
       return {
         state: 'unknown',
-        label: '營業時間待確認',
-        hours: today || '尚無完整的每週營業時間',
+        label: '請向店家確認',
+        hours: '',
       };
     }
     return {
@@ -103,7 +103,7 @@ const FoodCore = (() => {
         (filters.view !== 'saved' || saved.has(r.id)) &&
         (!filters.openOnly || openingStatus(r, date).state === 'open') &&
         (!query ||
-          [r.name, r.cuisine, r.location, r.note]
+          [r.name, r.cuisine, r.location, r.note, r.address, r.phone]
             .join(' ')
             .toLocaleLowerCase()
             .includes(query)),
