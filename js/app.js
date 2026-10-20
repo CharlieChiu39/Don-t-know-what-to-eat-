@@ -168,12 +168,15 @@ function getMealTimeText() {
   return '宵夜吃到飽';
 }
 
+let appShown = false;
 function showApp() {
+  if (appShown) return;
+  appShown = true;
+  appEl.classList.remove('hidden');
   loadingScreen.classList.add('fade-out');
   setTimeout(() => {
     loadingScreen.style.display = 'none';
-    appEl.classList.remove('hidden');
-  }, 350);
+  }, 400);
 }
 
 // ── Toast ─────────────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 /**
- * Wheel.js — Canvas spinning wheel (ZUTOMAYO Vinyl / Mechanical Turntable Style)
+ * Wheel.js — Canvas spinning wheel (ZUTOMAYO Matte Vinyl / Mechanical Style)
  * Usage:
  *   const wheel = new Wheel(canvas, items)
  *   wheel.spin(targetIndex, onDone)   // targetIndex = which item to land on
@@ -14,11 +14,11 @@ class Wheel {
     this.animId  = null;
     this.spinning = false;
 
-    // Matte ZUTOMAYO / MART palette (charcoal, muted plum, slate, deep violet — zero neon glare)
+    // Matte ZUTOMAYO palette (charcoal, muted plum, slate, deep violet — zero neon glare)
     this.colors = [
-      '#17161e', '#261b3a', '#1e202b', '#32204d',
-      '#1b1922', '#292736', '#231934', '#21242e',
-      '#191820', '#2f1d47', '#1c1d26', '#282338',
+      '#181622', '#261b3a', '#1c1e29', '#31204c',
+      '#1d1a26', '#2a243b', '#221933', '#20232e',
+      '#191820', '#2e1d46', '#1c1d26', '#272236',
     ];
   }
 
@@ -34,21 +34,17 @@ class Wheel {
     const cx = canvas.width  / 2;
     const cy = canvas.height / 2;
     const r  = cx - 4;
-    const innerRim = r - 11;
+    const innerRim = r - 10;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (!items || items.length === 0) {
-      ctx.fillStyle = '#14131a';
+      ctx.fillStyle = '#191820';
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.fill();
-      ctx.strokeStyle = '#353240';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
       ctx.fillStyle = '#9e9aa8';
-      ctx.font = '700 13px "Noto Sans TC", sans-serif';
+      ctx.font = 'bold 14px "Noto Sans TC", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('沒有符合條件的店家', cx, cy);
@@ -57,41 +53,24 @@ class Wheel {
 
     const sliceAngle = (Math.PI * 2) / items.length;
 
-    // 1. Sectors
-    items.forEach((item, i) => {
+    items.forEach((_item, i) => {
       const start = angle + i * sliceAngle - Math.PI / 2;
       const end   = start + sliceAngle;
 
+      // Sector
       ctx.beginPath();
       ctx.moveTo(cx, cy);
       ctx.arc(cx, cy, innerRim, start, end);
       ctx.closePath();
       ctx.fillStyle = colors[i % colors.length];
       ctx.fill();
-
-      ctx.strokeStyle = 'rgba(219, 218, 210, 0.16)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.45)';
+      ctx.lineWidth = 1.2;
       ctx.stroke();
-
-      // Radial label when item count is readable (<= 28)
-      if (items.length <= 28 && item && item.name) {
-        const mid = start + sliceAngle / 2;
-        ctx.save();
-        ctx.translate(cx, cy);
-        ctx.rotate(mid);
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = i % 2 === 0 ? '#DBDAD2' : '#c5b8d9';
-        const fontSize = items.length <= 12 ? 11 : items.length <= 20 ? 10 : 9;
-        ctx.font = `600 ${fontSize}px "Noto Sans TC", sans-serif`;
-        const label = item.name.length > 7 ? item.name.slice(0, 6) + '…' : item.name;
-        ctx.fillText(label, innerRim - 10, 0);
-        ctx.restore();
-      }
     });
 
-    // 2. Subtle vinyl groove rings (tactile mechanical texture)
-    [0.76, 0.58, 0.42].forEach(ratio => {
+    // Subtle vinyl groove rings
+    [0.72, 0.5].forEach(ratio => {
       ctx.beginPath();
       ctx.arc(cx, cy, innerRim * ratio, 0, Math.PI * 2);
       ctx.strokeStyle = 'rgba(219, 218, 210, 0.06)';
@@ -99,7 +78,7 @@ class Wheel {
       ctx.stroke();
     });
 
-    // 3. Outer mechanical strobe / gauge bezel
+    // Outer mechanical bezel ring
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.arc(cx, cy, innerRim, 0, Math.PI * 2, true);
@@ -108,18 +87,18 @@ class Wheel {
 
     ctx.beginPath();
     ctx.arc(cx, cy, innerRim, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(219, 218, 210, 0.45)';
+    ctx.strokeStyle = 'rgba(219, 218, 210, 0.35)';
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Outer tick marks (rotates with wheel)
-    const tickCount = Math.min(Math.max(items.length, 24), 72);
+    // Outer scale ticks
+    const tickCount = 36;
     const tickStep  = (Math.PI * 2) / tickCount;
     for (let t = 0; t < tickCount; t++) {
       const a = angle + t * tickStep - Math.PI / 2;
-      const isMajor = t % 4 === 0;
+      const isMajor = t % 3 === 0;
       const rIn = innerRim + 2;
-      const rOut = isMajor ? r - 2 : r - 4.5;
+      const rOut = isMajor ? r - 2 : r - 4;
       ctx.beginPath();
       ctx.moveTo(cx + Math.cos(a) * rIn,  cy + Math.sin(a) * rIn);
       ctx.lineTo(cx + Math.cos(a) * rOut, cy + Math.sin(a) * rOut);
@@ -128,22 +107,18 @@ class Wheel {
       ctx.stroke();
     }
 
-    // 4. Center Turntable Label / ZUTOMAYO Hub
+    // Center accent ring
     ctx.beginPath();
-    ctx.arc(cx, cy, 38, 0, Math.PI * 2);
-    ctx.fillStyle = '#191820';
+    ctx.arc(cx, cy, 34, 0, Math.PI * 2);
+    ctx.fillStyle = '#6F2ADD';
     ctx.fill();
     ctx.strokeStyle = '#DBDAD2';
     ctx.lineWidth = 1;
     ctx.stroke();
 
+    // Center circle
     ctx.beginPath();
-    ctx.arc(cx, cy, 32, 0, Math.PI * 2);
-    ctx.fillStyle = '#6F2ADD';
-    ctx.fill();
-
-    ctx.beginPath();
-    ctx.arc(cx, cy, 25, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 27, 0, Math.PI * 2);
     ctx.fillStyle = '#121116';
     ctx.fill();
     ctx.strokeStyle = '#DBDAD2';
@@ -155,13 +130,10 @@ class Wheel {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     if (items.length > 0) {
-      ctx.font = '900 13px "DotGothic16", "Noto Sans TC", monospace';
-      ctx.fillText(items.length + '間', cx, cy - 3);
-      ctx.fillStyle = '#9e9aa8';
-      ctx.font = '700 8px "DotGothic16", monospace';
-      ctx.fillText('POOL', cx, cy + 9);
+      ctx.font = 'bold 15px "Noto Sans TC", sans-serif';
+      ctx.fillText(items.length + '間', cx, cy);
     } else {
-      ctx.font = 'bold 20px monospace';
+      ctx.font = 'bold 22px sans-serif';
       ctx.fillText('?', cx, cy);
     }
   }
@@ -183,7 +155,7 @@ class Wheel {
     const startAngle   = this.angle;
     const endAngle     = targetOffset + extraSpins;
 
-    const duration = 3600 + Math.random() * 800;
+    const duration = 4000 + Math.random() * 1000;
     let   startTime = null;
 
     const easeOut = t => 1 - Math.pow(1 - t, 4);

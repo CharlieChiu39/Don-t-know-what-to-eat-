@@ -1,13 +1,8 @@
-/* ================================================================
-   style.css — ZUTOMAYO (zutomayo.net) × ZUTOMAYO MART Inspired UI
-   Matte Subculture / Retro OS Window / 1px Editorial Grid
-   Zero Neon Blur / Mobile-First Ergonomics
-   ================================================================ */
-
+/* ── Theme Tokens (ZUTOMAYO × ZUTOMAYO MART Matte Palette) ── */
 :root {
   --ztmy-bg:      #121116;
   --ztmy-panel:   #191820;
-  --ztmy-surface: #211f2a;
+  --ztmy-surface: #22202b;
   --ztmy-border:  #353240;
   --ztmy-putty:   #DBDAD2;
   --ztmy-lilac:   #E8D2E9;
@@ -19,287 +14,209 @@
   --ztmy-rust:    #cb5149;
 }
 
-/* ── Typography Helpers ─────────────────────── */
 .f-px {
   font-family: 'DotGothic16', monospace, sans-serif;
   letter-spacing: 0.04em;
 }
-.f-serif {
-  font-family: 'Noto Serif TC', serif;
-}
 
-/* ── Background ─────────────────────────────── */
+/* ── Background ──────────────────────────────── */
 body {
-  font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Noto Sans TC', sans-serif;
   background-color: var(--ztmy-bg);
   background-image:
-    linear-gradient(to right, rgba(219, 218, 210, 0.028) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(219, 218, 210, 0.028) 1px, transparent 1px);
+    linear-gradient(to right, rgba(219, 218, 210, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(219, 218, 210, 0.025) 1px, transparent 1px);
   background-size: 24px 24px;
   color: var(--ztmy-putty);
-  -webkit-font-smoothing: antialiased;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* ── ZUTOMAYO Retro OS Window Frame ─────────── */
-.ztmy-window {
-  background-color: var(--ztmy-panel);
-  border: 1px solid var(--ztmy-putty);
-  outline: 1px solid var(--ztmy-purple);
-  box-shadow: 4px 4px 0 #070609, 5px 5px 0 var(--ztmy-purple);
-}
-
-.ztmy-win-bar {
-  background-color: var(--ztmy-purple);
-  color: #ffffff;
-  height: 28px;
-  padding: 0 6px 0 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--ztmy-putty);
-  user-select: none;
-}
-
-.ztmy-win-bar-title {
-  font-family: 'DotGothic16', monospace, sans-serif;
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.ztmy-win-bar-close {
-  width: 18px;
-  height: 18px;
-  background-color: var(--ztmy-putty);
-  color: #121116;
-  border: 1px solid #121116;
-  font-family: 'DotGothic16', monospace;
-  font-size: 13px;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  transition: background-color 0.12s, color 0.12s;
-}
-.ztmy-win-bar-close:hover {
-  background-color: var(--ztmy-rust);
-  color: #ffffff;
 }
 
 /* ── Loading screen ─────────────────────────── */
 #loading-screen {
-  transition: opacity 0.35s ease;
+  transition: opacity 0.4s ease;
 }
 #loading-screen.fade-out {
   opacity: 0;
   pointer-events: none;
 }
 #loading-meal-text {
-  text-shadow: 2px 2px 0 #000000;
+  font-family: 'Noto Serif TC', 'Noto Sans TC', serif;
+  text-shadow: 3px 3px 0 #121116, 4px 4px 0 #6F2ADD;
 }
 
-/* ── App entrance ───────────────────────────── */
-.app-enter {
-  animation: fadeInUp 0.3s ease-out both;
-}
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── Top Bar & Editorial Header ─────────────── */
-.ztmy-top-bar {
-  border-bottom: 1px solid var(--ztmy-border);
-  margin-bottom: 10px;
-}
-
-.ztmy-pixel-dot {
-  width: 7px;
-  height: 7px;
-  background-color: var(--ztmy-purple);
-  border: 1px solid var(--ztmy-putty);
-  display: inline-block;
-}
-
-/* Inverted rectangular tag from zutomayo.net (.ztmy-header-title h2 span) */
-.ztmy-page-tag {
-  background-color: var(--ztmy-putty);
-  color: #121116;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 1px 7px;
-  letter-spacing: 0.08em;
-}
-
-.ztmy-header-box {
-  background-color: var(--ztmy-panel);
-  border: 1px solid var(--ztmy-border);
-  box-shadow: 2px 2px 0 #08070b;
-}
-
+/* ── Header ─────────────────────────────────── */
 .header-icon-wrap {
-  width: 56px;
-  border-left: 1px solid var(--ztmy-border);
-  background-color: #14131a;
+  width: 58px;
+  height: 58px;
+  border-radius: 2px;
+  background: var(--ztmy-panel);
+  border: 1px solid var(--ztmy-putty);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  box-shadow: 3px 3px 0 var(--ztmy-purple);
 }
 
-/* ── Title (Editorial Serif + Subtle Hover Shift, Zero Neon Glare) ── */
 .glitch-title {
   font-family: 'Noto Serif TC', 'Noto Sans TC', serif;
   color: var(--ztmy-putty);
   position: relative;
   letter-spacing: 0.04em;
-  line-height: 1.2;
 }
 
-/* ── Meal tabs (ZUTOMAYO MART 1px Grid Strip) ── */
-.meal-tabs-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  border: 1px solid var(--ztmy-border);
-  background-color: var(--ztmy-border);
-  gap: 1px;
-  box-shadow: 2px 2px 0 #08070b;
+.ztmy-subtitle-tag {
+  display: inline-block;
+  background-color: var(--ztmy-purple);
+  color: #ffffff;
+  font-size: 0.7rem;
+  padding: 2px 10px;
+  border: 1px solid var(--ztmy-putty);
+  letter-spacing: 0.1em;
 }
 
+/* ── Meal tabs ──────────────────────────────── */
 .meal-tab {
-  padding: 7px 2px 8px;
-  border-radius: 0;
+  flex: 1;
+  padding: 8px 4px;
+  border-radius: 2px;
   font-size: 0.78rem;
   font-weight: 700;
   background: var(--ztmy-panel);
   color: var(--ztmy-muted);
-  border: none;
+  border: 1px solid var(--ztmy-border);
   cursor: pointer;
-  transition: background-color 0.12s, color 0.12s;
+  transition: background-color 0.12s, color 0.12s, border-color 0.12s, box-shadow 0.12s;
   white-space: nowrap;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  line-height: 1.15;
 }
-
-.meal-tab-idx {
-  font-size: 9px;
-  color: var(--ztmy-dim);
-  margin-bottom: 2px;
-}
-
 .meal-tab:hover {
   background: var(--ztmy-surface);
   color: var(--ztmy-putty);
+  border-color: var(--ztmy-putty);
 }
-
 .meal-tab.active {
   background: var(--ztmy-putty);
   color: #121116;
+  border-color: var(--ztmy-putty);
+  box-shadow: 2px 2px 0 var(--ztmy-purple);
 }
 
-.meal-tab.active .meal-tab-idx {
-  color: var(--ztmy-purple);
-  font-weight: 700;
-}
-
-/* ── Wheel Stage & Wrapper ──────────────────── */
-.ztmy-wheel-stage {
-  position: relative;
-  background-color: var(--ztmy-panel);
-  border: 1px solid var(--ztmy-border);
-  padding: 10px 12px 14px;
-  box-shadow: 2px 2px 0 #08070b;
-}
-
-.ztmy-stage-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
-  color: var(--ztmy-dim);
-  border-bottom: 1px dashed #2a2733;
-  padding-bottom: 6px;
-  margin-bottom: 6px;
-}
-
-.ztmy-stage-corner {
-  position: absolute;
-  font-family: monospace;
-  font-size: 11px;
-  line-height: 1;
-  color: var(--ztmy-dim);
-  pointer-events: none;
-}
-.ztmy-stage-corner.tl { top: 3px; left: 5px; }
-.ztmy-stage-corner.tr { top: 3px; right: 5px; }
-.ztmy-stage-corner.bl { bottom: 3px; left: 5px; }
-.ztmy-stage-corner.br { bottom: 3px; right: 5px; }
-
+/* ── Wheel wrapper ──────────────────────────── */
 .wheel-wrapper {
   position: relative;
-  width: 300px;
-  height: 300px;
-  max-width: 100%;
-  aspect-ratio: 1 / 1;
+  width: 320px;
+  height: 320px;
 }
-
 .wheel-wrapper canvas {
-  width: 100%;
-  height: 100%;
   border-radius: 50%;
-  border: 1px solid var(--ztmy-putty);
   box-shadow:
     0 0 0 4px #121116,
-    0 0 0 5px var(--ztmy-border),
-    4px 6px 0 #08070b;
+    0 0 0 6px var(--ztmy-border),
+    0 12px 32px rgba(0, 0, 0, 0.65);
   display: block;
 }
 
-/* Crisp mechanical pointer (Zero Neon Glow) */
+/* CSS triangle pointer (Crisp ZTMY Violet + Putty edge, zero neon blur) */
 .wheel-pointer {
   position: absolute;
-  top: -12px;
+  top: -15px;
   left: 50%;
   transform: translateX(-50%);
-  width: 20px;
-  height: 26px;
-  background-color: var(--ztmy-purple);
-  clip-path: polygon(50% 100%, 0 0, 100% 0);
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 24px solid var(--ztmy-purple);
+  filter: drop-shadow(0 2px 0 var(--ztmy-putty)) drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6));
   z-index: 10;
-  filter: drop-shadow(0 2px 0 var(--ztmy-putty)) drop-shadow(2px 3px 0 #000000);
-}
-.wheel-pointer::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
-  background-color: var(--ztmy-putty);
 }
 
-/* ── Utility Bar: Open-only & View items ────── */
+/* ── View items button ──────────────────────── */
+.view-items-btn {
+  padding: 7px 18px;
+  border-radius: 2px;
+  background: var(--ztmy-panel);
+  border: 1px solid var(--ztmy-border);
+  color: var(--ztmy-putty);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #08070b;
+  transition: background-color 0.12s, border-color 0.12s, color 0.12s;
+}
+.view-items-btn:hover {
+  background: var(--ztmy-surface);
+  border-color: var(--ztmy-putty);
+}
+
+/* ── Spin & Lucky buttons ───────────────────── */
+.spin-btn {
+  min-width: 150px;
+  padding: 14px 42px;
+  border-radius: 2px;
+  background: var(--ztmy-purple);
+  color: #ffffff;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  border: 1px solid var(--ztmy-putty);
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--ztmy-putty);
+  transition: transform 0.1s, box-shadow 0.1s, background-color 0.12s;
+  user-select: none;
+}
+.spin-btn:hover:not(:disabled) {
+  background: #7c3aed;
+}
+.spin-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ztmy-putty);
+}
+.spin-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.lucky-btn {
+  padding: 14px 22px;
+  border-radius: 2px;
+  background: var(--ztmy-panel);
+  border: 1px solid var(--ztmy-putty);
+  color: var(--ztmy-putty);
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 3px 3px 0 var(--ztmy-purple);
+  transition: transform 0.1s, box-shadow 0.1s, background-color 0.12s, color 0.12s;
+}
+.lucky-btn:hover:not(:disabled) {
+  background: var(--ztmy-putty);
+  color: #121116;
+}
+.lucky-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--ztmy-purple);
+}
+.lucky-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ── Open-only pill ─────────────────────────── */
 .open-only-pill {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
-  padding: 9px 10px;
-  border-radius: 0;
+  padding: 8px 18px;
+  border-radius: 2px;
   cursor: pointer;
   user-select: none;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 700;
+  min-width: 165px;
+  justify-content: center;
   border: 1px solid var(--ztmy-sage);
   background: #15221c;
   color: var(--ztmy-putty);
@@ -322,7 +239,7 @@ body {
   position: relative;
   width: 28px;
   height: 15px;
-  border-radius: 0;
+  border-radius: 2px;
   background: #121116;
   border: 1px solid var(--ztmy-sage);
   flex-shrink: 0;
@@ -337,7 +254,7 @@ body {
   left: 2px;
   width: 9px;
   height: 9px;
-  border-radius: 0;
+  border-radius: 1px;
   background: var(--ztmy-sage);
   transition: transform 0.15s, background-color 0.15s;
 }
@@ -348,89 +265,11 @@ body {
   transform: translateX(13px);
 }
 
-.view-items-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 9px 10px;
-  border-radius: 0;
-  background: var(--ztmy-panel);
-  border: 1px solid var(--ztmy-border);
-  color: var(--ztmy-putty);
-  font-size: 0.78rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 2px 2px 0 #08070b;
-  transition: background-color 0.12s, border-color 0.12s;
-}
-.view-items-btn:hover {
-  background: var(--ztmy-surface);
-  border-color: var(--ztmy-putty);
-}
-
-/* ── Spin & Lucky Hardware Buttons ──────────── */
-.spin-btn {
-  padding: 13px 24px;
-  border-radius: 0;
-  background: var(--ztmy-purple);
-  color: #ffffff;
-  font-size: 1.2rem;
-  font-weight: 900;
-  letter-spacing: 0.06em;
-  border: 1px solid var(--ztmy-putty);
-  cursor: pointer;
-  box-shadow: 3px 3px 0 var(--ztmy-putty);
-  transition: transform 0.08s, box-shadow 0.08s, background-color 0.12s;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.spin-btn:hover:not(:disabled) {
-  background: #7c3aed;
-}
-.spin-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--ztmy-putty);
-}
-.spin-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.lucky-btn {
-  padding: 10px 16px;
-  border-radius: 0;
-  background: var(--ztmy-panel);
-  border: 1px solid var(--ztmy-putty);
-  color: var(--ztmy-putty);
-  font-size: 0.85rem;
-  font-weight: 800;
-  cursor: pointer;
-  white-space: nowrap;
-  box-shadow: 3px 3px 0 var(--ztmy-border);
-  transition: transform 0.08s, box-shadow 0.08s, background-color 0.12s, color 0.12s;
-}
-.lucky-btn:hover:not(:disabled) {
-  background: var(--ztmy-putty);
-  color: #121116;
-}
-.lucky-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0 var(--ztmy-border);
-}
-.lucky-btn:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* ── Filter panel (ZUTOMAYO MART Spec Box) ──── */
+/* ── Filter panel ───────────────────────────── */
 .filter-panel {
   background: var(--ztmy-panel);
-  border-radius: 0;
+  border-radius: 2px;
+  padding: 13px 15px;
   border: 1px solid var(--ztmy-border);
   box-shadow: 2px 2px 0 #08070b;
 }
@@ -438,34 +277,29 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 11px 14px;
   cursor: pointer;
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--ztmy-putty);
   list-style: none;
-  user-select: none;
 }
 .filter-summary::-webkit-details-marker { display: none; }
 
 .filter-badge {
-  background-color: var(--ztmy-purple);
-  color: #ffffff;
-  font-size: 10px;
-  padding: 0 5px;
-  margin-left: 4px;
+  color: var(--ztmy-purple);
+  font-size: 0.75rem;
 }
 
 .filter-chip {
-  padding: 5px 11px;
-  border-radius: 0;
-  font-size: 0.76rem;
+  padding: 5px 12px;
+  border-radius: 2px;
+  font-size: 0.78rem;
   font-weight: 600;
   background: #121116;
   color: var(--ztmy-muted);
   border: 1px solid var(--ztmy-border);
   cursor: pointer;
-  transition: background-color 0.1s, color 0.1s, border-color 0.1s, box-shadow 0.1s;
+  transition: background-color 0.12s, color 0.12s, border-color 0.12s, box-shadow 0.12s;
 }
 .filter-chip:hover {
   border-color: var(--ztmy-putty);
@@ -479,16 +313,49 @@ body {
   box-shadow: 2px 2px 0 var(--ztmy-purple);
 }
 
-/* ── Share button ───────────────────────────── */
-.ztmy-share-btn {
-  border: 1px solid var(--ztmy-border);
-  background: var(--ztmy-panel);
-  color: var(--ztmy-putty);
-  box-shadow: 2px 2px 0 #08070b;
+/* ── ZUTOMAYO Retro OS Window Frame (Modals) ── */
+.ztmy-window {
+  background-color: var(--ztmy-panel);
+  border: 1px solid var(--ztmy-putty);
+  box-shadow: 4px 4px 0 var(--ztmy-purple), 0 16px 40px rgba(0, 0, 0, 0.7);
+  border-radius: 0;
 }
-.ztmy-share-btn:hover {
-  border-color: var(--ztmy-putty);
-  background: var(--ztmy-surface);
+
+.ztmy-win-bar {
+  background-color: var(--ztmy-purple);
+  color: #ffffff;
+  height: 30px;
+  padding: 0 6px 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--ztmy-putty);
+  user-select: none;
+}
+
+.ztmy-win-bar-title {
+  font-family: 'DotGothic16', monospace, sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+}
+
+.ztmy-win-bar-close {
+  width: 20px;
+  height: 20px;
+  background-color: var(--ztmy-putty);
+  color: #121116;
+  border: 1px solid #121116;
+  font-family: 'DotGothic16', monospace;
+  font-size: 14px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.ztmy-win-bar-close:hover {
+  background-color: var(--ztmy-rust);
+  color: #ffffff;
 }
 
 /* ── Items modal ────────────────────────────── */
@@ -500,11 +367,11 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
-  border-radius: 0;
+  padding: 9px 11px;
+  border-radius: 2px;
   background: #121116;
   border: 1px solid var(--ztmy-border);
-  transition: border-color 0.12s, opacity 0.12s;
+  transition: opacity 0.15s;
   color: var(--ztmy-putty);
 }
 .item-row:has(.item-chk:not(:checked)) {
@@ -512,52 +379,51 @@ body {
   border-style: dashed;
 }
 .item-chk {
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   accent-color: var(--ztmy-purple);
   flex-shrink: 0;
   cursor: pointer;
 }
 
-.ztmy-win-primary-btn {
+.ztmy-primary-action {
   background-color: var(--ztmy-putty);
   color: #121116;
   border: 1px solid #121116;
   box-shadow: 2px 2px 0 var(--ztmy-purple);
-  transition: background-color 0.12s, color 0.12s;
 }
-.ztmy-win-primary-btn:hover {
+.ztmy-primary-action:hover {
   background-color: var(--ztmy-purple);
   color: #ffffff;
 }
 
-/* ── Result modal (zutomayo.net Dialog Window) ── */
+/* ── Result modal ───────────────────────────── */
 .result-slide-up {
   animation: slideUp 0.22s ease-out both;
 }
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 .result-emoji-wrap {
-  width: 60px;
-  height: 60px;
-  border-radius: 0;
+  width: 72px;
+  height: 72px;
+  border-radius: 2px;
   background: #121116;
   border: 1px solid var(--ztmy-putty);
-  box-shadow: 2px 2px 0 var(--ztmy-purple);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 3px 3px 0 var(--ztmy-purple);
 }
 
-/* ── Badges (ZUTOMAYO MART Rectangular Tags) ── */
+/* ── Badges ─────────────────────────────────── */
 .badge-cuisine, .badge-price, .badge-location {
   display: inline-block;
-  padding: 1px 7px;
-  border-radius: 0;
-  font-size: 0.7rem;
+  padding: 2px 10px;
+  border-radius: 2px;
+  font-size: 0.75rem;
   font-weight: 700;
   border: 1px solid;
 }
@@ -565,37 +431,32 @@ body {
 .badge-price    { background: #15221c; color: var(--ztmy-sage);  border-color: #2f664b; }
 .badge-location { background: #1e2029; color: var(--ztmy-putty); border-color: var(--ztmy-slate); }
 
-/* ── Map button ─────────────────────────────── */
+/* ── Map button & Result Buttons ────────────── */
 .map-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  display: block;
   width: 100%;
-  padding: 9px 12px;
-  border-radius: 0;
+  padding: 10px;
+  border-radius: 2px;
   background: #121116;
   border: 1px solid var(--ztmy-putty);
   color: var(--ztmy-putty);
-  font-size: 0.82rem;
+  font-size: 0.875rem;
   font-weight: 700;
   text-align: center;
   text-decoration: none;
-  transition: background-color 0.12s, color 0.12s;
-  margin-top: 12px;
+  transition: background-color 0.15s, color 0.15s;
+  margin-top: 14px;
 }
 .map-btn:hover {
   background: var(--ztmy-putty);
   color: #121116;
 }
 
-/* ── ZUTOMAYO YES / NO Modal Buttons ────────── */
 .ztmy-btn-no {
-  background: #121116;
+  border-radius: 2px;
   border: 1px solid var(--ztmy-rust);
   color: var(--ztmy-rust);
-  box-shadow: 2px 2px 0 #08070b;
-  transition: background-color 0.12s, color 0.12s;
+  background: #121116;
 }
 .ztmy-btn-no:hover {
   background: var(--ztmy-rust);
@@ -603,17 +464,14 @@ body {
 }
 
 .ztmy-btn-yes {
-  background: var(--ztmy-purple);
+  border-radius: 2px;
   border: 1px solid var(--ztmy-putty);
+  background: var(--ztmy-purple);
   color: #ffffff;
   box-shadow: 2px 2px 0 var(--ztmy-putty);
-  transition: background-color 0.12s, transform 0.08s;
 }
 .ztmy-btn-yes:hover {
   background: #7c3aed;
-}
-.ztmy-btn-yes:active {
-  transform: translate(1px, 1px);
 }
 
 /* ── Toast ──────────────────────────────────── */
@@ -635,7 +493,7 @@ body {
   to   { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-/* ── Falling particles (Subtle Matte Glyphs, Zero Glow) ── */
+/* ── Falling particles ──────────────────────── */
 .falling-pineapple {
   position: fixed;
   top: -40px;
@@ -656,7 +514,7 @@ body {
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* ── Ripple (Crisp subtle press feedback) ───── */
+/* ── Ripple ─────────────────────────────────── */
 .ripple-effect {
   position: absolute;
   border-radius: 50%;
@@ -689,26 +547,26 @@ body {
   100% { transform: translate(calc(-50% + var(--tx,0px)), calc(-50% + var(--ty,0px))) scale(0); opacity: 0; }
 }
 
-/* ── Wheel flash (Crisp border invert, no light pollution) ── */
+/* ── Wheel flash ────────────────────────────── */
 @keyframes wheel-flash-anim {
   0%, 100% {
     box-shadow:
       0 0 0 4px #121116,
-      0 0 0 5px var(--ztmy-border),
-      4px 6px 0 #08070b;
+      0 0 0 6px var(--ztmy-border),
+      0 12px 32px rgba(0, 0, 0, 0.65);
   }
   50% {
     box-shadow:
       0 0 0 4px #121116,
-      0 0 0 6px var(--ztmy-purple),
-      4px 6px 0 var(--ztmy-putty);
+      0 0 0 7px var(--ztmy-purple),
+      0 12px 32px rgba(0, 0, 0, 0.65);
   }
 }
 .wheel-wrapper.wheel-flash canvas {
   animation: wheel-flash-anim 0.5s ease-out;
 }
 
-/* ── Screen flash (Disabled glare for eye comfort) ── */
+/* ── Screen flash ───────────────────────────── */
 #screen-flash {
   position: fixed;
   inset: 0;
@@ -734,7 +592,7 @@ body {
   font-size: 0.62rem;
   font-weight: 700;
   padding: 0 5px;
-  border-radius: 0;
+  border-radius: 2px;
   background: #15221c;
   color: var(--ztmy-sage);
   border: 1px solid #2f664b;
@@ -745,7 +603,7 @@ body {
   font-size: 0.62rem;
   font-weight: 700;
   padding: 0 5px;
-  border-radius: 0;
+  border-radius: 2px;
   background: #261515;
   color: var(--ztmy-rust);
   border: 1px solid var(--ztmy-rust);
