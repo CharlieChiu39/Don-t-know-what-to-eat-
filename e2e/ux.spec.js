@@ -194,8 +194,10 @@ test.describe('手機版面與轉動', () => {
     test.use({ reducedMotion: 'no-preference' });
     test('轉動中可以略過動畫，連續再轉時動畫較短', async ({ page }) => {
       await page.clock.setFixedTime(TUESDAY_NOON);
-      await page.addInitScript(() => sessionStorage.setItem('food_splash_seen', '1'));
       await page.goto('/');
+      // 開場每次載入都會播；按任意鍵略過（不用點擊，避免與自動結束的淡出搶時間）
+      await page.keyboard.press('Escape');
+      await expect(page.locator('#splash')).toBeHidden();
       await page.locator('#spin-btn').click();
       await page.waitForTimeout(300);
       const skipAt = Date.now();

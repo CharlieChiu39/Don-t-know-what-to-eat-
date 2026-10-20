@@ -19,11 +19,11 @@ async function capture({ name, path, width, height, scale = 2, prepare }) {
     locale: 'zh-TW',
     timezoneId: 'Asia/Taipei',
   });
-  // 略過開場畫面
-  await context.addInitScript(() => sessionStorage.setItem('food_splash_seen', '1'));
   const page = await context.newPage();
   await page.clock.setFixedTime(NOON);
   await page.goto(BASE + path);
+  // 略過開場畫面（每次載入都會播）
+  await page.evaluate(() => document.getElementById('splash')?.setAttribute('hidden', ''));
   await page.locator('#count').filter({ hasNotText: /^0$/ }).waitFor();
   await page.evaluate(() => document.fonts.ready);
   await prepare?.(page);

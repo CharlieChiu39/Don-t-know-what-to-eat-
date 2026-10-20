@@ -112,7 +112,6 @@ const KEYS = {
   skipped: 'food_skipped',
   recent: 'food_recent',
   weighting: 'food_weighting',
-  splash: 'food_splash_seen',
 };
 const REPO = 'https://github.com/CharlieChiu39/Don-t-know-what-to-eat-';
 const storage = safeLocalStorage();
@@ -791,14 +790,7 @@ function wireDialogs() {
 
 // ── Splash ─────────────────────────────────────────────────────────
 function showSplash() {
-  let seen = false;
-  try {
-    seen = sessionStorage.getItem(KEYS.splash) === '1';
-    sessionStorage.setItem(KEYS.splash, '1');
-  } catch {
-    // 無 sessionStorage 時每次都顯示也無妨
-  }
-  if (seen || prefersReducedMotion() || new URLSearchParams(location.search).has('result')) return;
+  if (prefersReducedMotion() || new URLSearchParams(location.search).has('result')) return;
 
   ui.splash.hidden = false;
   const dismiss = () => {
