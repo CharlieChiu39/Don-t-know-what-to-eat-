@@ -1,95 +1,39 @@
-# Food Roulette — 中正大學吃什麼？
+# 中正大學吃什麼？— 開發指引
 
-## Project Overview
-靜態網頁應用，幫助中正大學學生用轉盤隨機決定吃什麼。無 build tools、無 Node.js，直接開 `index.html` 即可使用。
+靜態網站：原生 ES Modules 加上原生 CSS，沒有框架，也沒有建置步驟。GitHub Pages 直接發布 `main` 的根目錄。
+`devDependencies`（TypeScript、Playwright、axe）只用於檢查與測試，**不可以加入任何執行期依賴或 CDN script**。
 
-## Tech Stack
-- Vanilla HTML5 / CSS3 / JavaScript (ES6+)
-- Tailwind CSS via CDN（含自訂色系擴充：neon / cyber / void）
-- Canvas API（轉盤動畫）
-- Google Fonts: Noto Sans TC + Orbitron
-- Ably Realtime SDK（多人房間功能，尚未整合）
+## 架構
 
-## Design Style
-**ZUTOMAYO 暗色賽博龐克主題**
-- 背景：深黑 `#0a0a0f` + 霓虹藍/紫光暈
-- 主色：霓虹藍 `#00bbff`、電紫 `#9b5de5`
-- 功能色：霓虹綠 `#00ff88`（營業中）、軟紅 `#ff6b6b`（封鎖/休息）
-- 卡片/面板底色：`#12121a`，邊框：`#1e1e2e`
-- 標題：CSS Glitch 動畫（`::before/::after` + `clip-path` + `attr(data-text)`）
-- 按鈕：Neon Glow（多層 `box-shadow` 模擬霓虹燈管）
-- 轉盤：深色底霓虹系扇形（藍/紫交錯），霓虹藍光環外框
-- 粒子特效：幾何符號（✦ ◆ ✧ ◇ ★ ⬡ ⬢）+ 隨機霓虹色 + `textShadow` 發光
+- `js/core/`：純函式，不碰 DOM，時間一律可注入。商業邏輯只放在這裡。
+  - `hours.js` 是營業判斷的唯一來源，判斷順序為 `serviceAlerts` → `openHours`＋`specialHours` → `legacyOpenHours`（推估）
+  - `catalog.js` 是標籤、餐別、價位、區域的唯一來源，UI 按鈕與網址驗證都從這裡讀
+- `js/ui/`：Canvas 轉盤（`wheel.js`）與特效（`effects.js`）
+- `js/app.js`：狀態、事件、渲染。用 `textContent`／`h()` 建立 DOM，**不使用 innerHTML**
+- `js/types.d.ts`：共用型別；JS 檔以 `// @ts-check` 搭配 JSDoc 引用
+- `sw.js`：離線快取。新增前端檔案時，要同步更新 `SHELL` 清單與 `VERSION`
 
-## File Structure
-```
-├── index.html           # 主 UI — layout, modals, HTML 結構
-├── css/style.css        # 自訂樣式、動畫、元件 class（ZUTOMAYO 暗色主題）
-├── js/app.js            # 核心邏輯 — state, 篩選, 事件, UI, 特效
-├── js/core.js           # FoodCore — 營業狀態判斷（Asia/Taipei、specialHours、serviceAlerts）
-├── js/wheel.js          # Wheel class — Canvas 轉盤動畫
-├── js/room.js           # RoomManager class — Ably 多人房間（未整合）
-├── data/restaurants.js  # window.RESTAURANTS 陣列 — 餐廳資料庫（92 間）
-├── assets/assetsbg.jpg  # Loading 畫面背景圖
-├── tests/core.test.cjs  # core.js 單元測試（node --test）
-├── docs/                # 餐廳查核紀錄與研究筆記
-├── robots.txt           # SEO
-├── sitemap.xml          # SEO
-└── CLAUDE.md
+## 規則
+
+- 時間：一律以台北時間（固定 UTC+8）判斷。資料不明時回傳 unknown，不可以把推估寫成已查證。
+- 特效與動畫：必須尊重 `prefers-reduced-motion`；分頁隱藏時要暫停。
+- 無障礙：對話框用原生 `<dialog>`；文字對比要達 WCAG AA；狀態不可以只靠顏色表達。
+- 樣式：ZUTOMAYO × ZUTOMAYO MART 霧面復古視窗主題。用霧面色、直角（2px）、硬邊位移陰影，對話框做成帶紫色標題列的視窗；**不使用**霓虹光暈、閃屏或點擊粒子。色彩 token 集中在 `css/app.css` 的 `:root`。不使用 CSS nesting（照顧 iOS 16）。
+- 字型：內文一律用系統字型。標題（Noto Serif TC）與像素字（DotGothic16，`.f-px`）只載入 `index.html` 字型網址裡 `text=` 列出的字；新增這兩種字型的文字時，要把新字補進 `text=`。
+- 磚紅文字用 `--rust-ink`，`--rust` 只用於邊框與色塊（原色在深底上對比不足）。
+- 撰寫慣例：UI 文字與註解用繁體中文；JS 用 camelCase、單引號、分號。
+- 儲存：localStorage 的 key 有 `food_blocked`、`food_recent`、`food_weighting`。讀取時一律經過 `sanitizeIds` 驗證，寫入失敗也不能讓頁面壞掉。
+
+## 資料
+
+- `data/restaurants.json`：新增餐廳時 ID 取最大值加 1，`tags` 必須是 `catalog.js` 裡定義的標籤。
+- 有來源的時段放 `openHours`，並在 `verification` 附上 https 來源與查閱日；沒有來源的放 `legacyOpenHours`。
+- 不要用外送平台或聚合地圖的時段當作已查證資料。查核過程記錄在 `docs/restaurant-audit.md`。
+
+## 完成前
+
+```sh
+npm run check   # typecheck + 單元測試（含資料檢查）+ Playwright E2E（含 axe、離線）
 ```
 
-**Script 載入順序** (in index.html): `restaurants.js` → `core.js` → `wheel.js` → `app.js`
-
-## Restaurant Data Schema
-每筆 `window.RESTAURANTS` 資料格式：
-```js
-{
-  id: Number,            // 唯一、從 1 開始
-  name: String,          // 店名（繁體中文）
-  cuisine: String,       // 台式|日式|韓式|越式|泰式|西式|亞洲|速食|火鍋|飲料|甜點|咖啡|素食|清真|便利商店
-  meals: String[],       // ["breakfast","lunch","dinner","latenight"]
-  price_range: String,   // "cheap"(<80)|"medium"(80-150)|"expensive"(>150)|"unknown"
-  location: String,      // "校內"|"神農路"|"裕農路"
-  note: String,          // 簡短描述
-  openHours: Object,     // { mon:"11:00-21:00", tue:..., ... } 或 null/"休息"/"24小時營業"
-  // 選填：legacyOpenHours（未查證舊時間，不參與判斷）、verification、hoursNote、
-  // specialHours（{ "YYYY-MM-DD": "時段"|"休息" }）、specialHoursSource、
-  // serviceAlerts（[{ from, to, note, source }]）、address、phone、priceNote
-}
-```
-
-## Architecture
-- **State**: `app.js` 中的 `state` 物件（meal, price, cuisine, blockedIds, openOnly, lastResult）
-- **Persistence**: localStorage key `food_blocked`
-- **DOM**: `const $ = id => document.getElementById(id)` helper
-- **Filtering**: `getFiltered()` 結合餐別/價位/料理/封鎖/營業狀態（封鎖清單使用 `Set` 查詢）
-- **營業狀態**: `isOpenNow()` / `getTodayHoursText()` 包裝 `FoodCore.openingStatus()`；狀態 unknown 仍視為營業中
-- **Wheel**: 純裝飾性動畫轉盤，從所有篩選結果中隨機選取
-- **Particles**: 全域計數器控制上限（落下粒子 MAX 15、點擊粒子 MAX 60），防止 DOM 爆炸
-
-## Tailwind 擴充色系
-在 `index.html` 的 `<script>` 中定義：
-```js
-tailwind.config = {
-  theme: { extend: { colors: {
-    neon:  { DEFAULT: '#00bbff', dim: '#0077aa' },
-    cyber: { DEFAULT: '#9b5de5', dark: '#6a35b0' },
-    void:  { DEFAULT: '#0a0a0f', card: '#12121a', border: '#1e1e2e' },
-  }}}
-}
-```
-
-## Coding Conventions
-- UI 文字與註解：繁體中文
-- 變數/函式名：英文 camelCase
-- CSS class：kebab-case
-- 一致使用分號、單引號
-- Tailwind 用於 HTML layout；自訂元件樣式在 style.css
-- 暗色主題的文字顏色：優先用 inline `style` 覆蓋 Tailwind 淺色 class
-
-## Development
-- 啟動：VS Code Live Server（port 5500）或任意靜態伺服器
-- 測試：`node --test tests/core.test.cjs`、`node --check js/app.js`，再加上手動瀏覽器測試
-- 新增餐廳：使用 `/add-restaurant` skill 或手動加入 `data/restaurants.js`
-- 新增料理類型：同時更新 `CUISINE_EMOJI`（app.js）和 `#cuisine-chips`（index.html）
-- 修改配色：主要改 `css/style.css`；轉盤色盤在 `js/wheel.js` 的 `this.colors`；特效顏色在 `js/app.js` 的 `NEON_COLORS` / confetti colors
+UI 有改動時，執行 `node scripts/screenshots.mjs`（需先 `npm run dev`）重新產生 README 截圖，並親自看過手機與桌面兩種版面。

@@ -1,36 +1,162 @@
-# 中正大學吃什麼？— Food Roulette
+# 🎡 中正大學吃什麼？ — CCU Food Roulette
 
-ZUTOMAYO 暗色賽博龐克風格的轉盤選餐網站，收錄 92 筆中正大學周邊餐廳與餐飲據點。原生 HTML、CSS、JavaScript，無 build。
+[![CI](https://github.com/CharlieChiu39/Don-t-know-what-to-eat-/actions/workflows/ci.yml/badge.svg)](https://github.com/CharlieChiu39/Don-t-know-what-to-eat-/actions/workflows/ci.yml)
 
-## 使用
+**[▶ 線上試用](https://charliechiu39.github.io/Don-t-know-what-to-eat-/)**　·　ZUTOMAYO × ZUTOMAYO MART 霧面復古視窗風格的中正大學選餐轉盤
 
-開啟 `index.html`，或在此目錄啟動任意靜態伺服器：
+收錄校內、神農路、裕農路 **92 間**餐廳。用台北時間即時判斷哪些店「現在」真的有開，並標示資料可信度。可以依「想吃什麼」篩選，也能裝到手機桌面，沒有網路時照樣能用。
 
-```sh
-python -m http.server 5500
-```
+| 手機首頁 | 抽選結果 | 篩選 |
+| :---: | :---: | :---: |
+| <img src="docs/screenshots/mobile-home.png" width="240" alt="手機首頁：轉盤上顯示 15 間校內午餐選項"> | <img src="docs/screenshots/mobile-result.png" width="240" alt="結果卡：營業中、還有 1 小時 50 分、資料來源連結"> | <img src="docs/screenshots/mobile-filters.png" width="240" alt="篩選面板：標籤旁顯示即時數量"> |
 
-瀏覽 `http://localhost:5500/`。可沿用 GitHub Pages 的根目錄部署。
+<img src="docs/screenshots/desktop.png" alt="桌面版雙欄配置" width="100%">
+
+---
+
+## 解決什麼問題
+
+中正大學離市區遠，選擇有限，「今天吃什麼」每天都要想。Google 地圖跟外送平台的營業時間又常常過期，走到店門口才發現沒開是最常見的踩雷。
+
+所以這個專案的重點不是轉盤本身，而是**轉出來的店現在走過去能不能吃到**：
+
+- **營業狀態分三層**：服務公告（例如校內停水停電）優先，其次是有來源的時刻表與單日調整（臨時店休），最後才用未查證的舊資料推估，並清楚標成「可能營業」。
+- **快打烊的店不放進轉盤**：剩不到 15 分鐘就不列入候選，30 分鐘內會提示「即將打烊」，休息中的店則顯示下次開門時間（例如「明天 11:00」）。
+- **可信度透明**：結果卡附上營業時間的來源連結與查閱日期，未查證的店直接寫明。目前 27 間有來源，[查核紀錄](docs/restaurant-audit.md)逐店記錄。
 
 ## 功能
 
-- 霓虹轉盤隨機選餐，餐別、價位、料理、營業中篩選。
-- 不想吃的店可封鎖（存於本機 `food_blocked`），`?result=ID` 分享結果。
-- Glitch 標題、霓虹按鈕、粒子與中獎特效。
+| | |
+| --- | --- |
+| 🕐 即時營業狀態 | 支援跨夜營業（18:00–02:00）、24 小時、分段時段、單日臨時店休、服務公告；每分鐘自動更新 |
+| 🍜 想吃什麼 | 17 個標籤（便當、麵、滷味、早午餐…），可複選；每個標籤旁即時顯示「選了會有幾間」 |
+| 🌅 依時段自動選餐別 | 早上開就是早餐、晚上 9 點後是宵夜；條件太嚴時提供「一鍵放寬」並說明會放寬什麼 |
+| ⚖️ 降低最近吃過的機率（可選） | 預設關閉。開啟後最近吃過的店抽中機率較低，轉盤上的扇形也會跟著變窄 |
+| 🔗 分享 | 網址會帶上篩選條件與抽選結果，傳給朋友就是同一個畫面；支援 Web Share API |
+| 📱 PWA | 可加到主畫面；第一次載入後，離線也能開啟與轉動 |
+| ♿ 無障礙 | 原生 `<dialog>`、完整鍵盤操作、讀屏播報結果、`prefers-reduced-motion`、WCAG AA 對比 |
 
-## 資料
+## 技術重點
 
-2026-09 已核對校方餐飲目錄及部分店家網站，詳見 [逐店查核紀錄](docs/restaurant-audit.md)。查閱日不等於店家更新日，也不代表實地確認。
+### 零執行期依賴、零建置步驟
 
-營業狀態由 `js/core.js` 依 `Asia/Taipei` 時區判斷。未確認的舊時間移至 `legacyOpenHours`，不參與判斷；`specialHours` 支援日期限定調整，`serviceAlerts` 支援臨時公告。時間不明的店家仍會出現在「營業中」篩選內，出發前請向店家確認。
+網站本身是原生 ES Modules 加上原生 CSS（cascade layers、`:has()`、`color-mix()`），沒有框架、打包工具或 CDN 執行期依賴。直接把 repo 根目錄部署到 GitHub Pages 就行。
 
-`js/room.js` 是未整合的多人房間草稿，頁面不載入它。
+開發工具（TypeScript、Playwright、axe）只在 `devDependencies`，不會出現在使用者的瀏覽器裡。
 
-## 驗證
+### 不需要編譯的型別安全
 
-需要 Node.js 18 以上：
+所有 JS 都用 JSDoc 標型別，由 `tsc --checkJs --strict` 檢查。共用型別集中在 [`js/types.d.ts`](js/types.d.ts)，service worker 另外用 `tsconfig.sw.json` 搭配 WebWorker lib 檢查。
+
+### 架構：純函式核心、薄 UI 層
+
+```mermaid
+flowchart LR
+  data[(data/restaurants.json)] --> app
+  subgraph core["js/core — 純函式，Node 可直接測試"]
+    hours[hours.js<br/>營業判斷]
+    filters[filters.js<br/>篩選]
+    picker[picker.js<br/>加權抽選]
+    url[url-state.js<br/>網址 ⇄ 條件]
+    format[format.js<br/>狀態文字]
+    storage[storage.js<br/>安全儲存]
+  end
+  subgraph ui["js/ui — 只管畫面"]
+    wheel[wheel.js<br/>Canvas 轉盤]
+    effects[effects.js<br/>特效]
+  end
+  app[app.js<br/>狀態與事件] --> core
+  app --> ui
+  sw[sw.js<br/>離線快取] -.-> app
+```
+
+所有商業邏輯都在 `js/core/`，不碰 DOM、時間可注入，所以單元測試不需要瀏覽器。`app.js` 只負責把狀態畫到畫面上。
+
+### 測試
+
+| 層級 | 工具 | 內容 |
+| --- | --- | --- |
+| 單元測試 | `node:test`（26 項） | 營業判斷邊界（開始包含、結束排除、跨夜、未知日）、篩選、加權抽選的分佈、網址解析容錯、儲存失敗降級 |
+| 資料檢查 | `node:test` | ID 唯一、列舉值合法、所有時刻表可解析、已查證必附 https 來源。新增餐廳時由 CI 把關 |
+| E2E | Playwright（11 情境 × 手機／桌面） | 抽選流程、分享連結、封鎖與恢復、一鍵放寬、鍵盤操作、**離線可用**、無 console 錯誤 |
+| 無障礙 | axe-core | 主畫面與結果對話框 0 違規 |
+
+E2E 用 `page.clock.setFixedTime` 把時間固定在學期中的週二中午，營業狀態每次都一樣，不會因為跑測試的時間不同而失敗。
+
+### 效能
+
+Lighthouse（行動裝置模擬、本機未壓縮），同一套視覺設計改版前後：
+
+| | 改版前 | 改版後 |
+| --- | :---: | :---: |
+| Performance | 58 | **92** |
+| Accessibility | 91 | **100** |
+| Best Practices / SEO | 100 / 100 | **100 / 100** |
+| First Contentful Paint | 7.8 s | **2.3 s** |
+| Total Blocking Time / CLS | 0 ms / 0.005 | **0 ms / 0.002** |
+
+主要做了這幾件事：
+
+- 移除 Tailwind Play CDN（執行期才編譯 CSS）
+- 內文改用系統字型。Noto Sans TC 的 Google Fonts 樣式表含數百個 `unicode-range` 區塊（Lighthouse 判定約 135 KiB 未使用），而且會擋住首次繪製
+- 標題的 Noto Serif TC 與像素字 DotGothic16 用 `text=` 參數只載入畫面上實際出現的字，並且非同步載入
+- 用 `modulepreload` 攤平 ES module 的瀑布式載入
+- 預先保留由 JS 產生的元素高度，避免版面位移
+- 轉盤用 `ResizeObserver` 搭配 `devicePixelRatio` 繪製，Retina 螢幕不會糊，初始化也不會強制同步排版
+
+程式碼（JS 加 CSS 加資料）gzip 後約 45 KB。
+
+## 設計決策與取捨
+
+- **為什麼不用 React／Vue？** 這是一個單頁、資料不到 100 筆的工具，互動集中在一個轉盤和幾組篩選。用框架帶來的建置流程和 bundle 成本，換不到對等的好處；把邏輯拆成可測試的純函式模組，才是真正降低複雜度的地方。
+- **台北時間固定用 UTC+8，不依賴 `Intl` 或使用者時區。** 台灣沒有夏令時間，這樣算最簡單、可以預測，而且出國交換的學生打開網頁也會看到正確的營業狀態。
+- **資料不明時寧可說「不知道」。** 前一天的時段未知時，就無法排除跨夜營業，所以不判定為休息。舊資料只能推估成「可能營業」，標示和顏色都跟已查證的分開。
+- **Service worker 採 network-first（3 秒逾時才改用快取）。** 部署後使用者馬上拿到新版；只有校園網路不穩時才退回快取。
+- **「降低最近吃過」預設關閉。** 改變抽選機率屬於使用者的選擇，不該偷偷替人決定。
+- **資料存在 JSON，而不是 JS 全域變數。** 方便用腳本和測試檢查，也能被 service worker 快取。
+
+## 開發
+
+需要 Node.js 22 以上。
 
 ```sh
-node --test tests/core.test.cjs
-node --check js/app.js
+npm install
+npm run dev          # http://localhost:5173
+npm test             # 單元測試與資料檢查
+npm run typecheck    # tsc 檢查 JSDoc 型別
+npm run test:e2e     # Playwright（本機使用已安裝的 Chrome）
+npm run check        # 以上全部
+node scripts/screenshots.mjs   # 重新產生 README 截圖與 og-image（需先 npm run dev）
 ```
+
+```
+├── index.html
+├── css/app.css            # 原生 CSS，cascade layers
+├── data/restaurants.json  # 92 間餐廳與查證資訊
+├── js/
+│   ├── app.js             # 進入點：狀態、事件、渲染
+│   ├── types.d.ts         # 共用型別
+│   ├── core/              # 純函式（營業判斷、篩選、抽選、網址、儲存）
+│   └── ui/                # Canvas 轉盤、特效
+├── sw.js                  # 離線快取
+├── tests/                 # node:test 單元與資料檢查
+├── e2e/                   # Playwright 端對端測試
+├── scripts/               # 開發伺服器、截圖
+└── docs/                  # 查核紀錄、研究筆記、截圖
+```
+
+### 新增或修改餐廳
+
+編輯 `data/restaurants.json`，欄位定義在 [`js/types.d.ts`](js/types.d.ts)，標籤清單在 [`js/core/catalog.js`](js/core/catalog.js)。
+
+有查證來源的營業時間放 `openHours`，並在 `verification` 附上 https 來源與查閱日期；沒有來源的時間放 `legacyOpenHours`。改完執行 `npm test`，資料檢查會擋下格式錯誤。
+
+## 已知限制
+
+- 92 間中有 65 間的營業時間仍待查證，目前以舊資料推估並標示。
+- 寒暑假與國定假日時段還沒有接上校曆，這段期間請以店家公告為準。
+- `experiments/room.js` 是早期的多人房間草稿，頁面沒有載入。
+
+## 授權與資料
+
+程式碼由 CharlieChiu39 開發。餐廳資料來自中正大學飲食資訊與各店家的公開頁面，查閱日期不等於店家更新日期，出發前請以店家公告為準。
