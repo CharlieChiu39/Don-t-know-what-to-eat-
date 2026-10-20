@@ -1,5 +1,5 @@
 /**
- * Wheel.js — Canvas spinning wheel
+ * Wheel.js — Canvas spinning wheel (ZUTOMAYO Vinyl / Mechanical Turntable Style)
  * Usage:
  *   const wheel = new Wheel(canvas, items)
  *   wheel.spin(targetIndex, onDone)   // targetIndex = which item to land on
@@ -14,11 +14,11 @@ class Wheel {
     this.animId  = null;
     this.spinning = false;
 
-    // Colour palette (dark neon, ZUTOMAYO-style)
+    // Matte ZUTOMAYO / MART palette (charcoal, muted plum, slate, deep violet — zero neon glare)
     this.colors = [
-      '#003d5c','#1a0533','#00334d','#2d0050','#001f3d',
-      '#1f0041','#002233','#350060','#00293d','#280048',
-      '#004466','#1a0040','#003348','#220044','#001a2e',
+      '#17161e', '#261b3a', '#1e202b', '#32204d',
+      '#1b1922', '#292736', '#231934', '#21242e',
+      '#191820', '#2f1d47', '#1c1d26', '#282338',
     ];
   }
 
@@ -34,16 +34,21 @@ class Wheel {
     const cx = canvas.width  / 2;
     const cy = canvas.height / 2;
     const r  = cx - 4;
+    const innerRim = r - 11;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (!items || items.length === 0) {
-      ctx.fillStyle = '#12121a';
+      ctx.fillStyle = '#14131a';
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = 'rgba(0,187,255,0.4)';
-      ctx.font = 'bold 14px sans-serif';
+      ctx.strokeStyle = '#353240';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      ctx.fillStyle = '#9e9aa8';
+      ctx.font = '700 13px "Noto Sans TC", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('沒有符合條件的店家', cx, cy);
@@ -52,47 +57,111 @@ class Wheel {
 
     const sliceAngle = (Math.PI * 2) / items.length;
 
-    items.forEach((_item, i) => {
+    // 1. Sectors
+    items.forEach((item, i) => {
       const start = angle + i * sliceAngle - Math.PI / 2;
       const end   = start + sliceAngle;
 
-      // Sector
       ctx.beginPath();
       ctx.moveTo(cx, cy);
-      ctx.arc(cx, cy, r, start, end);
+      ctx.arc(cx, cy, innerRim, start, end);
       ctx.closePath();
       ctx.fillStyle = colors[i % colors.length];
       ctx.fill();
-      ctx.strokeStyle = 'rgba(0,0,0,0.4)';
-      ctx.lineWidth = 1.5;
+
+      ctx.strokeStyle = 'rgba(219, 218, 210, 0.16)';
+      ctx.lineWidth = 1;
       ctx.stroke();
 
+      // Radial label when item count is readable (<= 28)
+      if (items.length <= 28 && item && item.name) {
+        const mid = start + sliceAngle / 2;
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(mid);
+        ctx.textAlign = 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = i % 2 === 0 ? '#DBDAD2' : '#c5b8d9';
+        const fontSize = items.length <= 12 ? 11 : items.length <= 20 ? 10 : 9;
+        ctx.font = `600 ${fontSize}px "Noto Sans TC", sans-serif`;
+        const label = item.name.length > 7 ? item.name.slice(0, 6) + '…' : item.name;
+        ctx.fillText(label, innerRim - 10, 0);
+        ctx.restore();
+      }
     });
 
-    // Center glow ring
+    // 2. Subtle vinyl groove rings (tactile mechanical texture)
+    [0.76, 0.58, 0.42].forEach(ratio => {
+      ctx.beginPath();
+      ctx.arc(cx, cy, innerRim * ratio, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(219, 218, 210, 0.06)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+
+    // 3. Outer mechanical strobe / gauge bezel
     ctx.beginPath();
-    ctx.arc(cx, cy, 32, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(0,187,255,0.15)';
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.arc(cx, cy, innerRim, 0, Math.PI * 2, true);
+    ctx.fillStyle = '#121116';
     ctx.fill();
 
-    // Center circle
     ctx.beginPath();
-    ctx.arc(cx, cy, 26, 0, Math.PI * 2);
-    ctx.fillStyle = '#0a0a0f';
-    ctx.fill();
-    ctx.strokeStyle = '#00bbff';
-    ctx.lineWidth = 3;
+    ctx.arc(cx, cy, innerRim, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(219, 218, 210, 0.45)';
+    ctx.lineWidth = 1;
     ctx.stroke();
 
-    // Center text: item count or spin icon
-    ctx.fillStyle = '#00bbff';
+    // Outer tick marks (rotates with wheel)
+    const tickCount = Math.min(Math.max(items.length, 24), 72);
+    const tickStep  = (Math.PI * 2) / tickCount;
+    for (let t = 0; t < tickCount; t++) {
+      const a = angle + t * tickStep - Math.PI / 2;
+      const isMajor = t % 4 === 0;
+      const rIn = innerRim + 2;
+      const rOut = isMajor ? r - 2 : r - 4.5;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(a) * rIn,  cy + Math.sin(a) * rIn);
+      ctx.lineTo(cx + Math.cos(a) * rOut, cy + Math.sin(a) * rOut);
+      ctx.strokeStyle = isMajor ? '#DBDAD2' : '#6F2ADD';
+      ctx.lineWidth = isMajor ? 1.5 : 1;
+      ctx.stroke();
+    }
+
+    // 4. Center Turntable Label / ZUTOMAYO Hub
+    ctx.beginPath();
+    ctx.arc(cx, cy, 38, 0, Math.PI * 2);
+    ctx.fillStyle = '#191820';
+    ctx.fill();
+    ctx.strokeStyle = '#DBDAD2';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 32, 0, Math.PI * 2);
+    ctx.fillStyle = '#6F2ADD';
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, 25, 0, Math.PI * 2);
+    ctx.fillStyle = '#121116';
+    ctx.fill();
+    ctx.strokeStyle = '#DBDAD2';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Center text: item count
+    ctx.fillStyle = '#DBDAD2';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     if (items.length > 0) {
-      ctx.font = 'bold 16px sans-serif';
-      ctx.fillText(items.length + '間', cx, cy);
+      ctx.font = '900 13px "DotGothic16", "Noto Sans TC", monospace';
+      ctx.fillText(items.length + '間', cx, cy - 3);
+      ctx.fillStyle = '#9e9aa8';
+      ctx.font = '700 8px "DotGothic16", monospace';
+      ctx.fillText('POOL', cx, cy + 9);
     } else {
-      ctx.font = 'bold 24px sans-serif';
+      ctx.font = 'bold 20px monospace';
       ctx.fillText('?', cx, cy);
     }
   }
@@ -109,17 +178,12 @@ class Wheel {
     const items      = this.items;
     const sliceAngle = (Math.PI * 2) / items.length;
 
-    // We want the TARGET slice centre to end up at the top (angle = 0 → top of canvas).
-    // Current rotation is `this.angle`. We need to find how much more to rotate.
-    // Pointer sits at top = -Math.PI/2 in canvas coords; but our draw() already offsets by -Math.PI/2.
-    // So target angle offset = -(targetIndex * sliceAngle + sliceAngle/2)
     const targetOffset = -(targetIndex * sliceAngle + sliceAngle / 2);
-    // Full rotations (5–8) plus the offset
     const extraSpins   = (5 + Math.floor(Math.random() * 4)) * Math.PI * 2;
     const startAngle   = this.angle;
-    const endAngle     = targetOffset + extraSpins;  // always positive spin
+    const endAngle     = targetOffset + extraSpins;
 
-    const duration = 4000 + Math.random() * 1000;   // 4-5 seconds
+    const duration = 3600 + Math.random() * 800;
     let   startTime = null;
 
     const easeOut = t => 1 - Math.pow(1 - t, 4);

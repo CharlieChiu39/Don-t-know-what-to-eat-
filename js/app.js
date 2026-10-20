@@ -1,5 +1,5 @@
 /* ================================================================
-   app.js — Main orchestrator
+   app.js — Main orchestrator (ZUTOMAYO × ZUTOMAYO MART Matte Edition)
    ================================================================ */
 
 // ── State ────────────────────────────────────────────────────────
@@ -96,14 +96,14 @@ function updateWheel() {
     const allBlocked = state.blockedIds.length > 0 &&
       state.meal === 'all' && state.price === 'all' && state.cuisine === 'all';
     noResults.innerHTML = allBlocked
-      ? '<p class="text-4xl mb-2">🔒</p><p>所有餐廳都被封鎖了！</p><button onclick="document.getElementById(\'clear-blocked-btn\').click()" class="mt-2 text-xs underline" style="color:#00bbff;">點這裡清除封鎖清單</button>'
-      : '<p class="text-4xl mb-2">😵</p><p>沒有符合條件的店家，試著放寬篩選條件！</p>';
+      ? '<p class="f-px text-xs text-[#cb5149] mb-1">[ ALL BLOCKED ]</p><p>所有餐廳都被封鎖了！</p><button onclick="document.getElementById(\'clear-blocked-btn\').click()" class="mt-2 f-px text-xs underline text-[#DBDAD2]">點這裡清除封鎖清單</button>'
+      : '<p class="f-px text-xs text-[#cb5149] mb-1">[ ERROR // NO_MATCH ]</p><p>沒有符合條件的店家，試著放寬篩選條件！</p>';
   } else {
     noResults.classList.add('hidden');
   }
   spinBtn.disabled = filtered.length === 0;
   // 只剩 1 間時提示
-  viewItemsBtn.style.color = filtered.length === 1 ? '#00ff88' : '';
+  viewItemsBtn.style.borderColor = filtered.length === 1 ? '#52b788' : '';
   viewItemsBtn.title = filtered.length === 1 ? '目前只有唯一選擇！' : '';
 }
 
@@ -115,21 +115,21 @@ function showItemsModal() {
     const id = `item-chk-${r.id}`;
     const hoursText = getTodayHoursText(r);
     const openBadge = isOpenNow(r)
-      ? '<span class="open-badge">開</span>'
-      : '<span class="closed-badge">休</span>';
+      ? '<span class="open-badge">OPEN</span>'
+      : '<span class="closed-badge">CLOSED</span>';
     const li = document.createElement('li');
     li.className = 'item-row';
     li.dataset.id = r.id;
     li.innerHTML =
       `<input type="checkbox" id="${id}" class="item-chk" checked />` +
       `<label for="${id}" class="flex items-center gap-3 flex-1 min-w-0 cursor-pointer">` +
-        `<span class="text-xl">${CUISINE_EMOJI[r.cuisine] || '🍽️'}</span>` +
+        `<span class="text-lg">${CUISINE_EMOJI[r.cuisine] || '🍽️'}</span>` +
         `<div class="flex-1 min-w-0">` +
           `<div class="flex items-center gap-1.5">` +
-            `<p class="font-semibold text-sm truncate" style="color:#ddd;">${r.name}</p>` +
+            `<p class="font-bold text-sm truncate" style="color:#DBDAD2;">${r.name}</p>` +
             openBadge +
           `</div>` +
-          `<p class="text-xs" style="color:#555;">${r.cuisine} · ${PRICE_LABEL[r.price_range]}${hoursText ? ' · ' + hoursText : ''}</p>` +
+          `<p class="text-xs" style="color:#8e8999;">${r.cuisine} · ${PRICE_LABEL[r.price_range]}${hoursText ? ' · ' + hoursText : ''}</p>` +
         `</div>` +
       `</label>`;
     itemsList.appendChild(li);
@@ -173,7 +173,7 @@ function showApp() {
   setTimeout(() => {
     loadingScreen.style.display = 'none';
     appEl.classList.remove('hidden');
-  }, 500);
+  }, 350);
 }
 
 // ── Toast ─────────────────────────────────────────────────────────
@@ -185,7 +185,7 @@ function showToast(msg, duration = 2000) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => {
     toastEl.classList.remove('show');
-    setTimeout(() => toastEl.classList.add('hidden'), 300);
+    setTimeout(() => toastEl.classList.add('hidden'), 250);
   }, duration);
 }
 
@@ -199,7 +199,7 @@ function addRipple(e) {
   circle.className = 'ripple-effect';
   btn.querySelector('.ripple-effect')?.remove();
   btn.appendChild(circle);
-  setTimeout(() => circle.remove(), 700);
+  setTimeout(() => circle.remove(), 500);
 }
 function setupRipples() {
   document.querySelectorAll('button').forEach(btn => {
@@ -209,83 +209,57 @@ function setupRipples() {
   });
 }
 
-// ── Confetti ──────────────────────────────────────────────────────
+// ── Confetti (Matte ZUTOMAYO paper scraps, reduced count) ─────────
 function launchConfetti() {
-  const colors = ['#00bbff','#9b5de5','#00ff88','#ff6b6b','#bf8fff','#00e5ff','#7c3aed','#34d399'];
-  for (let i = 0; i < 120; i++) {
+  const colors = ['#6F2ADD', '#DBDAD2', '#E8D2E9', '#636683', '#cb5149', '#52b788'];
+  for (let i = 0; i < 45; i++) {
     const el = document.createElement('div');
     el.className = 'confetti-piece';
     el.style.left = (Math.random() * 100) + 'vw';
     el.style.background = colors[Math.floor(Math.random() * colors.length)];
-    const dur = 1.8 + Math.random() * 1.8;
+    const dur = 1.6 + Math.random() * 1.4;
     el.style.animationDuration = dur + 's';
-    el.style.animationDelay = (Math.random() * 0.6) + 's';
-    el.style.width = (5 + Math.random() * 7) + 'px';
-    el.style.height = (8 + Math.random() * 8) + 'px';
+    el.style.animationDelay = (Math.random() * 0.4) + 's';
+    el.style.width = (4 + Math.random() * 6) + 'px';
+    el.style.height = (6 + Math.random() * 6) + 'px';
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), (dur + 1) * 1000);
+    setTimeout(() => el.remove(), (dur + 0.8) * 1000);
   }
 }
 
 // ── Particle burst ────────────────────────────────────────────────
 function spawnResultParticles(emoji) {
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 10; i++) {
     const el = document.createElement('span');
-    el.textContent = i % 3 === 0 ? '★' : emoji;
-    if (i % 3 === 0) el.style.color = '#00bbff';
-    el.style.cssText = `position:fixed;left:50%;top:38%;font-size:${1+Math.random()}rem;pointer-events:none;z-index:300;`;
-    const angle = (i / 18) * 2 * Math.PI;
-    const dist = 70 + Math.random() * 80;
+    el.textContent = i % 2 === 0 ? '◆' : emoji;
+    el.style.cssText = `position:fixed;left:50%;top:38%;font-size:${0.85+Math.random()*0.5}rem;pointer-events:none;z-index:300;color:#DBDAD2;`;
+    const angle = (i / 10) * 2 * Math.PI;
+    const dist = 55 + Math.random() * 55;
     el.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
     el.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
-    el.style.animation = `particle-burst ${0.6 + Math.random()*0.3}s ease-out ${i*0.04}s forwards`;
+    el.style.animation = `particle-burst ${0.45 + Math.random()*0.25}s ease-out ${i*0.03}s forwards`;
     document.body.appendChild(el);
-    setTimeout(() => el.remove(), 1200);
+    setTimeout(() => el.remove(), 900);
   }
 }
 
 // ── Wheel flash + shake ───────────────────────────────────────────
 function flashWheel() {
   const wrapper = document.querySelector('.wheel-wrapper');
-  // 閃光
   wrapper.classList.remove('wheel-flash');
   void wrapper.offsetWidth;
   wrapper.classList.add('wheel-flash');
-  setTimeout(() => wrapper.classList.remove('wheel-flash'), 1000);
-  // 震動
+  setTimeout(() => wrapper.classList.remove('wheel-flash'), 600);
+
   wrapper.classList.remove('wheel-shake');
   void wrapper.offsetWidth;
   wrapper.classList.add('wheel-shake');
-  setTimeout(() => wrapper.classList.remove('wheel-shake'), 600);
+  setTimeout(() => wrapper.classList.remove('wheel-shake'), 350);
 }
 
-// ── Screen flash ──────────────────────────────────────────────────
+// ── Screen flash (no-op glare to prevent light pollution) ─────────
 function screenFlash() {
-  const el = document.getElementById('screen-flash');
-  el.classList.remove('flash-active');
-  void el.offsetWidth;
-  el.classList.add('flash-active');
-}
-
-// ── Food click particles ──────────────────────────────────────────
-const FOOD_CLICK_EMOJIS = ['🍜','🍕','🍱','🍣','🍔','🌮','🍛','🍝','🍦','🍰','🥗','🍲','🍗','🍤','🧋','🍙'];
-let clickParticleCount = 0;
-const MAX_CLICK_PARTICLES = 60;
-function spawnFoodClick(x, y) {
-  if (clickParticleCount >= MAX_CLICK_PARTICLES) return;
-  const count = 2 + Math.floor(Math.random() * 2);
-  for (let i = 0; i < count; i++) {
-    const el = document.createElement('span');
-    el.textContent = FOOD_CLICK_EMOJIS[Math.floor(Math.random() * FOOD_CLICK_EMOJIS.length)];
-    el.className = 'food-click-particle';
-    const offsetX = (Math.random() - 0.5) * 40;
-    const floatDist = 60 + Math.random() * 30;
-    const dur = 0.8 + Math.random() * 0.3;
-    el.style.cssText = `left:${x + offsetX}px;top:${y}px;font-size:${1.2 + Math.random()*0.6}rem;--fy:-${floatDist}px;animation-duration:${dur}s;animation-delay:${i*0.06}s`;
-    clickParticleCount++;
-    document.body.appendChild(el);
-    setTimeout(() => { el.remove(); clickParticleCount--; }, (dur + 0.3) * 1000);
-  }
+  // Intentionally toned down to avoid screen flash light pollution on mobile
 }
 
 // ── Result modal ──────────────────────────────────────────────────
@@ -304,10 +278,10 @@ function showResult(restaurant) {
   resultCuisine.textContent  = restaurant.cuisine;
   resultPrice.textContent    = PRICE_LABEL[restaurant.price_range] || restaurant.price_range;
   resultLocation.textContent = restaurant.location;
-  resultNote.textContent     = restaurant.note || '';
+  resultNote.textContent     = restaurant.note || '無額外備註';
   const hoursText = getTodayHoursText(restaurant);
   if (hoursText) {
-    resultHours.textContent = '🕐 今日：' + hoursText;
+    resultHours.textContent = 'HOURS // 今日：' + hoursText;
     resultHours.classList.remove('hidden');
   } else {
     resultHours.classList.add('hidden');
@@ -316,7 +290,7 @@ function showResult(restaurant) {
   shareBtn.classList.remove('hidden');
   resultModal.classList.remove('hidden');
   launchConfetti();
-  setTimeout(() => spawnResultParticles(CUISINE_EMOJI[restaurant.cuisine] || '🍽️'), 80);
+  setTimeout(() => spawnResultParticles(CUISINE_EMOJI[restaurant.cuisine] || '🍽️'), 60);
 }
 
 function hideResult() {
@@ -331,7 +305,7 @@ function doSpin() {
   const targetIndex = Math.floor(Math.random() * items.length);
 
   spinBtn.disabled = true;
-  spinBtnText.textContent = '轉中…';
+  spinBtnText.textContent = '轉動中…';
 
   wheel.spin(targetIndex, (winner) => {
     spinBtn.disabled = false;
@@ -339,7 +313,7 @@ function doSpin() {
     luckyBtn.disabled = false;
     flashWheel();
     screenFlash();
-    setTimeout(() => showResult(winner), 200);
+    setTimeout(() => showResult(winner), 160);
     const url = new URL(location.href);
     url.searchParams.set('result', winner.id);
     history.replaceState(null, '', url.toString());
@@ -390,7 +364,7 @@ function checkSharedResult() {
 // Loading screen
 loadingText.textContent = getMealTimeText();
 loadingScreen.addEventListener('click', showApp);
-setTimeout(showApp, 2000);
+setTimeout(showApp, 1800);
 
 // Meal tabs
 document.querySelectorAll('.meal-tab').forEach(btn => {
@@ -464,39 +438,30 @@ clearBlockedBtn.addEventListener('click', () => {
   showToast('封鎖清單已清除');
 });
 
-// ── Falling particles (ZUTOMAYO geometric symbols) ────────────────
-const ZUTO_SYMBOLS = ['✦', '◆', '✧', '◇', '★', '⬡', '⬢'];
-const NEON_COLORS  = ['#00bbff', '#9b5de5', '#00ff88', '#bf8fff'];
-const MAX_PARTICLES = 15;
+// ── Subtle background symbols (Matte ZUTOMAYO glyphs, zero glow) ──
+const ZUTO_SYMBOLS = ['+', '◇', '▪', '×', '✧'];
+const MATTE_COLORS = ['#6F2ADD', '#636683', '#524e61', '#8a799e'];
+const MAX_PARTICLES = 8;
 let particleCount = 0;
-let particleInterval = null;
 
 function spawnPineapple() {
   if (particleCount >= MAX_PARTICLES) return;
   particleCount++;
   const el = document.createElement('span');
   el.textContent = ZUTO_SYMBOLS[Math.floor(Math.random() * ZUTO_SYMBOLS.length)];
-  el.className = 'falling-pineapple';
+  el.className = 'falling-pineapple f-px';
   el.style.left = (Math.random() * 100) + 'vw';
-  el.style.fontSize = (0.6 + Math.random() * 0.8) + 'rem';
-  const color = NEON_COLORS[Math.floor(Math.random() * NEON_COLORS.length)];
-  el.style.color = color;
-  el.style.textShadow = `0 0 6px ${color}`;
-  const duration = 5 + Math.random() * 6;
+  el.style.fontSize = (0.55 + Math.random() * 0.45) + 'rem';
+  el.style.color = MATTE_COLORS[Math.floor(Math.random() * MATTE_COLORS.length)];
+  const duration = 7 + Math.random() * 7;
   el.style.animationDuration = duration + 's';
-  el.style.animationDelay = (Math.random() * -2) + 's';
+  el.style.animationDelay = (Math.random() * -3) + 's';
   document.body.appendChild(el);
   setTimeout(() => { el.remove(); particleCount--; }, (duration + 2) * 1000);
 }
 
-for (let i = 0; i < 8; i++) spawnPineapple();
-particleInterval = setInterval(spawnPineapple, 800);
-
-// ── Click food particles ──────────────────────────────────────────
-document.addEventListener('click', e => {
-  if (e.target.closest('#items-modal, #result-modal, #loading-screen')) return;
-  spawnFoodClick(e.clientX, e.clientY);
-});
+for (let i = 0; i < 4; i++) spawnPineapple();
+setInterval(spawnPineapple, 1400);
 
 // ── Init ──────────────────────────────────────────────────────────
 loadBlocked();

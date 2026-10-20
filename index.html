@@ -29,23 +29,31 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎡</text></svg>" />
 
   <!-- PWA / Mobile -->
-  <meta name="theme-color" content="#00bbff" />
+  <meta name="theme-color" content="#121116" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            neon:  { DEFAULT: '#00bbff', dim: '#0077aa' },
-            cyber: { DEFAULT: '#9b5de5', dark: '#6a35b0' },
-            void:  { DEFAULT: '#0a0a0f', card: '#12121a', border: '#1e1e2e' },
+            ztmy: {
+              bg:     '#121116',
+              panel:  '#191820',
+              border: '#353240',
+              putty:  '#DBDAD2',
+              lilac:  '#E8D2E9',
+              purple: '#6F2ADD',
+              slate:  '#636683',
+              sage:   '#52b788',
+              rust:   '#cb5149',
+            }
           }
         }
       }
@@ -56,58 +64,100 @@
 <body class="app-bg min-h-screen">
 
   <!-- ══════════════════════════════════════════
-       LOADING SCREEN
+       LOADING SCREEN (ZUTOMAYO Retro Dialog Style)
   ══════════════════════════════════════════ -->
-  <div id="loading-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center cursor-pointer select-none">
-    <img src="assets/assetsbg.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" />
-    <div class="absolute inset-0 bg-black/50"></div>
-    <div class="relative z-10 text-center px-6">
-      <p id="loading-meal-text" class="text-5xl sm:text-7xl font-black text-white drop-shadow-lg tracking-wide leading-tight"></p>
-      <p class="mt-4 text-white/70 text-base font-medium animate-pulse">點擊任意處進入</p>
+  <div id="loading-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center cursor-pointer select-none px-5">
+    <img src="assets/assetsbg.jpg" alt="" class="absolute inset-0 w-full h-full object-cover grayscale contrast-125 opacity-35" />
+    <div class="absolute inset-0 bg-[#121116]/80"></div>
+    <div class="ztmy-window relative z-10 w-full max-w-xs">
+      <div class="ztmy-win-bar">
+        <span class="ztmy-win-bar-title">♥ ZTMY_CCU // SYSTEM.BOOT</span>
+        <span class="ztmy-win-bar-close">×</span>
+      </div>
+      <div class="p-6 text-center bg-[#191820]">
+        <p class="f-px text-[11px] tracking-widest text-[#a39ebb] mb-2">CHIAYI MINXIONG ARCHIVE</p>
+        <p id="loading-meal-text" class="text-3xl sm:text-4xl font-black tracking-wider leading-tight text-[#DBDAD2] f-serif"></p>
+        <div class="mt-5 inline-block border border-[#DBDAD2] px-4 py-1.5 f-px text-xs text-[#DBDAD2] bg-[#121116]">
+          [ TAP TO ENTER // 點擊進入 ]
+        </div>
+      </div>
     </div>
   </div>
 
   <!-- ══════════════════════════════════════════
        MAIN APP
   ══════════════════════════════════════════ -->
-  <div id="app" class="hidden max-w-md mx-auto px-4 pb-24 app-enter">
+  <div id="app" class="hidden max-w-md mx-auto px-3.5 pb-20 app-enter">
 
-    <!-- Header -->
-    <header class="pt-8 pb-4 text-center">
-      <div class="header-icon-wrap mx-auto mb-2">
-        <p class="text-4xl">🎡</p>
+    <!-- Top ZTMY System Strip -->
+    <div class="ztmy-top-bar pt-3 pb-2 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="ztmy-pixel-dot"></span>
+        <span class="f-px text-[11px] tracking-wider text-[#9e9aa8]">CCU.FOOD.MART // 80+</span>
       </div>
-      <h1 class="glitch-title text-2xl font-black tracking-tight" data-text="中正大學吃什麼？">中正大學吃什麼？</h1>
-      <p class="text-xs mt-1 font-medium" style="color:#00bbff;opacity:0.7;letter-spacing:0.12em;">— SPIN YOUR FATE —</p>
+      <span class="ztmy-page-tag f-px">ROULETTE</span>
+    </div>
+
+    <!-- Header (ZUTOMAYO MART Editorial Brutalism) -->
+    <header class="ztmy-header-box mb-3.5">
+      <div class="flex items-stretch justify-between">
+        <div class="py-2.5 px-3 flex-1">
+          <p class="f-px text-[10px] tracking-[0.16em] text-[#9e9aa8] mb-0.5">ずっと真夜中でいいのに。風 // 嘉義民雄</p>
+          <h1 class="glitch-title text-2xl font-black tracking-tight" data-text="中正大學吃什麼？">中正大學吃什麼？</h1>
+        </div>
+        <div class="header-icon-wrap" aria-hidden="true">
+          <span class="f-px text-[10px] leading-none text-[#9e9aa8]">CCU</span>
+          <span class="text-lg leading-none mt-0.5">🍽️</span>
+        </div>
+      </div>
     </header>
 
-    <!-- Quick meal tabs -->
-    <div class="flex gap-1.5 mb-5">
-      <button class="meal-tab active" data-meal="all">全部 🍽️</button>
-      <button class="meal-tab" data-meal="breakfast">🌅 早餐</button>
-      <button class="meal-tab" data-meal="lunch">☀️ 午餐</button>
-      <button class="meal-tab" data-meal="dinner">🌙 晚餐</button>
-      <button class="meal-tab" data-meal="latenight">🌃 宵夜</button>
-    </div>
+    <!-- Quick meal tabs (MART 1px Grid Strip) -->
+    <nav class="meal-tabs-grid mb-4" aria-label="餐別篩選">
+      <button class="meal-tab active" data-meal="all">
+        <span class="meal-tab-idx f-px">00</span>
+        <span>全部</span>
+      </button>
+      <button class="meal-tab" data-meal="breakfast">
+        <span class="meal-tab-idx f-px">01</span>
+        <span>早餐</span>
+      </button>
+      <button class="meal-tab" data-meal="lunch">
+        <span class="meal-tab-idx f-px">02</span>
+        <span>午餐</span>
+      </button>
+      <button class="meal-tab" data-meal="dinner">
+        <span class="meal-tab-idx f-px">03</span>
+        <span>晚餐</span>
+      </button>
+      <button class="meal-tab" data-meal="latenight">
+        <span class="meal-tab-idx f-px">04</span>
+        <span>宵夜</span>
+      </button>
+    </nav>
 
-    <!-- Wheel canvas -->
-    <div class="relative flex justify-center mb-3">
-      <div class="wheel-wrapper">
-        <canvas id="wheel-canvas" width="320" height="320" role="img" aria-label="餐廳轉盤"></canvas>
-        <!-- Pointer (CSS triangle) -->
-        <div class="wheel-pointer"></div>
+    <!-- Wheel Stage (Mechanical Turntable Specimen Box) -->
+    <div class="ztmy-wheel-stage mb-3.5">
+      <div class="ztmy-stage-corner tl">+</div>
+      <div class="ztmy-stage-corner tr">+</div>
+      <div class="ztmy-stage-corner bl">+</div>
+      <div class="ztmy-stage-corner br">+</div>
+      <div class="ztmy-stage-meta f-px">
+        <span>TURNTABLE // MODE:RANDOM</span>
+        <span>ASIA/TAIPEI</span>
+      </div>
+
+      <div class="relative flex justify-center py-2">
+        <div class="wheel-wrapper">
+          <canvas id="wheel-canvas" width="300" height="300" role="img" aria-label="餐廳轉盤"></canvas>
+          <!-- Pointer -->
+          <div class="wheel-pointer"></div>
+        </div>
       </div>
     </div>
 
-    <!-- View items button -->
-    <div class="flex justify-center mb-3">
-      <button id="view-items-btn" class="view-items-btn">
-        查看本輪 <span id="wheel-count">0</span> 間選項 ›
-      </button>
-    </div>
-
-    <!-- Open-only toggle pill — 永遠可見 -->
-    <div class="flex justify-center mb-4">
+    <!-- Utility Bar: Open-only toggle + View items button (Side-by-side for mobile thumb reach) -->
+    <div class="grid grid-cols-2 gap-2 mb-3.5">
       <label for="open-only-toggle" class="open-only-pill">
         <input type="checkbox" id="open-only-toggle" class="open-only-pill-input" checked />
         <span class="open-only-pill-track">
@@ -115,28 +165,40 @@
         </span>
         <span class="open-only-pill-text">只顯示營業中</span>
       </label>
+
+      <button id="view-items-btn" class="view-items-btn">
+        <span>本輪選項</span>
+        <span class="f-px text-xs px-1.5 py-0.5 bg-[#121116] border border-[#353240] text-[#DBDAD2]" id="wheel-count">0</span>
+        <span class="f-px">›</span>
+      </button>
     </div>
 
-    <!-- Spin button -->
-    <div class="flex justify-center gap-3 mb-5 items-center">
-      <button id="lucky-btn" class="lucky-btn" aria-label="3秒後自動轉動">Lucky 🎲</button>
-      <button id="spin-btn" class="spin-btn" aria-label="轉動轉盤選擇餐廳">
+    <!-- Spin & Lucky Buttons (ZUTOMAYO Hardware Trigger Style) -->
+    <div class="flex gap-2.5 mb-4 items-stretch">
+      <button id="lucky-btn" class="lucky-btn" aria-label="3秒後自動轉動">
+        <span class="f-px text-[10px] block leading-none opacity-75 mb-0.5">AUTO 3S</span>
+        <span>Lucky 🎲</span>
+      </button>
+      <button id="spin-btn" class="spin-btn flex-1" aria-label="轉動轉盤選擇餐廳">
+        <span class="f-px text-[10px] tracking-widest opacity-80 mr-2">[EXEC]</span>
         <span id="spin-btn-text">轉！</span>
       </button>
     </div>
 
-    <!-- Filter panel (collapsible) -->
-    <details class="filter-panel mb-4" id="filter-details">
+    <!-- Filter panel (collapsible ZUTOMAYO Window) -->
+    <details class="filter-panel mb-3.5" id="filter-details">
       <summary class="filter-summary">
+        <span class="f-px text-xs text-[#a39ebb]">◆</span>
         <span>篩選條件</span>
-        <span id="filter-badge" class="filter-badge hidden">●</span>
-        <span class="ml-auto text-xs" style="color:#444;">展開 ▾</span>
+        <span class="f-px text-[10px] text-[#7a7585] ml-1">// FILTER</span>
+        <span id="filter-badge" class="filter-badge hidden f-px">[ACTIVE]</span>
+        <span class="ml-auto f-px text-xs text-[#9e9aa8]">展開 ▾</span>
       </summary>
-      <div class="pt-3 space-y-3">
+      <div class="p-3.5 space-y-3.5 border-t border-[#353240]">
         <!-- Price -->
         <div>
-          <p class="text-xs font-semibold mb-1" style="color:#555;">價位</p>
-          <div class="flex gap-2 flex-wrap">
+          <p class="f-px text-[11px] text-[#9e9aa8] mb-1.5 tracking-wider">PRICE // 價位區間</p>
+          <div class="flex gap-1.5 flex-wrap">
             <button class="filter-chip active" data-type="price" data-value="all">不限</button>
             <button class="filter-chip" data-type="price" data-value="cheap">&lt;80元</button>
             <button class="filter-chip" data-type="price" data-value="medium">80-150元</button>
@@ -145,8 +207,8 @@
         </div>
         <!-- Cuisine -->
         <div>
-          <p class="text-xs font-semibold mb-1" style="color:#555;">料理類型</p>
-          <div class="flex gap-2 flex-wrap" id="cuisine-chips">
+          <p class="f-px text-[11px] text-[#9e9aa8] mb-1.5 tracking-wider">CATEGORY // 料理類型</p>
+          <div class="flex gap-1.5 flex-wrap" id="cuisine-chips">
             <button class="filter-chip active" data-type="cuisine" data-value="all">不限</button>
             <button class="filter-chip" data-type="cuisine" data-value="台式">台式</button>
             <button class="filter-chip" data-type="cuisine" data-value="日式">日式</button>
@@ -166,8 +228,9 @@
           </div>
         </div>
         <!-- Clear blocked -->
-        <div class="pt-1" style="border-top:1px solid #1e1e2e;">
-          <button id="clear-blocked-btn" class="text-xs transition-colors" style="color:#ff6b6b;">
+        <div class="pt-2.5 border-t border-[#2a2733] flex items-center justify-between">
+          <span class="f-px text-[11px] text-[#7a7585]">BLOCKED LIST</span>
+          <button id="clear-blocked-btn" class="f-px text-xs px-2.5 py-1 border border-[#cb5149] text-[#cb5149] hover:bg-[#cb5149] hover:text-white transition-colors">
             清除封鎖清單 (<span id="blocked-count">0</span> 間)
           </button>
         </div>
@@ -176,82 +239,113 @@
 
     <!-- Share row -->
     <div class="flex gap-3 mb-2">
-      <button id="share-btn" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-colors shadow-sm hidden" style="border:1px solid #1e1e2e;color:#888;background:#12121a;">
-        🔗 分享結果
+      <button id="share-btn" class="ztmy-share-btn flex-1 flex items-center justify-center gap-2 py-2.5 font-semibold text-xs transition-colors hidden">
+        <span class="f-px">[SHARE]</span>
+        <span>分享目前抽選結果</span>
       </button>
     </div>
 
     <!-- No results notice -->
-    <div id="no-results" class="hidden text-center py-6 text-sm" style="color:#00bbff;opacity:0.7;">
-      <p class="text-4xl mb-2">😵</p>
+    <div id="no-results" class="hidden text-center py-6 px-4 text-sm border border-[#353240] bg-[#191820] text-[#DBDAD2]">
+      <p class="f-px text-xs text-[#cb5149] mb-1">[ ERROR // NO_MATCH ]</p>
       <p>沒有符合條件的店家，試著放寬篩選條件！</p>
     </div>
 
+    <!-- Footer Stamp -->
+    <footer class="mt-8 pt-3 border-t border-[#26242e] flex items-center justify-between text-[10px] text-[#686473] f-px">
+      <span>ZUTOMAYO INSPIRED UI</span>
+      <span>CCU FOOD ROULETTE</span>
+    </footer>
+
   </div>
 
   <!-- ══════════════════════════════════════════
-       ITEMS MODAL
+       ITEMS MODAL (zutomayo.net Retro OS Window)
   ══════════════════════════════════════════ -->
   <div id="items-modal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/50" id="items-overlay"></div>
-    <div class="items-card relative z-10 w-full max-w-sm rounded-3xl shadow-2xl flex flex-col" style="max-height:75vh;background:#12121a;border:1px solid #1e1e2e;">
-      <div class="p-5 pb-3 text-center" style="border-bottom:1px solid #1e1e2e;">
-        <h3 class="text-lg font-black" style="color:#e0e0e0;">本輪選項</h3>
-        <p class="text-xs mt-0.5" style="color:#555;">輪盤目前包含這些店家</p>
+    <div class="absolute inset-0 bg-black/70" id="items-overlay"></div>
+    <div class="items-card ztmy-window relative z-10 w-full max-w-sm flex flex-col" style="max-height:78vh;">
+      <div class="ztmy-win-bar">
+        <span class="ztmy-win-bar-title">♥ CANDIDATE_LIST.TXT — 本輪選項</span>
+        <span class="ztmy-win-bar-close" onclick="document.getElementById('close-items-btn').click()">×</span>
       </div>
-      <ul id="items-list" class="overflow-y-auto flex-1 p-4 space-y-2"></ul>
-      <div class="p-4 pt-3" style="border-top:1px solid #1e1e2e;">
-        <button id="close-items-btn" class="w-full py-2.5 rounded-xl text-white text-sm font-semibold transition-colors shadow" style="background:linear-gradient(135deg,#00bbff,#9b5de5);">
-          套用並關閉
+      <div class="px-4 py-2.5 bg-[#14131a] border-b border-[#353240] flex items-center justify-between">
+        <p class="text-xs text-[#9e9aa8]">勾選欲納入本輪抽選的店家</p>
+        <span class="f-px text-[10px] text-[#a39ebb]">SELECTABLE</span>
+      </div>
+      <ul id="items-list" class="overflow-y-auto flex-1 p-3 space-y-1.5 bg-[#191820]"></ul>
+      <div class="p-3 bg-[#14131a] border-t border-[#353240]">
+        <button id="close-items-btn" class="ztmy-win-primary-btn w-full py-2.5 text-sm font-bold">
+          <span class="f-px mr-1">[OK]</span> 套用並關閉
         </button>
       </div>
     </div>
   </div>
 
   <!-- ══════════════════════════════════════════
-       RESULT MODAL
+       RESULT MODAL (zutomayo.net News/Special Window)
   ══════════════════════════════════════════ -->
-  <div id="result-modal" class="hidden fixed inset-0 z-40 flex items-end sm:items-center justify-center p-4">
-    <div class="result-overlay absolute inset-0 bg-black/50" id="result-overlay"></div>
-    <div class="result-card relative z-10 w-full max-w-sm rounded-3xl p-6 shadow-2xl result-slide-up" style="background:#12121a;border:1px solid #1e1e2e;">
-      <div class="text-center mb-4">
-        <div class="result-emoji-wrap mx-auto mb-3">
-          <p class="text-5xl" id="result-emoji">🍜</p>
-        </div>
-        <h2 class="text-2xl font-black mb-1" id="result-name" style="color:#ffffff;">餐廳名稱</h2>
-        <div class="flex items-center justify-center gap-2 flex-wrap mb-2">
-          <span class="badge-cuisine" id="result-cuisine">台式</span>
-          <span class="badge-price" id="result-price">銅板</span>
-          <span class="badge-location" id="result-location">神農路</span>
-        </div>
-        <p class="text-sm" id="result-note" style="color:#666;"></p>
-        <p class="text-xs font-medium mt-1 hidden" id="result-hours" style="color:#00ff88;"></p>
+  <div id="result-modal" class="hidden fixed inset-0 z-40 flex items-end sm:items-center justify-center p-3.5 sm:p-4">
+    <div class="result-overlay absolute inset-0 bg-black/75" id="result-overlay"></div>
+    <div class="result-card ztmy-window relative z-10 w-full max-w-sm result-slide-up">
+      <!-- ZUTOMAYO Window Title Bar -->
+      <div class="ztmy-win-bar">
+        <span class="ztmy-win-bar-title">♥ RESULT_WINDOW // 抽選結果</span>
+        <button type="button" id="close-result-btn" class="ztmy-win-bar-close" aria-label="關閉">×</button>
       </div>
-      <a id="map-btn" href="#" target="_blank" rel="noopener" class="map-btn">
-        🗺️ 在 Google Maps 查看
-      </a>
-      <div class="flex gap-3 mt-3">
-        <button id="block-btn" class="flex-1 py-3 rounded-xl text-sm font-semibold transition-colors" style="border:1px solid rgba(239,68,68,0.4);color:#ff6b6b;background:transparent;">
-          不想吃這間 ✕
-        </button>
-        <button id="respin-btn" class="flex-1 py-3 rounded-xl text-white text-sm font-bold transition-colors shadow" style="background:linear-gradient(135deg,#00bbff,#9b5de5);">
-          再轉一次 🎲
-        </button>
+
+      <div class="p-5 bg-[#191820]">
+        <!-- Specimen Header -->
+        <div class="flex items-start gap-3.5 pb-3.5 border-b border-[#353240]">
+          <div class="result-emoji-wrap shrink-0">
+            <p class="text-3xl" id="result-emoji">🍜</p>
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="f-px text-[10px] text-[#a39ebb] tracking-wider mb-0.5">SELECTED STORE //</p>
+            <h2 class="text-xl font-black leading-snug text-[#DBDAD2] break-words f-serif" id="result-name">餐廳名稱</h2>
+            <div class="flex items-center gap-1.5 flex-wrap mt-2">
+              <span class="badge-cuisine" id="result-cuisine">台式</span>
+              <span class="badge-price" id="result-price">銅板</span>
+              <span class="badge-location" id="result-location">神農路</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Note & Hours Spec Block -->
+        <div class="mt-3 p-3 bg-[#121116] border border-[#2d2a38] space-y-1">
+          <p class="text-xs leading-relaxed text-[#b8b4c2]" id="result-note"></p>
+          <p class="f-px text-xs hidden text-[#52b788]" id="result-hours"></p>
+        </div>
+
+        <!-- Google Maps Link -->
+        <a id="map-btn" href="#" target="_blank" rel="noopener" class="map-btn">
+          <span class="f-px text-xs">[MAP]</span>
+          <span>在 Google Maps 查看位置 ↗</span>
+        </a>
+
+        <!-- ZUTOMAYO YES / NO Window Action Buttons -->
+        <div class="grid grid-cols-2 gap-2.5 mt-3">
+          <button id="block-btn" class="ztmy-btn-no py-2.5 text-xs font-bold">
+            <span class="f-px block text-[10px] opacity-80">NO // BLOCK</span>
+            <span>不想吃這間 ✕</span>
+          </button>
+          <button id="respin-btn" class="ztmy-btn-yes py-2.5 text-xs font-bold">
+            <span class="f-px block text-[10px] opacity-85">YES // RETRY</span>
+            <span>再轉一次 🎲</span>
+          </button>
+        </div>
       </div>
-      <button id="close-result-btn" class="mt-3 w-full py-2 text-sm transition-colors" style="color:#444;">
-        關閉
-      </button>
     </div>
   </div>
 
   <!-- ══════════════════════════════════════════
        TOAST NOTIFICATION
   ══════════════════════════════════════════ -->
-  <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[60] hidden">
-    <div class="text-white px-5 py-3 rounded-full text-sm font-medium shadow-lg" id="toast-text" style="background:#12121a;border:1px solid #00bbff;box-shadow:0 0 12px rgba(0,187,255,0.3);"></div>
+  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-[60] hidden">
+    <div class="f-px px-4 py-2 text-xs font-medium" id="toast-text"></div>
   </div>
 
-  <!-- Screen flash overlay -->
+  <!-- Screen flash overlay (kept for DOM compatibility, zero glare) -->
   <div id="screen-flash"></div>
 
   <!-- Scripts -->
