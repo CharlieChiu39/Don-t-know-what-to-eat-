@@ -6,6 +6,7 @@
 /** @typedef {import('../types.js').Restaurant} Restaurant */
 /** @typedef {import('../types.js').OpeningStatus} OpeningStatus */
 /** @typedef {import('../types.js').NextOpening} NextOpening */
+/** @typedef {import('../types.js').SchoolCalendar} SchoolCalendar */
 /** @typedef {[start: number, end: number]} Range 當天第幾分鐘；end < start 代表跨夜 */
 
 /** @type {readonly DayKey[]} */
@@ -135,12 +136,45 @@ function evaluate(weekly, special, date) {
 }
 
 /**
- * 綜合服務公告、已查證時刻表與舊時刻表，判斷某間店此刻的狀態。
+ * 依校方行事曆判斷校內店家在寒暑假與國定假日的狀態；不受影響時回傳 null。
+ * 店家若有當天的 specialHours（明確公告），以公告為準，不套用行事曆。
+ * @param {Restaurant} restaurant
+ * @param {Date} date
+ * @param {SchoolCalendar | undefined} calendar
+ * @returns {OpeningStatus | null}
+ */
+export function calendarStatus(restaurant, date, calendar) {
+  if (!calendar) return null;
+  const policies = calendar.campusPolicies;
+  const closesOnBreak = policies['closed-on-break'].includes(restaurant.id);
+  if (!closesOnBreak && !policies['check-on-break'].includes(restaurant.id)) return null;
+  const { dateKey } = taipeiClock(date);
+  if (restaurant.specialHours && Object.hasOwn(restaurant.specialHours, dateKey)) return null;
+
+  /** @type {(fields: Partial<OpeningStatus>) => OpeningStatus} */
+  const status = (fields) => ({
+    state: 'unknown', estimated: false, hours: '', minutesLeft: null, next: null, source: calendar.source, ...fields,
+  });
+  const vacation = calendar.breaks.find((b) => b.from <= dateKey && dateKey <= b.to);
+  if (vacation) {
+    const period = { name: vacation.name, until: vacation.to };
+    return closesOnBreak
+      ? status({ state: 'closed', hours: vacation.name, reason: 'break', period })
+      : status({ hours: vacation.name, reason: 'break-check', period });
+  }
+  const holiday = calendar.holidays.find((d) => d.date === dateKey);
+  if (holiday) return status({ hours: holiday.name, reason: 'holiday', period: { name: holiday.name, until: dateKey } });
+  return null;
+}
+
+/**
+ * 綜合服務公告、校方行事曆、已查證時刻表與舊時刻表，判斷某間店此刻的狀態。
  * @param {Restaurant} restaurant
  * @param {Date} [date]
+ * @param {SchoolCalendar} [calendar]
  * @returns {OpeningStatus}
  */
-export function openingStatus(restaurant, date = new Date()) {
+export function openingStatus(restaurant, date = new Date(), calendar) {
   const alert = restaurant.serviceAlerts?.find(
     (item) => date >= new Date(item.from) && date < new Date(item.to),
   );
@@ -156,6 +190,9 @@ export function openingStatus(restaurant, date = new Date()) {
     };
   }
 
+  const fromCalendar = calendarStatus(restaurant, date, calendar);
+  if (fromCalendar) return fromCalendar;
+
   const verified = evaluate(restaurant.openHours, restaurant.specialHours, date);
   if (verified.reason === 'special-closure') verified.source = restaurant.specialHoursSource;
   if (verified.state !== 'unknown' || !restaurant.legacyOpenHours) return verified;
@@ -165,6 +202,14 @@ export function openingStatus(restaurant, date = new Date()) {
   if (legacy.state === 'open') return { ...legacy, state: 'likely', estimated: true };
   if (legacy.state === 'closed') return { ...legacy, estimated: true };
   return verified;
+}
+
+/**
+ * 營業時間是否有查證來源。只查證了名稱、地址的店（openHours 全為 null）不算。
+ * @param {Restaurant} restaurant
+ */
+export function hasVerifiedHours(restaurant) {
+  return Object.values(restaurant.openHours).some((value) => value !== null);
 }
 
 /**

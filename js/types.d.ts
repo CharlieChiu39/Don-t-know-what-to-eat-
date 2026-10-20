@@ -81,8 +81,10 @@ export interface OpeningStatus {
   minutesLeft: number | null;
   next: NextOpening | null;
   /** 臨時店休、服務公告等特殊原因 */
-  reason?: 'special-closure' | 'alert' | 'day-off';
+  reason?: 'special-closure' | 'alert' | 'day-off' | 'break' | 'break-check' | 'holiday';
   source?: string;
+  /** 寒暑假或國定假日的名稱與結束日（台北日期 YYYY-MM-DD） */
+  period?: { name: string; until: string };
 }
 
 export interface Filters {
@@ -116,4 +118,20 @@ export interface FoodTruck {
 export interface Candidate {
   restaurant: Restaurant;
   status: OpeningStatus;
+}
+
+/** 校方行事曆：寒暑假與國定假日，只影響 campusPolicies 列出的校內店家 */
+export interface SchoolCalendar {
+  label: string;
+  source: string;
+  checkedAt: string;
+  note?: string;
+  breaks: { name: string; from: string; to: string }[];
+  holidays: { date: string; name: string }[];
+  campusPolicies: {
+    /** 寒暑假確定暫停營業 */
+    'closed-on-break': number[];
+    /** 寒暑假與國定假日時段另行公告，需要先確認 */
+    'check-on-break': number[];
+  };
 }

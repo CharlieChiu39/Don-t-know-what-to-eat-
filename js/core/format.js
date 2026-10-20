@@ -45,17 +45,35 @@ export function describeStatus(status, now) {
   if (status.reason === 'alert') {
     return { tone: 'unknown', badge: '請先確認', detail: status.hours };
   }
+  if (status.reason === 'break' && status.period) {
+    return {
+      tone: 'closed',
+      badge: `${status.period.name}暫停營業`,
+      detail: `預計 ${formatDate(nextDay(status.period.until))} 起恢復・依校方行事曆`,
+    };
+  }
+  if (status.reason === 'break-check' && status.period) {
+    return {
+      tone: 'unknown',
+      badge: `${status.period.name}・請先確認`,
+      detail: `${status.period.name}期間時段另行公告（至 ${formatDate(status.period.until)}）`,
+    };
+  }
+  if (status.reason === 'holiday' && status.period) {
+    return { tone: 'unknown', badge: `${status.period.name}・請先確認`, detail: '國定假日可能休息或縮短營業' };
+  }
   if (status.state === 'open' || status.state === 'likely') {
     const allDay = status.minutesLeft === null;
-    const today = allDay ? '24 小時營業' : `今日 ${status.hours}`;
-    if (isClosingSoon(status) && status.minutesLeft !== null) {
-      return { tone: 'soon', badge: `${status.minutesLeft} 分後打烊`, detail: today };
-    }
+    const left = allDay ? '' : formatDuration(status.minutesLeft ?? 0);
     if (status.state === 'likely') {
-      return { tone: 'likely', badge: '可能營業', detail: `舊資料 ${status.hours}・未查證` };
+      // 推估的店用自己的色調，與「確定營業但快打烊」分開
+      const badge = isClosingSoon(status) ? `可能 ${status.minutesLeft} 分後打烊` : '可能營業';
+      const remain = left ? `・約剩 ${left}` : '';
+      return { tone: 'likely', badge, detail: `舊資料 ${status.hours}${remain}・未查證` };
     }
-    const left = allDay ? '' : `・還有 ${formatDuration(status.minutesLeft ?? 0)}`;
-    return { tone: 'open', badge: '營業中', detail: today + left };
+    const today = allDay ? '24 小時營業' : `今日 ${status.hours}`;
+    if (isClosingSoon(status)) return { tone: 'soon', badge: `${status.minutesLeft} 分後打烊`, detail: today };
+    return { tone: 'open', badge: '營業中', detail: allDay ? today : `${today}・還有 ${left}` };
   }
   if (status.state === 'closed') {
     const badge =
@@ -67,4 +85,17 @@ export function describeStatus(status, now) {
     return { tone: 'closed', badge, detail: [next, estimated].filter(Boolean).join('・') };
   }
   return { tone: 'unknown', badge: '時間未知', detail: '出發前請向店家確認' };
+}
+
+/** @param {string} dateKey YYYY-MM-DD */
+function formatDate(dateKey) {
+  const [, m, d] = dateKey.split('-').map(Number);
+  return `${m}/${d}`;
+}
+
+/** @param {string} dateKey YYYY-MM-DD */
+function nextDay(dateKey) {
+  const date = new Date(`${dateKey}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + 1);
+  return date.toISOString().slice(0, 10);
 }
