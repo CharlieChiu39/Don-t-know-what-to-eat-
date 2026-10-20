@@ -3,7 +3,9 @@
 export type DayKey = 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat';
 export type Meal = 'breakfast' | 'lunch' | 'dinner' | 'latenight';
 export type PriceRange = 'cheap' | 'medium' | 'expensive' | 'unknown';
-export type Area = '校內' | '神農路' | '裕農路';
+export type Area = '校內' | '神農路' | '裕農路' | '大學路' | '民雄市區';
+/** nearby＝中正周邊（民雄市區以外的區域）；all＝不限 */
+export type AreaFilter = Area | 'nearby' | 'all';
 export type TagId =
   | 'bento' | 'rice' | 'noodles' | 'breakfast' | 'snack' | 'luwei' | 'fried'
   | 'hotpot' | 'western' | 'asian' | 'healthy' | 'drinks' | 'dessert' | 'cafe'
@@ -41,6 +43,8 @@ export interface Restaurant {
   note: string;
   address?: string;
   phone?: string;
+  /** Google 地圖商家頁；有的話「看地圖」直接開這個頁面 */
+  mapUrl?: string;
   openHours: WeeklyHours;
   hoursNote?: string;
   /** 以台北日期 YYYY-MM-DD 為 key 的單日調整，例如臨時店休 */
@@ -84,10 +88,29 @@ export interface OpeningStatus {
 export interface Filters {
   meal: Meal | 'all';
   price: PriceRange | 'all';
-  area: Area | 'all';
+  area: AreaFilter;
   tags: TagId[];
   openOnly: boolean;
   verifiedOnly: boolean;
+}
+
+/** 流動餐車：出沒時間不固定，不放進轉盤，只列出地點與追蹤方式。 */
+export interface FoodTruck {
+  id: string;
+  name: string;
+  food: string;
+  tags: TagId[];
+  location: Area;
+  /** 常出現的位置 */
+  spot: string;
+  /** 出攤規律的文字描述 */
+  schedule: string;
+  priceNote?: string;
+  note?: string;
+  /** 追蹤出攤公告的方式，例如 IG 帳號名稱 */
+  follow?: string;
+  source: { label: string; url: string; postedAt: string };
+  checkedAt: string;
 }
 
 export interface Candidate {

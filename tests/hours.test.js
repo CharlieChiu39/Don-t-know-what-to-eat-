@@ -118,6 +118,23 @@ test('真實資料：9/20 停水停電只把公告時段標為待確認', () => 
   assert.equal(openingStatus(family, at('2026-09-21T12:00')).state, 'open');
 });
 
+test('真實資料：Google 地圖時段的跨夜營業與公休日', () => {
+  // 楊家豆漿：週五 17:00 開到週六 02:00，週六公休
+  const soy = byId(14);
+  assert.equal(openingStatus(soy, at('2026-09-12T01:00')).state, 'open');
+  assert.equal(openingStatus(soy, at('2026-09-12T20:00')).reason, 'day-off');
+  assert.equal(openingStatus(soy, at('2026-09-13T01:00')).state, 'closed');
+
+  // 二吉軒：每天 17:00 開到隔天 11:00（Google 原始資料拆成兩段，匯入時合併成跨夜）
+  const overnight = byId(131);
+  assert.equal(overnight.openHours.tue, '17:00-11:00');
+  assert.equal(openingStatus(overnight, at('2026-09-08T02:00')).state, 'open');
+  assert.equal(openingStatus(overnight, at('2026-09-08T10:30')).minutesLeft, 30);
+  const noon = openingStatus(overnight, at('2026-09-08T12:00'));
+  assert.equal(noon.state, 'closed');
+  assert.deepEqual(noon.next, { dayOffset: 0, minute: 17 * 60 });
+});
+
 test('真實資料：校內午餐據點晚上不會被判定為營業', () => {
   for (const id of [9, 10, 82, 83])
     assert.notEqual(openingStatus(byId(id), at('2026-09-10T18:00')).state, 'open', String(id));

@@ -4,7 +4,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { AREAS, MEALS, PRICES, TAGS } from '../js/core/catalog.js';
 import { DAY_KEYS, parseHours } from '../js/core/hours.js';
-import { restaurants } from './helpers.js';
+import { restaurants, trucks } from './helpers.js';
 
 const tagIds = new Set(TAGS.map((t) => t.id));
 
@@ -44,6 +44,26 @@ test('所有時刻表都能解析：七天齊全，非 null 的值不可格式�
       assert.match(day, /^\d{4}-\d{2}-\d{2}$/);
       assert.notEqual(parseHours(value), null, `${r.name} ${day}`);
     }
+  }
+});
+
+test('地圖連結與民雄市區店家：都要附 Google 地圖頁', () => {
+  for (const r of restaurants) {
+    if (r.mapUrl) assert.equal(new URL(r.mapUrl).protocol, 'https:', r.name);
+    if (r.location === '民雄市區') assert.ok(r.mapUrl, `${r.name} 缺少 mapUrl`);
+  }
+});
+
+test('流動餐車：ID 唯一、欄位合法、附 https 來源', () => {
+  assert.ok(trucks.length > 0);
+  assert.equal(new Set(trucks.map((t) => t.id)).size, trucks.length);
+  for (const t of trucks) {
+    assert.ok(t.name.trim() && t.food.trim() && t.spot.trim() && t.schedule.trim(), t.id);
+    assert.ok(AREAS.includes(t.location), `${t.name} location`);
+    assert.ok(t.tags.length && t.tags.every((tag) => tagIds.has(tag)), `${t.name} tags`);
+    assert.equal(new URL(t.source.url).protocol, 'https:', t.name);
+    assert.match(t.source.postedAt, /^\d{4}-\d{2}-\d{2}$/);
+    assert.match(t.checkedAt, /^\d{4}-\d{2}-\d{2}$/);
   }
 });
 

@@ -3,11 +3,15 @@ import { readFileSync } from 'node:fs';
 
 /** @typedef {import('../js/types.js').Restaurant} Restaurant */
 /** @typedef {import('../js/types.js').WeeklyHours} WeeklyHours */
+/** @typedef {import('../js/types.js').FoodTruck} FoodTruck */
 
 /** @type {Restaurant[]} */
 export const restaurants = JSON.parse(
   readFileSync(new URL('../data/restaurants.json', import.meta.url), 'utf8'),
 );
+
+/** @type {FoodTruck[]} */
+export const trucks = JSON.parse(readFileSync(new URL('../data/trucks.json', import.meta.url), 'utf8'));
 
 /** @param {number} id */
 export function byId(id) {

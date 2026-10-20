@@ -5,6 +5,7 @@
 /** @typedef {import('../types.js').Meal} Meal */
 /** @typedef {import('../types.js').PriceRange} PriceRange */
 /** @typedef {import('../types.js').Area} Area */
+/** @typedef {import('../types.js').AreaFilter} AreaFilter */
 
 /** @type {readonly { id: TagId, label: string, emoji: string, group: 'food' | 'diet' }[]} */
 export const TAGS = [
@@ -44,7 +45,23 @@ export const PRICES = [
 ];
 
 /** @type {readonly Area[]} */
-export const AREAS = ['校內', '神農路', '裕農路'];
+export const AREAS = ['校內', '神農路', '裕農路', '大學路', '民雄市區'];
+
+/**
+ * 「中正周邊」包含的區域：走路或騎車幾分鐘內就到，預設只抽這些。
+ * @type {readonly Area[]}
+ */
+export const NEARBY_AREAS = ['校內', '神農路', '裕農路', '大學路'];
+
+/**
+ * 區域篩選按鈕，依序顯示。
+ * @type {readonly { id: AreaFilter, label: string }[]}
+ */
+export const AREA_FILTERS = [
+  { id: 'nearby', label: '中正周邊' },
+  ...AREAS.map((area) => ({ id: area, label: area })),
+  { id: 'all', label: '不限' },
+];
 
 export const TAG_BY_ID = new Map(TAGS.map((tag) => [tag.id, tag]));
 export const PRICE_LABEL = new Map(PRICES.map((price) => [price.id, price.label]));

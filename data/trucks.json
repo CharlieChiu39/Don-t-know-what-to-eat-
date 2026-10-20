@@ -1,0 +1,52 @@
+[
+  {
+    "id": "grilled-chicken-rice",
+    "name": "烤雞肉飯餐車",
+    "food": "烤雞肉飯、桶仔雞",
+    "tags": ["rice"],
+    "location": "神農路",
+    "spot": "中吃與大吃之間那條橫向小路",
+    "schedule": "不固定，大約晚上 8、9 點出攤",
+    "priceNote": "小碗 30 元、大碗 40 元",
+    "note": "烤雞手撕、淋雞油，適合當宵夜；桶仔雞可以先向老闆預訂。",
+    "source": { "label": "Dcard 中正大學板", "url": "https://www.dcard.tw/f/ccu/p/261074960", "postedAt": "2026-03-13" },
+    "checkedAt": "2026-10-21"
+  },
+  {
+    "id": "shiliang",
+    "name": "食良 臭豆腐麵線餐車",
+    "food": "臭豆腐、麵線",
+    "tags": ["snack", "noodles"],
+    "location": "神農路",
+    "spot": "大吃楊家豆漿那一側的停車場",
+    "schedule": "晚上出攤，通常週二、週六（有時週六改週五）",
+    "follow": "IG 搜尋「食良」，出攤會先公告",
+    "source": { "label": "Dcard 中正大學板", "url": "https://www.dcard.tw/f/ccu/p/260446325", "postedAt": "2025-12-11" },
+    "checkedAt": "2026-10-21"
+  },
+  {
+    "id": "oden",
+    "name": "關東煮餐車",
+    "food": "關東煮",
+    "tags": ["snack"],
+    "location": "神農路",
+    "spot": "學校大門附近的廣場、大吃全家旁",
+    "schedule": "不固定",
+    "note": "有兩攤；資料來自 2025 年 4 月的討論，近況未確認。",
+    "source": { "label": "Dcard 中正大學板", "url": "https://www.dcard.tw/f/ccu/p/258577478", "postedAt": "2025-04-17" },
+    "checkedAt": "2026-10-21"
+  },
+  {
+    "id": "fresh-bread",
+    "name": "現烤麵包餐車",
+    "food": "現烤麵包",
+    "tags": ["snack"],
+    "location": "民雄市區",
+    "spot": "阿吉麵攤旁（民雄市區）",
+    "schedule": "不固定",
+    "follow": "老闆會在 Facebook 社團「我是民雄人」預告出攤",
+    "note": "留言提到有時也會開到學校附近；資料來自 2025 年 4 月的討論。",
+    "source": { "label": "Dcard 中正大學板", "url": "https://www.dcard.tw/f/ccu/p/258565460", "postedAt": "2025-04-16" },
+    "checkedAt": "2026-10-21"
+  }
+]

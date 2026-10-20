@@ -1,8 +1,8 @@
 // @ts-check
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mealForMinute } from '../js/core/catalog.js';
-import { buildCandidates, countActiveFilters, DEFAULT_FILTERS } from '../js/core/filters.js';
+import { mealForMinute, NEARBY_AREAS } from '../js/core/catalog.js';
+import { buildCandidates, countActiveFilters, DEFAULT_FILTERS, matchesArea } from '../js/core/filters.js';
 import { describeStatus, formatDuration, formatNextOpening } from '../js/core/format.js';
 import { openingStatus } from '../js/core/hours.js';
 import { pickIndex, pushRecent, recencyWeight, secureRandom } from '../js/core/picker.js';
@@ -47,9 +47,26 @@ test('只看已查證 + 封鎖清單', () => {
   assert.equal(buildCandidates(restaurants, filters({ openOnly: false }), { now: new Date(), blockedIds: all }).length, 0);
 });
 
+test('區域：預設只抽中正周邊，民雄市區要另外選或選不限', () => {
+  const now = at('2026-09-08T12:00');
+  const pick = (/** @type {Filters['area']} */ area) =>
+    buildCandidates(restaurants, filters({ area, openOnly: false }), { now, blockedIds: none }).map((c) => c.restaurant);
+  const nearby = pick('nearby');
+  const downtown = pick('民雄市區');
+  assert.ok(nearby.length > 0 && downtown.length > 0);
+  assert.ok(nearby.every((r) => NEARBY_AREAS.includes(r.location)));
+  assert.ok(downtown.every((r) => r.location === '民雄市區'));
+  assert.equal(pick('all').length, nearby.length + downtown.length);
+  assert.equal(DEFAULT_FILTERS.area, 'nearby');
+  assert.equal(matchesArea('大學路', 'nearby'), true);
+  assert.equal(matchesArea('民雄市區', 'nearby'), false);
+  assert.equal(matchesArea('民雄市區', 'all'), true);
+});
+
 test('countActiveFilters 計算偏離預設的條件數', () => {
   assert.equal(countActiveFilters(DEFAULT_FILTERS), 0);
   assert.equal(countActiveFilters(filters({ meal: 'lunch', tags: ['rice', 'bento'], openOnly: false })), 4);
+  assert.equal(countActiveFilters(filters({ area: 'all' })), 1);
 });
 
 test('網址參數來回轉換，並忽略不合法的值', () => {
@@ -58,9 +75,13 @@ test('網址參數來回轉換，並忽略不合法的值', () => {
   assert.equal(params.get('result'), '12');
   assert.deepEqual({ ...DEFAULT_FILTERS, ...readFilters(params) }, f);
   assert.equal(writeFilters(DEFAULT_FILTERS).toString(), '');
-  assert.deepEqual(readFilters(new URLSearchParams('meal=brunch&price=free&tags=noodles,hack,noodles&open=maybe')), {
+  assert.deepEqual(readFilters(new URLSearchParams('meal=brunch&price=free&area=台北&tags=noodles,hack,noodles&open=maybe')), {
     tags: ['noodles'],
   });
+  // 預設的中正周邊不寫進網址；不限與民雄市區要能分享
+  assert.equal(writeFilters(filters({ area: 'all' })).get('area'), 'all');
+  assert.deepEqual(readFilters(writeFilters(filters({ area: '民雄市區' }))), { area: '民雄市區' });
+  assert.deepEqual(readFilters(new URLSearchParams('area=nearby')), { area: 'nearby' });
 });
 
 test('加權抽選：權重越低越少被抽中，random 可注入', () => {
