@@ -1,276 +1,279 @@
-<!doctype html>
-<html lang="zh-Hant">
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, viewport-fit=cover"
-    />
-    <meta name="theme-color" content="#f3eee3" />
-    <title>食間 — 中正大學，今天吃什麼？</title>
-    <meta
-      name="description"
-      content="今天吃什麼？探索中正大學周邊餐廳，查看資料來源，依餐別、預算、區域篩選，收藏與分享今天的選擇。"
-    />
-    <link
-      rel="canonical"
-      href="https://charliechiu39.github.io/Don-t-know-what-to-eat-/"
-    />
-    <meta property="og:title" content="食間 — 今天，好好吃一餐。" />
-    <meta
-      property="og:description"
-      content="中正大學的日常食誌。選餐、找店，收藏你的口袋名單。"
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="zh_TW" />
-    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="css/style.css?v=20260915f" />
-    <script defer src="data/restaurants.js?v=20260915h"></script>
-    <script defer src="js/core.js?v=20260915g"></script>
-    <script defer src="js/card-draw.js?v=20260915d"></script>
-    <script defer src="js/app.js?v=20260915g"></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#main">跳至主要內容</a>
-    <header class="site-header">
-      <a class="brand" href="#decide" aria-label="食間首頁"
-        >食間<span>SHI JIAN</span></a
-      >
-      <span class="header-caption">中正大學・日常食誌</span>
-      <nav aria-label="主要導覽">
-        <a href="#meal-picker" class="linkline">選一餐</a
-        ><a href="#explore" class="linkline">尋一間</a
-        ><button id="nav-saved" class="nav-saved">
-          口袋名單 <span id="saved-count">00</span>
-        </button>
-      </nav>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>中正大學吃什麼？ — 嘉義 CCU 美食轉盤</title>
+
+  <!-- SEO: Primary -->
+  <meta name="description" content="中正大學學生必備！用轉盤隨機決定今天吃什麼，涵蓋校內、神農路、裕農路超過 80 間餐廳，支援早午晚宵夜篩選與即時營業狀態查詢。" />
+  <meta name="keywords" content="中正大學美食,嘉義吃什麼,中正大學餐廳,神農路美食,裕農路美食,CCU美食,食物輪盤,隨機餐廳" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://charliechiu39.github.io/Don-t-know-what-to-eat-/" />
+
+  <!-- SEO: Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/" />
+  <meta property="og:title"       content="中正大學吃什麼？🎡" />
+  <meta property="og:description" content="轉出你今天的命運餐廳！80+ 間嘉義中正大學周邊美食，即時篩選營業中店家。" />
+  <meta property="og:image"       content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/assets/assetsbg.jpg" />
+  <meta property="og:locale"      content="zh_TW" />
+
+  <!-- SEO: Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="中正大學吃什麼？🎡" />
+  <meta name="twitter:description" content="轉出你今天的命運餐廳！80+ 間嘉義中正大學周邊美食。" />
+  <meta name="twitter:image"       content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/assets/assetsbg.jpg" />
+
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎡</text></svg>" />
+
+  <!-- PWA / Mobile -->
+  <meta name="theme-color" content="#00bbff" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            neon:  { DEFAULT: '#00bbff', dim: '#0077aa' },
+            cyber: { DEFAULT: '#9b5de5', dark: '#6a35b0' },
+            void:  { DEFAULT: '#0a0a0f', card: '#12121a', border: '#1e1e2e' },
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="app-bg min-h-screen">
+
+  <!-- ══════════════════════════════════════════
+       LOADING SCREEN
+  ══════════════════════════════════════════ -->
+  <div id="loading-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center cursor-pointer select-none">
+    <img src="assets/assetsbg.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" />
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 text-center px-6">
+      <p id="loading-meal-text" class="text-5xl sm:text-7xl font-black text-white drop-shadow-lg tracking-wide leading-tight"></p>
+      <p class="mt-4 text-white/70 text-base font-medium animate-pulse">點擊任意處進入</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       MAIN APP
+  ══════════════════════════════════════════ -->
+  <div id="app" class="hidden max-w-md mx-auto px-4 pb-24 app-enter">
+
+    <!-- Header -->
+    <header class="pt-8 pb-4 text-center">
+      <div class="header-icon-wrap mx-auto mb-2">
+        <p class="text-4xl">🎡</p>
+      </div>
+      <h1 class="glitch-title text-2xl font-black tracking-tight" data-text="中正大學吃什麼？">中正大學吃什麼？</h1>
+      <p class="text-xs mt-1 font-medium" style="color:#00bbff;opacity:0.7;letter-spacing:0.12em;">— SPIN YOUR FATE —</p>
     </header>
-    <main id="main">
-      <section class="meal-hero" id="decide" aria-labelledby="hero-title">
-        <div class="meal-copy" id="meal-picker">
-          <p class="place-label">嘉義民雄 · 中正大學周邊</p>
-          <h1 id="hero-title"><span>今天，</span><span>想吃點什麼？</span></h1>
-          <p class="hero-description">
-            巷口的熟悉味道，或還沒吃過的那一間。<br />從
-            <span id="total-count">84</span> 間餐廳裡，選出你的下一餐。
-          </p>
-          <div class="draw-action">
-            <button id="spin-btn" class="primary-button spin-button">
-              <span id="spin-label">幫我選一間</span
-              ><span aria-hidden="true">↗</span>
-            </button>
-            <p id="spin-hint" class="spin-hint" role="status">
-              目前 84 間可選。
-            </p>
-          </div>
-          <details class="filter-disclosure">
-            <summary>
-              <span id="filter-label">調整餐別、預算與區域</span>
-              <span aria-hidden="true">＋</span>
-            </summary>
-            <div class="preferences">
-              <div class="section-heading">
-                <div>
-                  <h2>選餐條件</h2>
-                </div>
-                <button class="text-button" id="reset-filters">重設</button>
-              </div>
-              <fieldset>
-                <legend>餐別 <small>／ 什麼時候吃</small></legend>
-                <div class="chip-group meal-options" data-filter="meal">
-                  <button data-value="all" aria-pressed="true">不限</button
-                  ><button data-value="breakfast" aria-pressed="false">
-                    早餐</button
-                  ><button data-value="lunch" aria-pressed="false">午餐</button
-                  ><button data-value="dinner" aria-pressed="false">晚餐</button
-                  ><button data-value="latenight" aria-pressed="false">
-                    宵夜
-                  </button>
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend>預算 <small>／ 每人</small></legend>
-                <div class="chip-group price-options" data-filter="price">
-                  <button data-value="all" aria-pressed="true">不限</button
-                  ><button data-value="cheap" aria-pressed="false">
-                    &lt; 80 元</button
-                  ><button data-value="medium" aria-pressed="false">
-                    80–150 元</button
-                  ><button data-value="expensive" aria-pressed="false">
-                    &gt; 150 元
-                  </button>
-                </div>
-              </fieldset>
-              <fieldset>
-                <legend>區域 <small>／ 走到哪裡吃</small></legend>
-                <div class="chip-group" data-filter="location">
-                  <button data-value="all" aria-pressed="true">不限</button
-                  ><button data-value="校內" aria-pressed="false">校內</button
-                  ><button data-value="神農路" aria-pressed="false">
-                    神農路</button
-                  ><button data-value="裕農路" aria-pressed="false">
-                    裕農路
-                  </button>
-                </div>
-              </fieldset>
-              <div class="select-row">
-                <label for="cuisine">料理</label
-                ><select id="cuisine">
-                  <option value="all">什麼都可以</option>
-                </select>
-              </div>
-              <div class="open-option">
-                <label class="switch-label" for="open-only"
-                  ><span
-                    >只選現在營業的店</span
-                  ><input id="open-only" type="checkbox" role="switch" /><span
-                    class="switch-track"
-                    aria-hidden="true"
-                  ></span
-                ></label>
-              </div>
-            </div>
-          </details>
-          <a class="browse-link" href="#explore"
-            >或是，自己看看餐廳 <span aria-hidden="true">↓</span></a
-          >
-        </div>
-      </section>
-      <section class="recent-strip" aria-label="最近抽選">
-        <span class="eyebrow">最近</span
-        ><span class="recent-label">選過的餐廳</span>
-        <div id="recent-list">
-          <span class="muted">選過的餐廳會留在這裡。</span>
-        </div>
-        <button id="clear-history" class="text-button" hidden>清除</button>
-      </section>
-      <section class="explore" id="explore" aria-labelledby="explore-title">
-        <div class="explore-heading">
-          <div>
-            <p class="eyebrow">中正周邊</p>
-            <h2 id="explore-title">從哪一間開始？</h2>
-            <p>依照你的餐別、預算與區域，慢慢挑。</p>
-          </div>
-          <label class="search-box"
-            ><span aria-hidden="true">⌕</span
-            ><input
-              id="search"
-              type="search"
-              placeholder="搜尋店名、料理或關鍵字"
-              aria-label="搜尋店名、料理或關鍵字"
-          /></label>
-        </div>
-        <div class="list-toolbar">
-          <div class="list-tabs" aria-label="餐廳清單範圍">
-            <button data-view="all" aria-pressed="true">
-              全部餐廳 <span id="list-count">84</span></button
-            ><button data-view="saved" aria-pressed="false">口袋名單</button
-            ><button data-view="blocked" aria-pressed="false">
-              暫不考慮 <span id="blocked-count">0</span>
-            </button>
-          </div>
-          <label class="sort-control"
-            >排序
-            <select id="sort">
-              <option value="default">原始順序</option>
-              <option value="price">預算由低到高</option>
-              <option value="name">店名排序</option>
-            </select></label
-          >
-        </div>
-        <div class="list-summary">
-          <span id="list-summary" role="status"></span
-          ><button id="restore-blocked" class="text-button" hidden>
-            全部恢復
-          </button>
-        </div>
-        <div id="restaurant-grid" class="restaurant-grid"></div>
-        <div id="empty-state" class="empty-state" hidden>
-          <span aria-hidden="true">食</span>
-          <h3 id="empty-title">這次沒有找到餐廳</h3>
-          <p id="empty-description">換個關鍵字，或放寬上方的篩選條件。</p>
-          <button id="empty-reset" class="secondary-button">
-            清除篩選與搜尋
-          </button>
-        </div>
-        <button id="load-more" class="load-more" hidden>
-          再看看更多餐廳 ↓
-        </button>
-      </section>
-    </main>
-    <footer>
-      <a class="footer-brand" href="#decide">食間 <span>SHI JIAN</span></a>
-      <p>中正大學周邊選餐</p>
-      <a
-        class="linkline"
-        href="https://github.com/CharlieChiu39/Don-t-know-what-to-eat-"
-        target="_blank"
-        rel="noopener noreferrer"
-        >GitHub ↗</a
-      >
-    </footer>
-    <div id="draw-stage" class="draw-stage" aria-hidden="true" hidden></div>
-    <dialog id="result-dialog" aria-labelledby="result-name">
-      <button
-        class="dialog-close icon-button"
-        id="close-result"
-        aria-label="關閉餐廳詳情"
-      >
-        ×
+
+    <!-- Quick meal tabs -->
+    <div class="flex gap-1.5 mb-5">
+      <button class="meal-tab active" data-meal="all">全部 🍽️</button>
+      <button class="meal-tab" data-meal="breakfast">🌅 早餐</button>
+      <button class="meal-tab" data-meal="lunch">☀️ 午餐</button>
+      <button class="meal-tab" data-meal="dinner">🌙 晚餐</button>
+      <button class="meal-tab" data-meal="latenight">🌃 宵夜</button>
+    </div>
+
+    <!-- Wheel canvas -->
+    <div class="relative flex justify-center mb-3">
+      <div class="wheel-wrapper">
+        <canvas id="wheel-canvas" width="320" height="320" role="img" aria-label="餐廳轉盤"></canvas>
+        <!-- Pointer (CSS triangle) -->
+        <div class="wheel-pointer"></div>
+      </div>
+    </div>
+
+    <!-- View items button -->
+    <div class="flex justify-center mb-3">
+      <button id="view-items-btn" class="view-items-btn">
+        查看本輪 <span id="wheel-count">0</span> 間選項 ›
       </button>
-        <p class="eyebrow" id="result-kicker">餐廳詳情</p>
-      <div class="result-food" id="result-emoji" aria-hidden="true">食</div>
-      <p class="result-intro" id="result-intro">今天，就吃這間。</p>
-      <h2 id="result-name"></h2>
-      <div class="result-tags" id="result-tags"></div>
-      <p id="result-note"></p>
-      <p id="result-address"></p>
-      <div class="result-hours">
-        <span id="result-status"></span>
-        <p id="result-hours"></p>
-        <p id="result-hours-note"></p>
-        <a id="result-notice" target="_blank" rel="noopener noreferrer" hidden
-          >查看當日異動公告 ↗</a
-        >
-        <small id="hours-disclaimer">實際營業請以店家為準。</small>
+    </div>
+
+    <!-- Open-only toggle pill — 永遠可見 -->
+    <div class="flex justify-center mb-4">
+      <label for="open-only-toggle" class="open-only-pill">
+        <input type="checkbox" id="open-only-toggle" class="open-only-pill-input" checked />
+        <span class="open-only-pill-track">
+          <span class="open-only-pill-thumb"></span>
+        </span>
+        <span class="open-only-pill-text">只顯示營業中</span>
+      </label>
+    </div>
+
+    <!-- Spin button -->
+    <div class="flex justify-center gap-3 mb-5 items-center">
+      <button id="lucky-btn" class="lucky-btn" aria-label="3秒後自動轉動">Lucky 🎲</button>
+      <button id="spin-btn" class="spin-btn" aria-label="轉動轉盤選擇餐廳">
+        <span id="spin-btn-text">轉！</span>
+      </button>
+    </div>
+
+    <!-- Filter panel (collapsible) -->
+    <details class="filter-panel mb-4" id="filter-details">
+      <summary class="filter-summary">
+        <span>篩選條件</span>
+        <span id="filter-badge" class="filter-badge hidden">●</span>
+        <span class="ml-auto text-xs" style="color:#444;">展開 ▾</span>
+      </summary>
+      <div class="pt-3 space-y-3">
+        <!-- Price -->
+        <div>
+          <p class="text-xs font-semibold mb-1" style="color:#555;">價位</p>
+          <div class="flex gap-2 flex-wrap">
+            <button class="filter-chip active" data-type="price" data-value="all">不限</button>
+            <button class="filter-chip" data-type="price" data-value="cheap">&lt;80元</button>
+            <button class="filter-chip" data-type="price" data-value="medium">80-150元</button>
+            <button class="filter-chip" data-type="price" data-value="expensive">&gt;150元</button>
+          </div>
+        </div>
+        <!-- Cuisine -->
+        <div>
+          <p class="text-xs font-semibold mb-1" style="color:#555;">料理類型</p>
+          <div class="flex gap-2 flex-wrap" id="cuisine-chips">
+            <button class="filter-chip active" data-type="cuisine" data-value="all">不限</button>
+            <button class="filter-chip" data-type="cuisine" data-value="台式">台式</button>
+            <button class="filter-chip" data-type="cuisine" data-value="日式">日式</button>
+            <button class="filter-chip" data-type="cuisine" data-value="韓式">韓式</button>
+            <button class="filter-chip" data-type="cuisine" data-value="越式">越式</button>
+            <button class="filter-chip" data-type="cuisine" data-value="泰式">泰式</button>
+            <button class="filter-chip" data-type="cuisine" data-value="西式">西式</button>
+            <button class="filter-chip" data-type="cuisine" data-value="亞洲">亞洲</button>
+            <button class="filter-chip" data-type="cuisine" data-value="速食">速食</button>
+            <button class="filter-chip" data-type="cuisine" data-value="火鍋">火鍋</button>
+            <button class="filter-chip" data-type="cuisine" data-value="飲料">飲料</button>
+            <button class="filter-chip" data-type="cuisine" data-value="甜點">甜點</button>
+            <button class="filter-chip" data-type="cuisine" data-value="咖啡">咖啡</button>
+            <button class="filter-chip" data-type="cuisine" data-value="素食">素食</button>
+            <button class="filter-chip" data-type="cuisine" data-value="清真">清真</button>
+            <button class="filter-chip" data-type="cuisine" data-value="便利商店">超商</button>
+          </div>
+        </div>
+        <!-- Clear blocked -->
+        <div class="pt-1" style="border-top:1px solid #1e1e2e;">
+          <button id="clear-blocked-btn" class="text-xs transition-colors" style="color:#ff6b6b;">
+            清除封鎖清單 (<span id="blocked-count">0</span> 間)
+          </button>
+        </div>
       </div>
-      <details class="result-provenance">
-        <summary>資料來源</summary>
-        <p id="result-verification"></p>
-        <p id="result-price-note"></p>
-        <a
-          id="result-source"
-          target="_blank"
-          rel="noopener noreferrer"
-          hidden
-        ></a>
-      </details>
-      <a
-        id="map-link"
-        class="primary-button"
-        target="_blank"
-        rel="noopener noreferrer"
-        >在 Google Maps 找這間 ↗</a
-      >
-      <div class="result-actions">
-        <button id="save-result" class="secondary-button">♡ 收藏</button
-        ><button id="share-result" class="secondary-button">分享這間 ↗</button>
+    </details>
+
+    <!-- Share row -->
+    <div class="flex gap-3 mb-2">
+      <button id="share-btn" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-colors shadow-sm hidden" style="border:1px solid #1e1e2e;color:#888;background:#12121a;">
+        🔗 分享結果
+      </button>
+    </div>
+
+    <!-- No results notice -->
+    <div id="no-results" class="hidden text-center py-6 text-sm" style="color:#00bbff;opacity:0.7;">
+      <p class="text-4xl mb-2">😵</p>
+      <p>沒有符合條件的店家，試著放寬篩選條件！</p>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       ITEMS MODAL
+  ══════════════════════════════════════════ -->
+  <div id="items-modal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/50" id="items-overlay"></div>
+    <div class="items-card relative z-10 w-full max-w-sm rounded-3xl shadow-2xl flex flex-col" style="max-height:75vh;background:#12121a;border:1px solid #1e1e2e;">
+      <div class="p-5 pb-3 text-center" style="border-bottom:1px solid #1e1e2e;">
+        <h3 class="text-lg font-black" style="color:#e0e0e0;">本輪選項</h3>
+        <p class="text-xs mt-0.5" style="color:#555;">輪盤目前包含這些店家</p>
       </div>
-      <p id="result-feedback" role="status" hidden></p>
-      <div class="result-bottom">
-        <button id="block-result" class="text-button">暫時不考慮</button
-        ><button id="respin" class="text-button">再選一次 ↗</button>
+      <ul id="items-list" class="overflow-y-auto flex-1 p-4 space-y-2"></ul>
+      <div class="p-4 pt-3" style="border-top:1px solid #1e1e2e;">
+        <button id="close-items-btn" class="w-full py-2.5 rounded-xl text-white text-sm font-semibold transition-colors shadow" style="background:linear-gradient(135deg,#00bbff,#9b5de5);">
+          套用並關閉
+        </button>
       </div>
-      <div id="share-fallback" hidden>
-        <label for="share-url">複製下方連結分享</label
-        ><input id="share-url" type="url" readonly />
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       RESULT MODAL
+  ══════════════════════════════════════════ -->
+  <div id="result-modal" class="hidden fixed inset-0 z-40 flex items-end sm:items-center justify-center p-4">
+    <div class="result-overlay absolute inset-0 bg-black/50" id="result-overlay"></div>
+    <div class="result-card relative z-10 w-full max-w-sm rounded-3xl p-6 shadow-2xl result-slide-up" style="background:#12121a;border:1px solid #1e1e2e;">
+      <div class="text-center mb-4">
+        <div class="result-emoji-wrap mx-auto mb-3">
+          <p class="text-5xl" id="result-emoji">🍜</p>
+        </div>
+        <h2 class="text-2xl font-black mb-1" id="result-name" style="color:#ffffff;">餐廳名稱</h2>
+        <div class="flex items-center justify-center gap-2 flex-wrap mb-2">
+          <span class="badge-cuisine" id="result-cuisine">台式</span>
+          <span class="badge-price" id="result-price">銅板</span>
+          <span class="badge-location" id="result-location">神農路</span>
+        </div>
+        <p class="text-sm" id="result-note" style="color:#666;"></p>
+        <p class="text-xs font-medium mt-1 hidden" id="result-hours" style="color:#00ff88;"></p>
       </div>
-    </dialog>
-    <div id="toast" role="status" class="toast" hidden></div>
-    <noscript
-      ><p class="noscript">
-        請啟用 JavaScript 使用餐廳篩選與選餐功能。
-      </p></noscript
-    >
-  </body>
+      <a id="map-btn" href="#" target="_blank" rel="noopener" class="map-btn">
+        🗺️ 在 Google Maps 查看
+      </a>
+      <div class="flex gap-3 mt-3">
+        <button id="block-btn" class="flex-1 py-3 rounded-xl text-sm font-semibold transition-colors" style="border:1px solid rgba(239,68,68,0.4);color:#ff6b6b;background:transparent;">
+          不想吃這間 ✕
+        </button>
+        <button id="respin-btn" class="flex-1 py-3 rounded-xl text-white text-sm font-bold transition-colors shadow" style="background:linear-gradient(135deg,#00bbff,#9b5de5);">
+          再轉一次 🎲
+        </button>
+      </div>
+      <button id="close-result-btn" class="mt-3 w-full py-2 text-sm transition-colors" style="color:#444;">
+        關閉
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       TOAST NOTIFICATION
+  ══════════════════════════════════════════ -->
+  <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[60] hidden">
+    <div class="text-white px-5 py-3 rounded-full text-sm font-medium shadow-lg" id="toast-text" style="background:#12121a;border:1px solid #00bbff;box-shadow:0 0 12px rgba(0,187,255,0.3);"></div>
+  </div>
+
+  <!-- Screen flash overlay -->
+  <div id="screen-flash"></div>
+
+  <!-- Scripts -->
+  <script src="data/restaurants.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/wheel.js"></script>
+  <script src="js/app.js"></script>
+
+  <!-- JSON-LD 結構化資料 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "中正大學吃什麼？",
+    "description": "幫助中正大學學生用轉盤隨機決定今天吃什麼，涵蓋嘉義中正大學校園周邊 80 間以上餐廳",
+    "url": "https://charliechiu39.github.io/Don-t-know-what-to-eat-/",
+    "applicationCategory": "LifestyleApplication",
+    "operatingSystem": "Web Browser",
+    "inLanguage": "zh-TW",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TWD" },
+    "author": { "@type": "Person", "name": "CharlieChiu39" }
+  }
+  </script>
+</body>
 </html>
