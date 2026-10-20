@@ -6,7 +6,7 @@
 
 const sw = /** @type {ServiceWorkerGlobalScope} */ (/** @type {unknown} */ (self));
 
-const VERSION = 'v2.1.0';
+const VERSION = 'v2.2.0';
 const CACHE = `ccu-food-${VERSION}`;
 const SHELL = [
   './',
@@ -24,6 +24,7 @@ const SHELL = [
   'js/ui/wheel.js',
   'data/restaurants.json',
   'data/trucks.json',
+  'data/calendar.json',
   'manifest.webmanifest',
   'assets/assetsbg.jpg',
   'assets/icons/icon.svg',

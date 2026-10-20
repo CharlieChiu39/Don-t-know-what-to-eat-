@@ -29,6 +29,8 @@ export class Wheel {
     this.spinning = false;
     /** @type {number | null} 停下後高亮的扇形 */
     this.highlight = null;
+    /** 使用者要求略過動畫時設為 true，下一格直接停到結果 */
+    this.skipRequested = false;
     this.size = 320;
     // 用 ResizeObserver 取得 CSS 尺寸：初始化時不強制同步排版，RWD 改變時也會自動重畫
     new ResizeObserver(([entry]) => this.resize(entry.contentRect.width)).observe(canvas);
@@ -103,9 +105,12 @@ export class Wheel {
         ctx.fillStyle = 'rgba(111,42,221,0.5)';
         ctx.fill();
       }
-      ctx.strokeStyle = 'rgba(0,0,0,0.45)';
-      ctx.lineWidth = 1.2;
-      ctx.stroke();
+      // 只有一間時不畫分隔線，否則會多出一條從圓心到邊緣的線
+      if (slices.length > 1) {
+        ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
 
       // 扇形太窄就不放字
       if (labeled && (a1 - a0) * rim * 0.72 >= 12) this.drawLabel(c, rim, (a0 + a1) / 2, slices[i].label, i === this.highlight);
@@ -201,23 +206,25 @@ export class Wheel {
 
   /**
    * 轉到指定扇形。停點在扇形中段隨機位置，看起來不會每次都停在正中央。
+   * quick：連續再轉時用較短的動畫，不必每次都等 5 秒。
    * @param {number} index
-   * @param {{ reducedMotion?: boolean, random?: () => number }} [options]
+   * @param {{ reducedMotion?: boolean, quick?: boolean, random?: () => number }} [options]
    * @returns {Promise<void>}
    */
-  spin(index, { reducedMotion = false, random = Math.random } = {}) {
+  spin(index, { reducedMotion = false, quick = false, random = Math.random } = {}) {
     if (this.spinning || !this.slices[index]) return Promise.resolve();
     this.spinning = true;
+    this.skipRequested = false;
     this.highlight = null;
 
     const { start, end } = this.layout()[index];
     const landing = start + (end - start) * (0.15 + 0.7 * random());
     // 讓 landing 對準指針：rotation ≡ -landing (mod 2π)
     const delta = (((-landing - this.rotation) % TAU) + TAU) % TAU;
-    const turns = reducedMotion ? 0 : 5 + Math.floor(random() * 3);
+    const turns = reducedMotion ? 0 : quick ? 2 : 5 + Math.floor(random() * 3);
     const from = this.rotation;
     const distance = delta + turns * TAU;
-    const duration = reducedMotion ? 450 : 4200 + random() * 800;
+    const duration = reducedMotion ? 450 : quick ? 1600 + random() * 400 : 4200 + random() * 800;
     const ease = (/** @type {number} */ t) => 1 - Math.pow(1 - t, 4);
 
     return new Promise((resolve) => {
@@ -226,7 +233,7 @@ export class Wheel {
       /** @param {number} now */
       const frame = (now) => {
         t0 ??= now;
-        const progress = Math.min((now - t0) / duration, 1);
+        const progress = this.skipRequested ? 1 : Math.min((now - t0) / duration, 1);
         this.rotation = from + distance * ease(progress);
         this.draw();
         if (progress < 1) {
@@ -235,12 +242,18 @@ export class Wheel {
         }
         this.rotation %= TAU;
         this.spinning = false;
+        this.skipRequested = false;
         this.highlight = index;
         this.draw();
         resolve();
       };
       requestAnimationFrame(frame);
     });
+  }
+
+  /** 略過剩下的動畫，直接停在已決定的結果。 */
+  skip() {
+    if (this.spinning) this.skipRequested = true;
   }
 }
 
