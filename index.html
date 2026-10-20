@@ -1,272 +1,51 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant-TW">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>中正大學吃什麼？ — 嘉義 CCU 美食轉盤</title>
 
-  <!-- SEO: Primary -->
-  <meta name="description" content="中正大學學生必備！用轉盤隨機決定今天吃什麼，涵蓋校內、神農路、裕農路超過 80 間餐廳，支援早午晚宵夜篩選與即時營業狀態查詢。" />
-  <meta name="keywords" content="中正大學美食,嘉義吃什麼,中正大學餐廳,神農路美食,裕農路美食,CCU美食,食物輪盤,隨機餐廳" />
-  <meta name="robots" content="index, follow" />
+  <meta name="description" content="中正大學學生的選餐轉盤：92 間校內、神農路、裕農路餐廳，依台北時間判斷營業狀態，用「想吃什麼」標籤篩選，離線也能用。" />
   <link rel="canonical" href="https://charliechiu39.github.io/Don-t-know-what-to-eat-/" />
 
-  <!-- SEO: Open Graph -->
-  <meta property="og:type"        content="website" />
-  <meta property="og:url"         content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/" />
-  <meta property="og:title"       content="中正大學吃什麼？🎡" />
-  <meta property="og:description" content="轉出你今天的命運餐廳！80+ 間嘉義中正大學周邊美食，即時篩選營業中店家。" />
-  <meta property="og:image"       content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/assets/assetsbg.jpg" />
-  <meta property="og:locale"      content="zh_TW" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/" />
+  <meta property="og:title" content="中正大學吃什麼？🎡" />
+  <meta property="og:description" content="轉出你今天的命運餐廳！92 間中正大學周邊美食，即時判斷營業中。" />
+  <meta property="og:image" content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/assets/og-image.png" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- SEO: Twitter Card -->
-  <meta name="twitter:card"        content="summary_large_image" />
-  <meta name="twitter:title"       content="中正大學吃什麼？🎡" />
-  <meta name="twitter:description" content="轉出你今天的命運餐廳！80+ 間嘉義中正大學周邊美食。" />
-  <meta name="twitter:image"       content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/assets/assetsbg.jpg" />
-
-  <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎡</text></svg>" />
-
-  <!-- PWA / Mobile -->
-  <meta name="theme-color" content="#00bbff" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="color-scheme" content="dark" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans+TC:wght@400;600;700;900&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            neon:  { DEFAULT: '#00bbff', dim: '#0077aa' },
-            cyber: { DEFAULT: '#9b5de5', dark: '#6a35b0' },
-            void:  { DEFAULT: '#0a0a0f', card: '#12121a', border: '#1e1e2e' },
-          }
-        }
-      }
-    }
-  </script>
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body class="app-bg min-h-screen">
+  <!-- 中文用系統字型（PingFang／微軟正黑體／Noto CJK），只為英文標語非同步載入 Orbitron 的字母子集 -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap&text=SPINYOURFATE" media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="preload" href="data/restaurants.json" as="fetch" crossorigin="anonymous" />
+  <script type="module" src="js/app.js"></script>
+  <!-- 攤平 ES module 的瀑布式載入 -->
+  <link rel="modulepreload" href="js/core/catalog.js" />
+  <link rel="modulepreload" href="js/core/filters.js" />
+  <link rel="modulepreload" href="js/core/format.js" />
+  <link rel="modulepreload" href="js/core/hours.js" />
+  <link rel="modulepreload" href="js/core/picker.js" />
+  <link rel="modulepreload" href="js/core/storage.js" />
+  <link rel="modulepreload" href="js/core/url-state.js" />
+  <link rel="modulepreload" href="js/ui/effects.js" />
+  <link rel="modulepreload" href="js/ui/wheel.js" />
 
-  <!-- ══════════════════════════════════════════
-       LOADING SCREEN
-  ══════════════════════════════════════════ -->
-  <div id="loading-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center cursor-pointer select-none">
-    <img src="assets/assetsbg.jpg" alt="" class="absolute inset-0 w-full h-full object-cover" />
-    <div class="absolute inset-0 bg-black/50"></div>
-    <div class="relative z-10 text-center px-6">
-      <p id="loading-meal-text" class="text-5xl sm:text-7xl font-black text-white drop-shadow-lg tracking-wide leading-tight"></p>
-      <p class="mt-4 text-white/70 text-base font-medium animate-pulse">點擊任意處進入</p>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       MAIN APP
-  ══════════════════════════════════════════ -->
-  <div id="app" class="hidden max-w-md mx-auto px-4 pb-24 app-enter">
-
-    <!-- Header -->
-    <header class="pt-8 pb-4 text-center">
-      <div class="header-icon-wrap mx-auto mb-2">
-        <p class="text-4xl">🎡</p>
-      </div>
-      <h1 class="glitch-title text-2xl font-black tracking-tight" data-text="中正大學吃什麼？">中正大學吃什麼？</h1>
-      <p class="text-xs mt-1 font-medium" style="color:#00bbff;opacity:0.7;letter-spacing:0.12em;">— SPIN YOUR FATE —</p>
-    </header>
-
-    <!-- Quick meal tabs -->
-    <div class="flex gap-1.5 mb-5">
-      <button class="meal-tab active" data-meal="all">全部 🍽️</button>
-      <button class="meal-tab" data-meal="breakfast">🌅 早餐</button>
-      <button class="meal-tab" data-meal="lunch">☀️ 午餐</button>
-      <button class="meal-tab" data-meal="dinner">🌙 晚餐</button>
-      <button class="meal-tab" data-meal="latenight">🌃 宵夜</button>
-    </div>
-
-    <!-- Wheel canvas -->
-    <div class="relative flex justify-center mb-3">
-      <div class="wheel-wrapper">
-        <canvas id="wheel-canvas" width="320" height="320" role="img" aria-label="餐廳轉盤"></canvas>
-        <!-- Pointer (CSS triangle) -->
-        <div class="wheel-pointer"></div>
-      </div>
-    </div>
-
-    <!-- View items button -->
-    <div class="flex justify-center mb-3">
-      <button id="view-items-btn" class="view-items-btn">
-        查看本輪 <span id="wheel-count">0</span> 間選項 ›
-      </button>
-    </div>
-
-    <!-- Open-only toggle pill — 永遠可見 -->
-    <div class="flex justify-center mb-4">
-      <label for="open-only-toggle" class="open-only-pill">
-        <input type="checkbox" id="open-only-toggle" class="open-only-pill-input" checked />
-        <span class="open-only-pill-track">
-          <span class="open-only-pill-thumb"></span>
-        </span>
-        <span class="open-only-pill-text">只顯示營業中</span>
-      </label>
-    </div>
-
-    <!-- Spin button -->
-    <div class="flex justify-center gap-3 mb-5 items-center">
-      <button id="lucky-btn" class="lucky-btn" aria-label="3秒後自動轉動">Lucky 🎲</button>
-      <button id="spin-btn" class="spin-btn" aria-label="轉動轉盤選擇餐廳">
-        <span id="spin-btn-text">轉！</span>
-      </button>
-    </div>
-
-    <!-- Filter panel (collapsible) -->
-    <details class="filter-panel mb-4" id="filter-details">
-      <summary class="filter-summary">
-        <span>篩選條件</span>
-        <span id="filter-badge" class="filter-badge hidden">●</span>
-        <span class="ml-auto text-xs" style="color:#444;">展開 ▾</span>
-      </summary>
-      <div class="pt-3 space-y-3">
-        <!-- Price -->
-        <div>
-          <p class="text-xs font-semibold mb-1" style="color:#555;">價位</p>
-          <div class="flex gap-2 flex-wrap">
-            <button class="filter-chip active" data-type="price" data-value="all">不限</button>
-            <button class="filter-chip" data-type="price" data-value="cheap">&lt;80元</button>
-            <button class="filter-chip" data-type="price" data-value="medium">80-150元</button>
-            <button class="filter-chip" data-type="price" data-value="expensive">&gt;150元</button>
-          </div>
-        </div>
-        <!-- Cuisine -->
-        <div>
-          <p class="text-xs font-semibold mb-1" style="color:#555;">料理類型</p>
-          <div class="flex gap-2 flex-wrap" id="cuisine-chips">
-            <button class="filter-chip active" data-type="cuisine" data-value="all">不限</button>
-            <button class="filter-chip" data-type="cuisine" data-value="台式">台式</button>
-            <button class="filter-chip" data-type="cuisine" data-value="日式">日式</button>
-            <button class="filter-chip" data-type="cuisine" data-value="韓式">韓式</button>
-            <button class="filter-chip" data-type="cuisine" data-value="越式">越式</button>
-            <button class="filter-chip" data-type="cuisine" data-value="泰式">泰式</button>
-            <button class="filter-chip" data-type="cuisine" data-value="西式">西式</button>
-            <button class="filter-chip" data-type="cuisine" data-value="亞洲">亞洲</button>
-            <button class="filter-chip" data-type="cuisine" data-value="速食">速食</button>
-            <button class="filter-chip" data-type="cuisine" data-value="火鍋">火鍋</button>
-            <button class="filter-chip" data-type="cuisine" data-value="飲料">飲料</button>
-            <button class="filter-chip" data-type="cuisine" data-value="甜點">甜點</button>
-            <button class="filter-chip" data-type="cuisine" data-value="咖啡">咖啡</button>
-            <button class="filter-chip" data-type="cuisine" data-value="素食">素食</button>
-            <button class="filter-chip" data-type="cuisine" data-value="清真">清真</button>
-            <button class="filter-chip" data-type="cuisine" data-value="便利商店">超商</button>
-          </div>
-        </div>
-        <!-- Clear blocked -->
-        <div class="pt-1" style="border-top:1px solid #1e1e2e;">
-          <button id="clear-blocked-btn" class="text-xs transition-colors" style="color:#ff6b6b;">
-            清除封鎖清單 (<span id="blocked-count">0</span> 間)
-          </button>
-        </div>
-      </div>
-    </details>
-
-    <!-- Share row -->
-    <div class="flex gap-3 mb-2">
-      <button id="share-btn" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm transition-colors shadow-sm hidden" style="border:1px solid #1e1e2e;color:#888;background:#12121a;">
-        🔗 分享結果
-      </button>
-    </div>
-
-    <!-- No results notice -->
-    <div id="no-results" class="hidden text-center py-6 text-sm" style="color:#00bbff;opacity:0.7;">
-      <p class="text-4xl mb-2">😵</p>
-      <p>沒有符合條件的店家，試著放寬篩選條件！</p>
-    </div>
-
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       ITEMS MODAL
-  ══════════════════════════════════════════ -->
-  <div id="items-modal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4">
-    <div class="absolute inset-0 bg-black/50" id="items-overlay"></div>
-    <div class="items-card relative z-10 w-full max-w-sm rounded-3xl shadow-2xl flex flex-col" style="max-height:75vh;background:#12121a;border:1px solid #1e1e2e;">
-      <div class="p-5 pb-3 text-center" style="border-bottom:1px solid #1e1e2e;">
-        <h3 class="text-lg font-black" style="color:#e0e0e0;">本輪選項</h3>
-        <p class="text-xs mt-0.5" style="color:#555;">輪盤目前包含這些店家</p>
-      </div>
-      <ul id="items-list" class="overflow-y-auto flex-1 p-4 space-y-2"></ul>
-      <div class="p-4 pt-3" style="border-top:1px solid #1e1e2e;">
-        <button id="close-items-btn" class="w-full py-2.5 rounded-xl text-white text-sm font-semibold transition-colors shadow" style="background:linear-gradient(135deg,#00bbff,#9b5de5);">
-          套用並關閉
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       RESULT MODAL
-  ══════════════════════════════════════════ -->
-  <div id="result-modal" class="hidden fixed inset-0 z-40 flex items-end sm:items-center justify-center p-4">
-    <div class="result-overlay absolute inset-0 bg-black/50" id="result-overlay"></div>
-    <div class="result-card relative z-10 w-full max-w-sm rounded-3xl p-6 shadow-2xl result-slide-up" style="background:#12121a;border:1px solid #1e1e2e;">
-      <div class="text-center mb-4">
-        <div class="result-emoji-wrap mx-auto mb-3">
-          <p class="text-5xl" id="result-emoji">🍜</p>
-        </div>
-        <h2 class="text-2xl font-black mb-1" id="result-name" style="color:#ffffff;">餐廳名稱</h2>
-        <div class="flex items-center justify-center gap-2 flex-wrap mb-2">
-          <span class="badge-cuisine" id="result-cuisine">台式</span>
-          <span class="badge-price" id="result-price">銅板</span>
-          <span class="badge-location" id="result-location">神農路</span>
-        </div>
-        <p class="text-sm" id="result-note" style="color:#666;"></p>
-        <p class="text-xs font-medium mt-1 hidden" id="result-hours" style="color:#00ff88;"></p>
-      </div>
-      <a id="map-btn" href="#" target="_blank" rel="noopener" class="map-btn">
-        🗺️ 在 Google Maps 查看
-      </a>
-      <div class="flex gap-3 mt-3">
-        <button id="block-btn" class="flex-1 py-3 rounded-xl text-sm font-semibold transition-colors" style="border:1px solid rgba(239,68,68,0.4);color:#ff6b6b;background:transparent;">
-          不想吃這間 ✕
-        </button>
-        <button id="respin-btn" class="flex-1 py-3 rounded-xl text-white text-sm font-bold transition-colors shadow" style="background:linear-gradient(135deg,#00bbff,#9b5de5);">
-          再轉一次 🎲
-        </button>
-      </div>
-      <button id="close-result-btn" class="mt-3 w-full py-2 text-sm transition-colors" style="color:#444;">
-        關閉
-      </button>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════════
-       TOAST NOTIFICATION
-  ══════════════════════════════════════════ -->
-  <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-[60] hidden">
-    <div class="text-white px-5 py-3 rounded-full text-sm font-medium shadow-lg" id="toast-text" style="background:#12121a;border:1px solid #00bbff;box-shadow:0 0 12px rgba(0,187,255,0.3);"></div>
-  </div>
-
-  <!-- Screen flash overlay -->
-  <div id="screen-flash"></div>
-
-  <!-- Scripts -->
-  <script src="data/restaurants.js"></script>
-  <script src="js/core.js"></script>
-  <script src="js/wheel.js"></script>
-  <script src="js/app.js"></script>
-
-  <!-- JSON-LD 結構化資料 -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "中正大學吃什麼？",
-    "description": "幫助中正大學學生用轉盤隨機決定今天吃什麼，涵蓋嘉義中正大學校園周邊 80 間以上餐廳",
+    "description": "幫中正大學學生隨機決定今天吃什麼的選餐轉盤，收錄校園周邊 92 間餐廳並判斷營業狀態。",
     "url": "https://charliechiu39.github.io/Don-t-know-what-to-eat-/",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Web Browser",
@@ -275,5 +54,187 @@
     "author": { "@type": "Person", "name": "CharlieChiu39" }
   }
   </script>
+</head>
+<body>
+  <a class="skip-link" href="#spin-btn">跳到轉盤</a>
+
+  <!-- 開場：每個分頁工作階段只出現一次，可點擊或按任意鍵略過 -->
+  <div id="splash" class="splash" hidden>
+    <div class="splash-content">
+      <p id="splash-text" class="splash-title"></p>
+      <p class="splash-hint">點擊任意處進入</p>
+    </div>
+  </div>
+
+  <div id="fx-layer" class="fx-layer" aria-hidden="true"></div>
+
+  <main class="app">
+    <header class="app-header">
+      <div class="header-icon" aria-hidden="true">🎡</div>
+      <h1 class="glitch-title" data-text="中正大學吃什麼？">中正大學吃什麼？</h1>
+      <p class="tagline">— SPIN YOUR FATE —</p>
+      <p id="now-line" class="now-line" aria-live="off"></p>
+    </header>
+
+    <div class="layout">
+      <section class="stage" aria-labelledby="stage-title">
+        <h2 id="stage-title" class="sr-only">轉盤</h2>
+
+        <div id="meal-tabs" class="meal-tabs" role="group" aria-label="餐別"></div>
+
+        <div class="wheel-wrapper">
+          <canvas id="wheel-canvas" role="img" aria-label="餐廳轉盤"></canvas>
+          <div class="wheel-pointer" aria-hidden="true"></div>
+        </div>
+        <p id="wheel-legend" class="wheel-legend" hidden>扇形越窄＝最近吃過，抽中機率較低</p>
+
+        <button id="list-btn" type="button" class="pill-btn">
+          查看本輪 <span id="count">0</span> 間選項<span id="excluded-note"></span> ›
+        </button>
+
+        <label class="open-only-pill">
+          <input id="open-only" type="checkbox" class="open-only-input" checked />
+          <span class="open-only-track" aria-hidden="true"><span class="open-only-thumb"></span></span>
+          <span>只顯示營業中</span>
+        </label>
+
+        <div class="spin-row">
+          <button id="lucky-btn" type="button" class="lucky-btn">Lucky <span aria-hidden="true">🎲</span><span class="sr-only">：倒數三秒後自動轉動</span></button>
+          <button id="spin-btn" type="button" class="spin-btn">轉！</button>
+        </div>
+
+        <div id="empty-state" class="empty-state" hidden>
+          <p class="empty-emoji" aria-hidden="true">😵</p>
+          <p id="empty-text">沒有符合條件的店家</p>
+          <button id="relax-btn" type="button" class="link-btn">一鍵放寬條件</button>
+        </div>
+      </section>
+
+      <aside class="side" aria-label="篩選與紀錄">
+        <details id="filter-panel" class="panel">
+          <summary class="panel-summary">
+            <span>篩選條件</span>
+            <span id="filter-count" class="filter-count" hidden></span>
+            <span class="panel-chevron" aria-hidden="true">▾</span>
+          </summary>
+
+          <div class="panel-body">
+            <fieldset class="field">
+              <legend>想吃什麼 <span class="legend-hint">可複選</span></legend>
+              <div id="tag-chips" class="chips"></div>
+            </fieldset>
+            <fieldset class="field">
+              <legend>飲食需求</legend>
+              <div id="diet-chips" class="chips"></div>
+            </fieldset>
+            <fieldset class="field">
+              <legend>區域</legend>
+              <div id="area-chips" class="chips"></div>
+            </fieldset>
+            <fieldset class="field">
+              <legend>價位</legend>
+              <div id="price-chips" class="chips"></div>
+            </fieldset>
+            <fieldset class="field">
+              <legend>進階</legend>
+              <label class="switch-row">
+                <input id="verified-only" type="checkbox" />
+                <span>只看已查證營業時間的店</span>
+              </label>
+              <label class="switch-row">
+                <input id="weighting" type="checkbox" />
+                <span>降低最近吃過的抽中率</span>
+              </label>
+            </fieldset>
+            <div class="panel-footer">
+              <button id="reset-btn" type="button" class="link-btn">重設篩選</button>
+              <button id="blocked-btn" type="button" class="link-btn link-danger">封鎖清單（<span id="blocked-count">0</span>）</button>
+            </div>
+          </div>
+        </details>
+
+        <section id="recent-box" class="panel recent" aria-labelledby="recent-title" hidden>
+          <div class="recent-head">
+            <h2 id="recent-title" class="recent-title">最近吃過</h2>
+            <button id="clear-recent-btn" type="button" class="link-btn">清除</button>
+          </div>
+          <ol id="recent-list" class="recent-list"></ol>
+        </section>
+
+        <p class="data-note">
+          <span id="data-summary">載入資料中…</span>
+          <a href="https://github.com/CharlieChiu39/Don-t-know-what-to-eat-/blob/main/docs/restaurant-audit.md" target="_blank" rel="noopener">查核紀錄</a>
+        </p>
+      </aside>
+    </div>
+
+    <footer class="app-footer">
+      <a href="https://github.com/CharlieChiu39/Don-t-know-what-to-eat-" target="_blank" rel="noopener">GitHub</a>
+      <span aria-hidden="true">·</span>
+      <span>營業時間僅供參考，出發前請向店家確認</span>
+    </footer>
+  </main>
+
+  <!-- 本輪選項 -->
+  <dialog id="list-dialog" class="sheet" aria-labelledby="list-title">
+    <div class="sheet-head">
+      <h2 id="list-title" class="sheet-title">本輪選項</h2>
+      <p class="sheet-sub">取消勾選可暫時排除，只影響這一輪</p>
+    </div>
+    <ul id="list" class="item-list"></ul>
+    <form method="dialog" class="sheet-foot">
+      <button class="primary-btn" value="apply">套用並關閉</button>
+    </form>
+  </dialog>
+
+  <!-- 抽選結果 -->
+  <dialog id="result-dialog" class="sheet result" aria-labelledby="result-name" aria-describedby="result-status">
+    <form method="dialog" class="sheet-close"><button aria-label="關閉">✕</button></form>
+    <div class="result-emoji" aria-hidden="true"><span id="result-emoji">🍜</span></div>
+    <p class="eyebrow">今天就吃</p>
+    <h2 id="result-name" class="result-name" tabindex="-1" autofocus></h2>
+    <div class="badges">
+      <span id="result-cuisine" class="badge badge-cuisine"></span>
+      <span id="result-price" class="badge badge-price"></span>
+      <span id="result-area" class="badge badge-area"></span>
+    </div>
+    <ul id="result-tags" class="tag-list" aria-label="標籤"></ul>
+    <div id="result-status" class="status-card" data-tone="unknown">
+      <span class="status-dot" aria-hidden="true"></span>
+      <strong id="result-status-badge"></strong>
+      <span id="result-status-detail" class="status-detail"></span>
+    </div>
+    <p id="result-note" class="result-note"></p>
+    <p id="result-address" class="result-meta" hidden></p>
+    <p id="result-source" class="result-meta"></p>
+    <div class="result-actions">
+      <a id="map-link" class="map-btn" href="#" target="_blank" rel="noopener">🗺️ 看地圖</a>
+      <button id="eat-btn" type="button" class="primary-btn">就吃這間 ✓</button>
+    </div>
+    <div class="result-secondary">
+      <button id="block-btn" type="button" class="ghost-btn ghost-danger">不想吃這間</button>
+      <button id="respin-btn" type="button" class="ghost-btn">再轉一次 🎲</button>
+      <button id="share-btn" type="button" class="ghost-btn">分享 🔗</button>
+    </div>
+  </dialog>
+
+  <!-- 封鎖清單 -->
+  <dialog id="blocked-dialog" class="sheet" aria-labelledby="blocked-title">
+    <div class="sheet-head">
+      <h2 id="blocked-title" class="sheet-title">封鎖清單</h2>
+      <p class="sheet-sub">封鎖的店不會出現在轉盤上</p>
+    </div>
+    <ul id="blocked-list" class="item-list"></ul>
+    <form method="dialog" class="sheet-foot sheet-foot-split">
+      <button id="unblock-all-btn" type="button" class="ghost-btn ghost-danger">全部恢復</button>
+      <button class="primary-btn">完成</button>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="sr-announcer" class="sr-only" aria-live="assertive"></div>
+  <div id="screen-flash" class="screen-flash" aria-hidden="true"></div>
+
+  <noscript><p class="noscript">這個網站需要 JavaScript 才能轉動轉盤。</p></noscript>
 </body>
 </html>
