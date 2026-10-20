@@ -1,8 +1,8 @@
 // @ts-check
 // 進入點：載入資料、管理狀態、把 core 的純函式結果畫到畫面上。
 
-import { AREAS, MEALS, PRICE_LABEL, PRICES, TAG_BY_ID, TAGS, mealForMinute } from './core/catalog.js';
-import { buildCandidates, countActiveFilters, DEFAULT_FILTERS } from './core/filters.js';
+import { AREA_FILTERS, MEALS, PRICE_LABEL, PRICES, TAG_BY_ID, TAGS, mealForMinute } from './core/catalog.js';
+import { buildCandidates, countActiveFilters, DEFAULT_FILTERS, matchesArea } from './core/filters.js';
 import { describeStatus } from './core/format.js';
 import { openingStatus, taipeiClock } from './core/hours.js';
 import { pickIndex, pushRecent, recencyWeight } from './core/picker.js';
@@ -12,6 +12,7 @@ import { celebrate, prefersReducedMotion, replayClass, startAmbient } from './ui
 import { Wheel } from './ui/wheel.js';
 
 /** @typedef {import('./types.js').Restaurant} Restaurant */
+/** @typedef {import('./types.js').FoodTruck} FoodTruck */
 /** @typedef {import('./types.js').Candidate} Candidate */
 /** @typedef {import('./types.js').Filters} Filters */
 /** @typedef {import('./types.js').Meal} Meal */
@@ -57,6 +58,9 @@ const ui = {
   blockedCount: $('blocked-count', HTMLElement),
   recentBox: $('recent-box', HTMLElement),
   recentList: $('recent-list', HTMLElement),
+  truckBox: $('truck-box', HTMLDetailsElement),
+  truckCount: $('truck-count', HTMLElement),
+  truckList: $('truck-list', HTMLElement),
   clearRecentBtn: $('clear-recent-btn', HTMLButtonElement),
   dataSummary: $('data-summary', HTMLElement),
   listDialog: $('list-dialog', HTMLDialogElement),
@@ -81,6 +85,7 @@ const ui = {
     statusBadge: $('result-status-badge', HTMLElement),
     statusDetail: $('result-status-detail', HTMLElement),
     note: $('result-note', HTMLElement),
+    hoursNote: $('result-hours-note', HTMLElement),
     address: $('result-address', HTMLElement),
     source: $('result-source', HTMLElement),
     mapLink: $('map-link', HTMLAnchorElement),
@@ -101,6 +106,8 @@ const state = {
   restaurants: [],
   /** @type {Map<number, Restaurant>} */
   byId: new Map(),
+  /** @type {FoodTruck[]} */
+  trucks: [],
   /** @type {Filters} */
   filters: { ...DEFAULT_FILTERS, tags: [] },
   /** @type {number[]} */
@@ -194,6 +201,7 @@ function render() {
   renderNowLine(now);
   ui.blockedCount.textContent = String(state.blocked.length);
   renderRecent();
+  renderTrucks();
 
   if (state.urlDirty) {
     const params = writeFilters(state.filters, new URLSearchParams(location.search));
@@ -238,6 +246,7 @@ function renderNowLine(now) {
   let open = 0;
   let likely = 0;
   for (const r of state.restaurants) {
+    if (!matchesArea(r.location, state.filters.area)) continue;
     const s = openingStatus(r, now).state;
     if (s === 'open') open++;
     else if (s === 'likely') likely++;
@@ -255,9 +264,14 @@ function renderNowLine(now) {
 /** 依目前條件，建議最有效的放寬方式。 */
 function relaxPlan() {
   const f = state.filters;
-  if (f.tags.length || f.price !== 'all' || f.area !== 'all' || f.verifiedOnly)
-    return { label: '清除類型、區域與價位條件', apply: () => Object.assign(f, { tags: [], price: 'all', area: 'all', verifiedOnly: false }) };
+  const pickedArea = f.area !== 'nearby' && f.area !== 'all';
+  if (f.tags.length || f.price !== 'all' || pickedArea || f.verifiedOnly)
+    return {
+      label: '清除類型、區域與價位條件',
+      apply: () => Object.assign(f, { tags: [], price: 'all', area: pickedArea ? 'all' : f.area, verifiedOnly: false }),
+    };
   if (f.meal !== 'all') return { label: '改看全部餐別', apply: () => (f.meal = 'all') };
+  if (f.area === 'nearby') return { label: '擴大到民雄市區', apply: () => (f.area = 'all') };
   if (f.openOnly) return { label: '也顯示休息中的店', apply: () => (f.openOnly = false) };
   if (state.excluded.size) return { label: '恢復本輪排除的店', apply: () => state.excluded.clear() };
   return null;
@@ -277,6 +291,33 @@ function renderRecent() {
   ui.recentList.replaceChildren(...items.map((r) => h('li', {}, [`${emojiOf(r)} ${r.name}`])));
 }
 
+/** 流動餐車：跟著區域篩選，但不放進轉盤 */
+function renderTrucks() {
+  const trucks = state.trucks.filter((t) => matchesArea(t.location, state.filters.area));
+  ui.truckBox.hidden = trucks.length === 0;
+  ui.truckCount.textContent = String(trucks.length);
+  ui.truckList.replaceChildren(
+    ...trucks.map((t) =>
+      h('li', { class: 'truck' }, [
+        h('p', { class: 'truck-name' }, [
+          h('span', {}, [`${TAG_BY_ID.get(t.tags[0])?.emoji ?? '🚚'} ${t.name}`]),
+          h('span', { class: 'truck-area' }, [t.location]),
+        ]),
+        h('p', { class: 'truck-food' }, [[t.food, t.priceNote].filter(Boolean).join('・')]),
+        h('p', { class: 'truck-meta' }, [`📍 ${t.spot}`]),
+        h('p', { class: 'truck-meta' }, [`🕗 ${t.schedule}`]),
+        t.note ? h('p', { class: 'truck-meta' }, [t.note]) : '',
+        t.follow ? h('p', { class: 'truck-meta' }, [`追蹤：${t.follow}`]) : '',
+        h('p', { class: 'truck-source' }, [
+          '資料：',
+          h('a', { href: t.source.url, target: '_blank', rel: 'noopener' }, [t.source.label]),
+          `（${t.source.postedAt} 貼文）`,
+        ]),
+      ]),
+    ),
+  );
+}
+
 // ── Static controls ────────────────────────────────────────────────
 function buildControls() {
   const meals = [{ id: 'all', label: '全部', emoji: '🍽️' }, ...MEALS];
@@ -292,7 +333,7 @@ function buildControls() {
   ui.tagChips.replaceChildren(...TAGS.filter((t) => t.group === 'food').map(tagChip));
   ui.dietChips.replaceChildren(...TAGS.filter((t) => t.group === 'diet').map(tagChip));
   ui.areaChips.replaceChildren(
-    ...['all', ...AREAS].map((a) => h('button', { type: 'button', class: 'chip', 'data-area': a }, [a === 'all' ? '不限' : a])),
+    ...AREA_FILTERS.map((a) => h('button', { type: 'button', class: 'chip', 'data-area': a.id }, [a.label])),
   );
   ui.priceChips.replaceChildren(
     ...[{ id: 'all', label: '不限' }, ...PRICES].map((p) =>
@@ -420,6 +461,8 @@ function showResult(candidate, fresh) {
   res.statusBadge.textContent = status.badge;
   res.statusDetail.textContent = status.detail;
   res.note.textContent = r.note;
+  res.hoursNote.hidden = !r.hoursNote;
+  res.hoursNote.textContent = r.hoursNote ? `🕗 ${r.hoursNote}` : '';
   res.address.hidden = !r.address;
   res.address.textContent = r.address ? `📍 ${r.address}` : '';
 
@@ -435,7 +478,7 @@ function showResult(candidate, fresh) {
   }
 
   const query = r.address ? `${r.name} ${r.address}` : `${r.name} 嘉義民雄`;
-  res.mapLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  res.mapLink.href = r.mapUrl ?? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 
   const url = new URL(location.href);
   url.searchParams.set('result', String(r.id));
@@ -618,6 +661,16 @@ async function loadRestaurants() {
   return /** @type {Promise<Restaurant[]>} */ (response.json());
 }
 
+/** 餐車資料是附加資訊，載入失敗時就不顯示，不影響轉盤 */
+async function loadTrucks() {
+  try {
+    const response = await fetch('data/trucks.json');
+    return response.ok ? /** @type {FoodTruck[]} */ (await response.json()) : [];
+  } catch {
+    return [];
+  }
+}
+
 function restorePreferences() {
   const allowed = new Set(state.restaurants.map((r) => r.id));
   state.blocked = idStore.read(KEYS.blocked, allowed);
@@ -661,6 +714,7 @@ async function main() {
   if (matchMedia('(min-width: 1024px)').matches) ui.filterPanel.open = true;
   renderControls(new Date());
 
+  const trucks = loadTrucks();
   try {
     state.restaurants = await loadRestaurants();
   } catch {
@@ -672,6 +726,7 @@ async function main() {
     return;
   }
   state.byId = new Map(state.restaurants.map((r) => [r.id, r]));
+  state.trucks = await trucks;
   restorePreferences();
   renderDataSummary();
   render();

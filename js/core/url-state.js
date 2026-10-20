@@ -47,7 +47,7 @@ export function readFilters(params) {
   const price = params.get('price');
   if (isOneOf(PRICE_IDS, price)) f.price = price;
   const area = params.get('area');
-  if (isOneOf(AREAS, area)) f.area = area;
+  if (area === 'all' || area === 'nearby' || isOneOf(AREAS, area)) f.area = area;
   const tags = params.get('tags');
   if (tags !== null) f.tags = [...new Set(tags.split(','))].filter((tag) => isOneOf(TAG_IDS, tag));
   const open = params.get('open');

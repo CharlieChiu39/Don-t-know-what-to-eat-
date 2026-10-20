@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>中正大學吃什麼？ — 嘉義 CCU 美食轉盤</title>
 
-  <meta name="description" content="中正大學學生的選餐轉盤：92 間校內、神農路、裕農路餐廳，依台北時間判斷營業狀態，用「想吃什麼」標籤篩選，離線也能用。" />
+  <meta name="description" content="中正大學學生的選餐轉盤：校園周邊 92 間加上民雄市區 112 間餐廳，依台北時間判斷營業狀態，用「想吃什麼」標籤篩選，還列出附近的流動餐車，離線也能用。" />
   <link rel="canonical" href="https://charliechiu39.github.io/Don-t-know-what-to-eat-/" />
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/" />
   <meta property="og:title" content="中正大學吃什麼？🎡" />
-  <meta property="og:description" content="轉出你今天的命運餐廳！92 間中正大學周邊美食，即時判斷營業中。" />
+  <meta property="og:description" content="轉出你今天的命運餐廳！中正大學周邊到民雄市區 204 間美食，即時判斷營業中。" />
   <meta property="og:image" content="https://charliechiu39.github.io/Don-t-know-what-to-eat-/assets/og-image.png" />
   <meta property="og:locale" content="zh_TW" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -45,7 +45,7 @@
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "中正大學吃什麼？",
-    "description": "幫中正大學學生隨機決定今天吃什麼的選餐轉盤，收錄校園周邊 92 間餐廳並判斷營業狀態。",
+    "description": "幫中正大學學生隨機決定今天吃什麼的選餐轉盤，收錄校園周邊與民雄市區 204 間餐廳並判斷營業狀態。",
     "url": "https://charliechiu39.github.io/Don-t-know-what-to-eat-/",
     "applicationCategory": "LifestyleApplication",
     "operatingSystem": "Web Browser",
@@ -161,6 +161,19 @@
           <ol id="recent-list" class="recent-list"></ol>
         </section>
 
+        <details id="truck-box" class="panel" hidden>
+          <summary class="panel-summary">
+            <span>🚚 流動餐車</span>
+            <span id="truck-count" class="truck-count"></span>
+            <span class="panel-chevron" aria-hidden="true">▾</span>
+          </summary>
+          <div class="panel-body">
+            <p class="truck-hint">出沒時間不固定，所以不放進轉盤。出發前先看店家社群或 Dcard 上的最新消息。</p>
+            <ul id="truck-list" class="truck-list"></ul>
+            <p class="truck-hint">學生會不定期在校內辦「餐車日」，攤商名單看學生會 IG 公告。</p>
+          </div>
+        </details>
+
         <p class="data-note">
           <span id="data-summary">載入資料中…</span>
           <a href="https://github.com/CharlieChiu39/Don-t-know-what-to-eat-/blob/main/docs/restaurant-audit.md" target="_blank" rel="noopener">查核紀錄</a>
@@ -213,6 +226,7 @@
       <span id="result-status-detail" class="status-detail"></span>
     </div>
     <p id="result-note" class="result-note"></p>
+    <p id="result-hours-note" class="result-meta" hidden></p>
     <p id="result-address" class="result-meta" hidden></p>
     <p id="result-source" class="result-meta"></p>
     <div class="result-actions">

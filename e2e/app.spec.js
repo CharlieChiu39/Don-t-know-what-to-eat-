@@ -61,6 +61,48 @@ test('分享連結直接開啟指定餐廳；Esc 關閉後網址移除 result', 
   await expect(page).not.toHaveURL(/result=/);
 });
 
+test('預設只抽中正周邊；改選民雄市區會換一批店並寫進網址', async ({ page }) => {
+  await page.goto('/');
+  await openFilters(page);
+  await expect(page.locator('[data-area="nearby"]')).toHaveAttribute('aria-pressed', 'true');
+  const nearby = await page.locator('#count').textContent();
+  await page.locator('[data-area="民雄市區"]').click();
+  await expect(page).toHaveURL(/area=%E6%B0%91%E9%9B%84%E5%B8%82%E5%8D%80/);
+  await expect(page.locator('#count')).not.toHaveText('0');
+  await expect(page.locator('#count')).not.toHaveText(nearby ?? '');
+});
+
+test('民雄市區的結果附 Google 地圖來源，「看地圖」直接開商家頁', async ({ page }) => {
+  await page.goto('/?result=93');
+  await expect(page.locator('#result-area')).toHaveText('民雄市區');
+  const source = page.locator('#result-source a');
+  await expect(source).toHaveText('Google 地圖商家資訊');
+  const href = (await source.getAttribute('href')) ?? '';
+  expect(href).toMatch(/^https:\/\/maps\.google\.com\/\?cid=\d+$/);
+  await expect(page.locator('#map-link')).toHaveAttribute('href', href);
+});
+
+test('流動餐車列在側欄、跟著區域篩選，而且不放進轉盤', async ({ page }) => {
+  await page.goto('/');
+  const box = page.locator('#truck-box');
+  await expect(box).toBeVisible();
+  await box.locator('summary').click();
+  const trucks = box.locator('#truck-list > li');
+  await expect(trucks).toHaveCount(Number(await page.locator('#truck-count').textContent()));
+  await expect(trucks.first().locator('a')).toHaveAttribute('href', /^https:\/\/www\.dcard\.tw\//);
+  const axe = await new AxeBuilder({ page }).include('#truck-box').analyze();
+  expect(axe.violations).toEqual([]);
+
+  // 轉盤上的名稱不包含餐車
+  const names = await trucks.locator('.truck-name > span:first-child').allTextContents();
+  await page.locator('#list-btn').click();
+  const list = await page.locator('#list').textContent();
+  for (const name of names) expect(list).not.toContain(name.replace(/^\S+\s/, ''));
+
+  await page.goto('/?area=%E6%B0%91%E9%9B%84%E5%B8%82%E5%8D%80');
+  await expect(page.locator('#truck-count')).toHaveText('1');
+});
+
 test('封鎖後不會出現在本輪選項，可從封鎖清單恢復', async ({ page }) => {
   await page.goto('/?result=6');
   const before = Number(await page.locator('#count').textContent());
