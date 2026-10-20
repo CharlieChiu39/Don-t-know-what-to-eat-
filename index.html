@@ -25,7 +25,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <!-- 內文用系統字型；標題襯線體與像素字只載入實際用到的字（text= 子集），且非同步載入不擋首次繪製 -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;family=Noto+Serif+TC:wght@900&amp;display=swap&amp;text=SPIN%20YOURFATE%2FCD%E2%99%A5LBK%5B_MH%5D%C3%970123456789%E6%9C%AC%E8%BC%AA%E9%81%B8%E9%A0%85%E6%8A%BD%E7%B5%90%E6%9E%9C%E5%B0%81%E9%8E%96%E6%B8%85%E5%96%AE%E9%BB%9E%E6%93%8A%E4%BB%BB%E6%84%8F%E8%99%95%E9%80%B2%E5%85%A5%E4%B8%AD%E6%AD%A3%E5%A4%A7%E5%AD%B8%E5%90%83%E4%BB%80%E9%BA%BC%EF%BC%9F%E6%97%A9%E5%8D%88%E4%B8%8B%E8%8C%B6%E6%99%9A%E5%AE%B5%E5%A4%9C%E9%A4%90%E5%88%B0%E9%A3%BD" media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;family=Noto+Serif+TC:wght@900&amp;display=swap&amp;text=SPIN%20YOURFATE%2FCDVG.X%E2%99%A5LBK%5B_MH%5D%C3%970123456789%E6%9C%AC%E8%BC%AA%E9%81%B8%E9%A0%85%E6%8A%BD%E7%B5%90%E6%9E%9C%E5%B0%81%E9%8E%96%E6%B8%85%E5%96%AE%E9%BB%9E%E6%93%8A%E4%BB%BB%E6%84%8F%E8%99%95%E9%80%B2%E5%85%A5%E4%B8%AD%E6%AD%A3%E5%A4%A7%E5%AD%B8%E5%90%83%E4%BB%80%E9%BA%BC%EF%BC%9F%E6%97%A9%E5%8D%88%E4%B8%8B%E8%8C%B6%E6%99%9A%E5%AE%B5%E5%A4%9C%E9%A4%90%E5%88%B0%E9%A3%BD" media="print" onload="this.media='all'" />
   <link rel="stylesheet" href="css/app.css" />
   <link rel="preload" href="data/restaurants.json" as="fetch" crossorigin="anonymous" />
   <script type="module" src="js/app.js"></script>
@@ -60,9 +60,8 @@
 
   <!-- 開場：每個分頁工作階段只出現一次，可點擊或按任意鍵略過 -->
   <div id="splash" class="splash" hidden>
-    <div class="splash-content">
-      <p id="splash-text" class="splash-title"></p>
-      <p class="splash-hint f-px">[ 點擊任意處進入 ]</p>
+    <div class="splash-content" aria-hidden="true">
+      <div class="splash-peephole"></div>
     </div>
   </div>
 

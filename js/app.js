@@ -80,7 +80,6 @@ const ui = {
   announcer: $('sr-announcer', HTMLElement),
   fxLayer: $('fx-layer', HTMLElement),
   splash: $('splash', HTMLElement),
-  splashText: $('splash-text', HTMLElement),
   result: {
     emoji: $('result-emoji', HTMLElement),
     eyebrow: $('result-eyebrow', HTMLElement),
@@ -791,8 +790,7 @@ function wireDialogs() {
 }
 
 // ── Splash ─────────────────────────────────────────────────────────
-/** @param {Meal | 'all'} meal */
-function showSplash(meal) {
+function showSplash() {
   let seen = false;
   try {
     seen = sessionStorage.getItem(KEYS.splash) === '1';
@@ -802,16 +800,22 @@ function showSplash(meal) {
   }
   if (seen || prefersReducedMotion() || new URLSearchParams(location.search).has('result')) return;
 
-  ui.splashText.textContent = `${mealPeriodText(meal)}吃到飽`;
   ui.splash.hidden = false;
   const dismiss = () => {
+    if (ui.splash.dataset.leaving === 'true') return;
     ui.splash.dataset.leaving = 'true';
     window.removeEventListener('keydown', dismiss);
-    setTimeout(() => (ui.splash.hidden = true), 450);
+    setTimeout(() => (ui.splash.hidden = true), 600);
   };
   ui.splash.addEventListener('click', dismiss, { once: true });
   window.addEventListener('keydown', dismiss);
-  setTimeout(dismiss, 1400);
+  // GIF 前 1.54 秒是半身偷看、之後初音衝向鏡頭；等圖載入後再計時，讓 zoom in 與衝向鏡頭同步
+  const gif = new Image();
+  const startTimer = () => setTimeout(dismiss, 1600);
+  gif.addEventListener('load', startTimer, { once: true });
+  gif.addEventListener('error', dismiss, { once: true });
+  gif.src = 'assets/miku-monitoring.gif';
+  setTimeout(dismiss, 5000); // 網路太慢時不讓開場卡住
 }
 
 // ── Boot ───────────────────────────────────────────────────────────
@@ -898,7 +902,7 @@ async function main() {
 
   const params = new URLSearchParams(location.search);
   const autoMeal = mealForMinute(taipeiClock(new Date()).minute);
-  showSplash(autoMeal);
+  showSplash();
   state.filters = { ...state.filters, ...readFilters(params) };
   if (!params.has('meal')) state.filters.meal = autoMeal;
   if (matchMedia('(min-width: 1024px)').matches) ui.filterPanel.open = true;

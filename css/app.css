@@ -621,7 +621,7 @@
   .spin-dock:disabled { opacity: 0.5; }
   .dock-count { font-size: 0.75rem; font-weight: 600; opacity: 0.85; }
 
-  /* Splash */
+  /* Splash：DECO*27《Monitoring》貓眼窺視（Option A），播完自動 Zoom In 進入網站 */
   .splash {
     position: fixed;
     inset: 0;
@@ -629,20 +629,38 @@
     display: grid;
     place-items: center;
     cursor: pointer;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at center, rgb(18 17 22 / 0.72) 0%, #0a0810 68%),
+      var(--bg);
+  }
+  /* 鏡頭穿過貓眼：先放大，後半段才讓整個遮罩淡出，露出底下的轉盤 */
+  .splash[data-leaving='true'] {
+    pointer-events: none;
+    animation: splash-out 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  .splash-content {
+    position: relative;
+    display: grid;
+    place-items: center;
+    animation: peephole-in 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .splash[data-leaving='true'] .splash-content {
+    animation: peephole-zoom 0.6s cubic-bezier(0.55, 0, 0.75, 0.2) forwards;
+  }
+  .splash-peephole {
+    width: clamp(240px, 68vw, 320px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 2px solid var(--putty);
+    box-shadow:
+      0 0 0 6px var(--bg),
+      0 0 0 9px var(--purple),
+      inset 0 0 24px 6px rgb(8 7 11 / 0.75),
+      0 18px 48px rgb(0 0 0 / 0.85);
     /* 用背景圖而非 <img>：開場被略過時（hidden）瀏覽器不會下載這張圖 */
-    background: linear-gradient(rgb(0 0 0 / 0.65), rgb(0 0 0 / 0.65)), url('../assets/assetsbg.jpg') center / cover, var(--bg);
-    transition: opacity 0.4s ease;
+    background: url('../assets/miku-monitoring.gif') center / 104% no-repeat, var(--bg);
   }
-  .splash[data-leaving='true'] { opacity: 0; pointer-events: none; }
-  .splash-content { position: relative; padding: 24px; text-align: center; }
-  .splash-title {
-    font-family: var(--font-serif);
-    font-size: clamp(2.6rem, 11vw, 4.5rem);
-    font-weight: 900;
-    color: var(--putty);
-    text-shadow: 3px 3px 0 var(--bg), 4px 4px 0 var(--purple);
-  }
-  .splash-hint { margin-top: 14px; font-size: 0.85rem; letter-spacing: 0.15em; color: rgb(219 218 210 / 0.8); }
 
   .noscript { padding: 24px; text-align: center; }
 }
@@ -669,6 +687,19 @@
   }
   @keyframes win-in {
     from { opacity: 0; transform: translateY(16px); }
+  }
+  @keyframes peephole-in {
+    0% { opacity: 0; transform: scale(0.86); }
+    20% { opacity: 1; transform: scale(0.96); }
+    100% { opacity: 1; transform: scale(1.06); }
+  }
+  @keyframes peephole-zoom {
+    from { transform: scale(1.06); }
+    to { transform: scale(6); }
+  }
+  @keyframes splash-out {
+    0%, 45% { opacity: 1; }
+    100% { opacity: 0; }
   }
   @keyframes fall {
     0% { transform: translateY(0) rotate(0deg); opacity: 0; }
