@@ -70,10 +70,15 @@
 
   <main class="app">
     <header class="app-header">
-      <div class="header-icon" aria-hidden="true">🎡</div>
-      <h1 class="app-title">中正大學吃什麼？</h1>
-      <p class="tagline f-px">SPIN YOUR FATE // CCU FOOD</p>
+      <div class="title-row">
+        <div class="header-icon" aria-hidden="true">🎡</div>
+        <div>
+          <h1 class="app-title">中正大學吃什麼？</h1>
+          <p class="tagline f-px">SPIN YOUR FATE // CCU FOOD</p>
+        </div>
+      </div>
       <p id="now-line" class="now-line" aria-live="off"></p>
+      <p id="season-note" class="season-note" hidden></p>
     </header>
 
     <div class="layout">
@@ -82,26 +87,25 @@
 
         <div id="meal-tabs" class="meal-tabs" role="group" aria-label="餐別"></div>
 
+        <div id="open-mode" class="seg" role="group" aria-label="營業狀態">
+          <button type="button" class="seg-btn" data-open="confirmed"><span class="seg-dot" data-tone="open" aria-hidden="true"></span>確定營業</button>
+          <button type="button" class="seg-btn" data-open="likely"><span class="seg-dot" data-tone="likely" aria-hidden="true"></span>含可能營業</button>
+          <button type="button" class="seg-btn" data-open="all">全部</button>
+        </div>
+
         <div class="wheel-wrapper">
           <canvas id="wheel-canvas" role="img" aria-label="餐廳轉盤"></canvas>
           <div class="wheel-pointer" aria-hidden="true"></div>
         </div>
-        <p id="wheel-legend" class="wheel-legend" hidden>扇形越窄＝最近吃過，抽中機率較低</p>
-
-        <button id="list-btn" type="button" class="pill-btn">
-          查看本輪 <span id="count">0</span> 間選項<span id="excluded-note"></span> ›
-        </button>
-
-        <label class="open-only-pill">
-          <input id="open-only" type="checkbox" class="open-only-input" checked />
-          <span class="open-only-track" aria-hidden="true"><span class="open-only-thumb"></span></span>
-          <span>只顯示營業中</span>
-        </label>
-
         <div class="spin-row">
           <button id="lucky-btn" type="button" class="lucky-btn">Lucky <span aria-hidden="true">🎲</span><span class="sr-only">：倒數三秒後自動轉動</span></button>
           <button id="spin-btn" type="button" class="spin-btn">轉！</button>
         </div>
+
+        <button id="list-btn" type="button" class="pill-btn">
+          查看本輪 <span id="count">0</span> 間選項<span id="excluded-note"></span> ›
+        </button>
+        <p id="wheel-legend" class="wheel-legend" hidden>扇形越窄＝最近吃過，抽中機率較低</p>
 
         <div id="empty-state" class="empty-state" hidden>
           <p class="empty-code f-px" aria-hidden="true">[ ERROR // NO_MATCH ]</p>
@@ -138,16 +142,13 @@
             <fieldset class="field">
               <legend>進階</legend>
               <label class="switch-row">
-                <input id="verified-only" type="checkbox" />
-                <span>只看已查證營業時間的店</span>
-              </label>
-              <label class="switch-row">
                 <input id="weighting" type="checkbox" />
                 <span>降低最近吃過的抽中率</span>
               </label>
             </fieldset>
             <div class="panel-footer">
               <button id="reset-btn" type="button" class="link-btn">重設篩選</button>
+              <button id="skipped-btn" type="button" class="link-btn" hidden>恢復今天跳過的 <span id="skipped-count">0</span> 間</button>
               <button id="blocked-btn" type="button" class="link-btn link-danger">封鎖清單（<span id="blocked-count">0</span>）</button>
             </div>
           </div>
@@ -212,7 +213,7 @@
     </div>
     <div class="result">
     <div class="result-emoji" aria-hidden="true"><span id="result-emoji">🍜</span></div>
-    <p class="eyebrow">今天就吃</p>
+    <p id="result-eyebrow" class="eyebrow">今天就吃</p>
     <h2 id="result-name" class="result-name" tabindex="-1" autofocus></h2>
     <div class="badges">
       <span id="result-cuisine" class="badge badge-cuisine"></span>
@@ -229,14 +230,19 @@
     <p id="result-hours-note" class="result-meta" hidden></p>
     <p id="result-address" class="result-meta" hidden></p>
     <p id="result-source" class="result-meta"></p>
+    <a id="call-link" class="call-link" href="#" hidden></a>
     <div class="result-actions">
       <a id="map-link" class="map-btn" href="#" target="_blank" rel="noopener">🗺️ 看地圖</a>
       <button id="eat-btn" type="button" class="primary-btn">就吃這間 ✓</button>
     </div>
     <div class="result-secondary">
-      <button id="block-btn" type="button" class="ghost-btn ghost-danger">不想吃這間</button>
+      <button id="skip-btn" type="button" class="ghost-btn">今天跳過</button>
       <button id="respin-btn" type="button" class="ghost-btn">再轉一次 🎲</button>
       <button id="share-btn" type="button" class="ghost-btn">分享 🔗</button>
+    </div>
+    <div class="result-links">
+      <button id="block-btn" type="button" class="link-btn link-danger">永久封鎖這間</button>
+      <a id="report-link" class="link-btn" href="#" target="_blank" rel="noopener">營業資訊有誤？回報</a>
     </div>
     </div>
   </dialog>
@@ -258,7 +264,8 @@
     </form>
   </dialog>
 
-  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <button id="spin-dock" type="button" class="spin-dock" hidden>轉！<span class="dock-count"><span id="dock-count">0</span> 間</span></button>
+  <div id="toast" class="toast" popover="manual"></div>
   <div id="sr-announcer" class="sr-only" aria-live="assertive"></div>
 
   <noscript><p class="noscript">這個網站需要 JavaScript 才能轉動轉盤。</p></noscript>

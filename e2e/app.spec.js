@@ -45,6 +45,9 @@ test('轉動後顯示結果，「就吃這間」會記到最近吃過並保存',
   expect(name).not.toBe('');
 
   await page.locator('#eat-btn').click();
+  // 決定之後結果卡留著，方便接著分享
+  await expect(page.locator('#eat-btn')).toContainText('已決定');
+  await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
   await expect(page.locator('#recent-list')).toContainText(name);
   await page.reload();

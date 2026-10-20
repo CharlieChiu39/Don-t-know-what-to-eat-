@@ -6,7 +6,7 @@
 ## 架構
 
 - `js/core/`：純函式，不碰 DOM，時間一律可注入。商業邏輯只放在這裡。
-  - `hours.js` 是營業判斷的唯一來源，判斷順序為 `serviceAlerts` → `openHours`＋`specialHours` → `legacyOpenHours`（推估）
+  - `hours.js` 是營業判斷的唯一來源，判斷順序為 `serviceAlerts` → 校方行事曆（`data/calendar.json`，只影響校內店家）→ `openHours`＋`specialHours` → `legacyOpenHours`（推估）
   - `catalog.js` 是標籤、餐別、價位、區域的唯一來源，UI 按鈕與網址驗證都從這裡讀
 - `js/ui/`：Canvas 轉盤（`wheel.js`）與特效（`effects.js`）
 - `js/app.js`：狀態、事件、渲染。用 `textContent`／`h()` 建立 DOM，**不使用 innerHTML**
@@ -22,7 +22,7 @@
 - 字型：內文一律用系統字型。標題（Noto Serif TC）與像素字（DotGothic16，`.f-px`）只載入 `index.html` 字型網址裡 `text=` 列出的字；新增這兩種字型的文字時，要把新字補進 `text=`。
 - 磚紅文字用 `--rust-ink`，`--rust` 只用於邊框與色塊（原色在深底上對比不足）。
 - 撰寫慣例：UI 文字與註解用繁體中文；JS 用 camelCase、單引號、分號。
-- 儲存：localStorage 的 key 有 `food_blocked`、`food_recent`、`food_weighting`。讀取時一律經過 `sanitizeIds` 驗證，寫入失敗也不能讓頁面壞掉。
+- 儲存：localStorage 的 key 有 `food_blocked`（永久封鎖）、`food_skipped`（今天跳過，換日清空）、`food_recent`、`food_weighting`。讀取時一律經過 `sanitizeIds` 驗證，寫入失敗也不能讓頁面壞掉。
 
 ## 資料
 
@@ -33,6 +33,7 @@
 - 外送平台的時段只代表外送服務時間，不要當作營業時間。
 - 流動餐車放 `data/trucks.json`（型別 `FoodTruck`）：沒有固定時段，不進轉盤，要附來源貼文與日期。
 - 查核過程記錄在 `docs/restaurant-audit.md`。
+- `data/calendar.json`：每學年依校方行事曆 PDF 更新寒暑假與國定假日；新增校內店家時，要把 ID 加進 `campusPolicies`（資料測試會檢查）。
 
 ## 完成前
 

@@ -29,8 +29,7 @@ export function writeFilters(f, params = new URLSearchParams()) {
   if (f.price !== DEFAULT_FILTERS.price) next.set('price', f.price);
   if (f.area !== DEFAULT_FILTERS.area) next.set('area', f.area);
   if (f.tags.length) next.set('tags', f.tags.join(','));
-  if (f.openOnly !== DEFAULT_FILTERS.openOnly) next.set('open', f.openOnly ? '1' : '0');
-  if (f.verifiedOnly !== DEFAULT_FILTERS.verifiedOnly) next.set('verified', f.verifiedOnly ? '1' : '0');
+  if (f.openMode !== DEFAULT_FILTERS.openMode) next.set('open', f.openMode);
   return next;
 }
 
@@ -51,8 +50,10 @@ export function readFilters(params) {
   const tags = params.get('tags');
   if (tags !== null) f.tags = [...new Set(tags.split(','))].filter((tag) => isOneOf(TAG_IDS, tag));
   const open = params.get('open');
-  if (open === '0' || open === '1') f.openOnly = open === '1';
-  const verified = params.get('verified');
-  if (verified === '0' || verified === '1') f.verifiedOnly = verified === '1';
+  if (open === 'confirmed' || open === 'likely' || open === 'all') f.openMode = open;
+  // 舊版分享連結：open=0／1、verified=1
+  else if (open === '0') f.openMode = 'all';
+  else if (open === '1') f.openMode = 'likely';
+  if (params.get('verified') === '1' && f.openMode !== 'all') f.openMode = 'confirmed';
   return f;
 }

@@ -17,7 +17,7 @@ const none = new Set();
 const filters = (f) => ({ ...DEFAULT_FILTERS, ...f });
 
 test('複合篩選：餐別、價位、區域、標籤（任一）同時成立', () => {
-  const f = filters({ meal: 'dinner', price: 'cheap', area: '神農路', tags: ['noodles', 'luwei'], openOnly: false });
+  const f = filters({ meal: 'dinner', price: 'cheap', area: '神農路', tags: ['noodles', 'luwei'], openMode: 'all' });
   const result = buildCandidates(restaurants, f, { now: at('2026-09-08T12:00'), blockedIds: none });
   assert.ok(result.length > 5);
   for (const { restaurant: r } of result) {
@@ -36,21 +36,22 @@ test('營業中篩選只留下可前往的店，且狀態與單獨計算一致',
   }
 });
 
-test('只看已查證 + 封鎖清單', () => {
+test('確定營業模式只留查證過且營業中的店；封鎖清單一律排除', () => {
   const blocked = new Set([1]);
-  const result = buildCandidates(restaurants, filters({ verifiedOnly: true, openOnly: false }), {
-    now: at('2026-09-08T12:00'),
-    blockedIds: blocked,
-  });
-  assert.ok(result.every(({ restaurant: r }) => r.verification.status === 'sourced' && r.id !== 1));
+  const now = at('2026-09-08T12:00');
+  const confirmed = buildCandidates(restaurants, filters({ openMode: 'confirmed' }), { now, blockedIds: blocked });
+  const likely = buildCandidates(restaurants, filters({ openMode: 'likely' }), { now, blockedIds: blocked });
+  assert.ok(confirmed.length > 0 && confirmed.length <= likely.length);
+  assert.ok(confirmed.every(({ status, restaurant: r }) => status.state === 'open' && !status.estimated && r.id !== 1));
+  assert.ok(likely.some(({ status }) => status.state === 'likely') || likely.length === confirmed.length);
   const all = new Set(restaurants.map((r) => r.id));
-  assert.equal(buildCandidates(restaurants, filters({ openOnly: false }), { now: new Date(), blockedIds: all }).length, 0);
+  assert.equal(buildCandidates(restaurants, filters({ openMode: 'all' }), { now: new Date(), blockedIds: all }).length, 0);
 });
 
 test('區域：預設只抽中正周邊，民雄市區要另外選或選不限', () => {
   const now = at('2026-09-08T12:00');
   const pick = (/** @type {Filters['area']} */ area) =>
-    buildCandidates(restaurants, filters({ area, openOnly: false }), { now, blockedIds: none }).map((c) => c.restaurant);
+    buildCandidates(restaurants, filters({ area, openMode: 'all' }), { now, blockedIds: none }).map((c) => c.restaurant);
   const nearby = pick('nearby');
   const downtown = pick('民雄市區');
   assert.ok(nearby.length > 0 && downtown.length > 0);
@@ -63,18 +64,40 @@ test('區域：預設只抽中正周邊，民雄市區要另外選或選不限',
   assert.equal(matchesArea('民雄市區', 'all'), true);
 });
 
+test('飲食需求與想吃什麼同時成立：素食＋麵＝素的麵', () => {
+  const now = at('2026-09-08T12:00');
+  const result = buildCandidates(restaurants, filters({ tags: ['vegetarian', 'noodles', 'rice'], openMode: 'all', area: 'all' }), {
+    now,
+    blockedIds: none,
+  });
+  assert.ok(result.length > 0);
+  for (const { restaurant: r } of result) {
+    assert.ok(r.tags.includes('vegetarian'), r.name);
+    assert.ok(r.tags.includes('noodles') || r.tags.includes('rice'), r.name);
+  }
+  const foodOnly = buildCandidates(restaurants, filters({ tags: ['noodles', 'rice'], openMode: 'all', area: 'all' }), {
+    now,
+    blockedIds: none,
+  });
+  assert.ok(foodOnly.length > result.length);
+});
+
 test('countActiveFilters 計算偏離預設的條件數', () => {
   assert.equal(countActiveFilters(DEFAULT_FILTERS), 0);
-  assert.equal(countActiveFilters(filters({ meal: 'lunch', tags: ['rice', 'bento'], openOnly: false })), 4);
+  assert.equal(countActiveFilters(filters({ meal: 'lunch', tags: ['rice', 'bento'], openMode: 'all' })), 4);
   assert.equal(countActiveFilters(filters({ area: 'all' })), 1);
 });
 
 test('網址參數來回轉換，並忽略不合法的值', () => {
-  const f = filters({ meal: 'lunch', area: '校內', tags: ['noodles', 'bento'], openOnly: false });
+  const f = filters({ meal: 'lunch', area: '校內', tags: ['noodles', 'bento'], openMode: 'all' });
   const params = writeFilters(f, new URLSearchParams('result=12'));
   assert.equal(params.get('result'), '12');
   assert.deepEqual({ ...DEFAULT_FILTERS, ...readFilters(params) }, f);
   assert.equal(writeFilters(DEFAULT_FILTERS).toString(), '');
+  // 舊版分享連結仍能打開
+  assert.deepEqual(readFilters(new URLSearchParams('open=0')), { openMode: 'all' });
+  assert.deepEqual(readFilters(new URLSearchParams('open=1&verified=1')), { openMode: 'confirmed' });
+  assert.equal(writeFilters(filters({ openMode: 'confirmed' })).get('open'), 'confirmed');
   assert.deepEqual(readFilters(new URLSearchParams('meal=brunch&price=free&area=台北&tags=noodles,hack,noodles&open=maybe')), {
     tags: ['noodles'],
   });

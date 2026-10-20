@@ -87,13 +87,19 @@ export interface OpeningStatus {
   period?: { name: string; until: string };
 }
 
+/**
+ * confirmed 只放查證過、此刻營業中的店
+ * likely    再加上舊資料推估「可能營業」的店（預設）
+ * all       不看營業狀態
+ */
+export type OpenMode = 'confirmed' | 'likely' | 'all';
+
 export interface Filters {
   meal: Meal | 'all';
   price: PriceRange | 'all';
   area: AreaFilter;
   tags: TagId[];
-  openOnly: boolean;
-  verifiedOnly: boolean;
+  openMode: OpenMode;
 }
 
 /** 流動餐車：出沒時間不固定，不放進轉盤，只列出地點與追蹤方式。 */
