@@ -1,13 +1,12 @@
 // @ts-check
-// ZUTOMAYO 風格特效。全部尊重 prefers-reduced-motion，分頁隱藏時暫停。
+// ZUTOMAYO 霧面風格特效：低存在感、不閃屏。全部尊重 prefers-reduced-motion，分頁隱藏時暫停。
 
 const motionQuery = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)');
 export const prefersReducedMotion = () => motionQuery?.matches ?? false;
 
-const SYMBOLS = ['✦', '◆', '✧', '◇', '★', '⬡', '⬢'];
-const NEON = ['#00bbff', '#9b5de5', '#00ff88', '#bf8fff'];
-const FOOD = ['🍜', '🍕', '🍱', '🍣', '🍔', '🌮', '🍛', '🍝', '🍦', '🍰', '🥗', '🍲', '🍗', '🍤', '🧋', '🍙'];
-const CONFETTI = ['#00bbff', '#9b5de5', '#00ff88', '#ff6b6b', '#bf8fff', '#00e5ff', '#7c3aed', '#34d399'];
+const SYMBOLS = ['+', '◇', '▪', '×', '✧'];
+const MATTE = ['#6f2add', '#636683', '#524e61', '#8a799e'];
+const CONFETTI = ['#6f2add', '#dbdad2', '#e8d2e9', '#636683', '#cb5149', '#52b788'];
 
 /** @template T @param {readonly T[]} list */
 const sample = (list) => list[Math.floor(Math.random() * list.length)];
@@ -31,72 +30,51 @@ function spawn(layer, className, text, style) {
 
 /** @param {HTMLElement} layer */
 export function startAmbient(layer) {
-  const MAX = 14;
+  const MAX = 8;
   /** @type {number | undefined} */
   let timer;
   const tick = () => {
     if (prefersReducedMotion() || layer.childElementCount >= MAX) return;
-    const color = sample(NEON);
     spawn(layer, 'fx-fall', sample(SYMBOLS), {
       left: `${Math.random() * 100}vw`,
-      'font-size': `${0.6 + Math.random() * 0.8}rem`,
-      color,
-      'text-shadow': `0 0 6px ${color}`,
-      'animation-duration': `${5 + Math.random() * 6}s`,
+      'font-size': `${0.7 + Math.random() * 0.7}rem`,
+      color: sample(MATTE),
+      'animation-duration': `${7 + Math.random() * 6}s`,
     });
   };
   const run = () => {
     clearInterval(timer);
-    if (!document.hidden) timer = window.setInterval(tick, 800);
+    if (!document.hidden) timer = window.setInterval(tick, 1200);
   };
   document.addEventListener('visibilitychange', run);
-  for (let i = 0; i < 6; i++) tick();
+  for (let i = 0; i < 4; i++) tick();
   run();
 }
 
 /**
- * @param {HTMLElement} layer
- * @param {number} x
- * @param {number} y
- */
-export function foodPop(layer, x, y) {
-  if (prefersReducedMotion() || layer.childElementCount > 60) return;
-  for (let i = 0; i < 2; i++) {
-    spawn(layer, 'fx-pop', sample(FOOD), {
-      left: `${x + (Math.random() - 0.5) * 40}px`,
-      top: `${y}px`,
-      '--fy': `-${60 + Math.random() * 30}px`,
-      'animation-delay': `${i * 60}ms`,
-    });
-  }
-}
-
-/**
- * 抽中時的彩帶、粒子與閃光。
+ * 抽中時的彩帶與粒子（數量少、霧面色）。
  * @param {HTMLElement} layer
  * @param {string} emoji
  */
 export function celebrate(layer, emoji) {
   if (prefersReducedMotion()) return;
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < 45; i++) {
     spawn(layer, 'fx-confetti', '', {
       left: `${Math.random() * 100}vw`,
       background: sample(CONFETTI),
-      width: `${5 + Math.random() * 7}px`,
-      height: `${8 + Math.random() * 8}px`,
-      'animation-duration': `${1.8 + Math.random() * 1.8}s`,
-      'animation-delay': `${Math.random() * 0.6}s`,
+      width: `${4 + Math.random() * 6}px`,
+      height: `${6 + Math.random() * 6}px`,
+      'animation-duration': `${1.6 + Math.random() * 1.4}s`,
+      'animation-delay': `${Math.random() * 0.4}s`,
     });
   }
-  for (let i = 0; i < 18; i++) {
-    const angle = (i / 18) * Math.PI * 2;
-    const dist = 70 + Math.random() * 80;
-    const star = i % 3 === 0;
-    spawn(layer, 'fx-burst', star ? '★' : emoji, {
+  for (let i = 0; i < 10; i++) {
+    const angle = (i / 10) * Math.PI * 2;
+    const dist = 55 + Math.random() * 55;
+    spawn(layer, 'fx-burst', i % 2 === 0 ? '◆' : emoji, {
       '--tx': `${Math.cos(angle) * dist}px`,
       '--ty': `${Math.sin(angle) * dist}px`,
-      color: star ? '#00bbff' : 'inherit',
-      'animation-delay': `${i * 40}ms`,
+      'animation-delay': `${i * 30}ms`,
     });
   }
 }

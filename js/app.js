@@ -8,7 +8,7 @@ import { openingStatus, taipeiClock } from './core/hours.js';
 import { pickIndex, pushRecent, recencyWeight } from './core/picker.js';
 import { createIdStore, safeLocalStorage } from './core/storage.js';
 import { readFilters, writeFilters } from './core/url-state.js';
-import { celebrate, foodPop, prefersReducedMotion, replayClass, startAmbient } from './ui/effects.js';
+import { celebrate, prefersReducedMotion, replayClass, startAmbient } from './ui/effects.js';
 import { Wheel } from './ui/wheel.js';
 
 /** @typedef {import('./types.js').Restaurant} Restaurant */
@@ -67,7 +67,6 @@ const ui = {
   unblockAllBtn: $('unblock-all-btn', HTMLButtonElement),
   toast: $('toast', HTMLElement),
   announcer: $('sr-announcer', HTMLElement),
-  flash: $('screen-flash', HTMLElement),
   fxLayer: $('fx-layer', HTMLElement),
   splash: $('splash', HTMLElement),
   splashText: $('splash-text', HTMLElement),
@@ -377,7 +376,6 @@ async function spin() {
   setBusy(false);
   replayClass(ui.wheelWrapper, 'is-celebrating');
   replayClass(ui.wheelWrapper, 'is-shaking');
-  replayClass(ui.flash, 'is-flashing');
   showResult(pool[index], true);
 }
 
@@ -684,10 +682,6 @@ async function main() {
   if (shared) showResult({ restaurant: shared, status: openingStatus(shared) }, false);
 
   startAmbient(ui.fxLayer);
-  document.addEventListener('click', (event) => {
-    if (event.target instanceof Element && event.target.closest('dialog, .splash')) return;
-    foodPop(ui.fxLayer, event.clientX, event.clientY);
-  });
 
 
   if ('serviceWorker' in navigator) {

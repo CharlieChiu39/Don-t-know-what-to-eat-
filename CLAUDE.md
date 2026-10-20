@@ -18,7 +18,9 @@
 - 時間：一律以台北時間（固定 UTC+8）判斷。資料不明時回傳 unknown，不可以把推估寫成已查證。
 - 特效與動畫：必須尊重 `prefers-reduced-motion`；分頁隱藏時要暫停。
 - 無障礙：對話框用原生 `<dialog>`；文字對比要達 WCAG AA；狀態不可以只靠顏色表達。
-- 樣式：ZUTOMAYO 暗色賽博龐克主題，色彩 token 集中在 `css/app.css` 的 `:root`。不使用 CSS nesting（照顧 iOS 16）。
+- 樣式：ZUTOMAYO × ZUTOMAYO MART 霧面復古視窗主題。用霧面色、直角（2px）、硬邊位移陰影，對話框做成帶紫色標題列的視窗；**不使用**霓虹光暈、閃屏或點擊粒子。色彩 token 集中在 `css/app.css` 的 `:root`。不使用 CSS nesting（照顧 iOS 16）。
+- 字型：內文一律用系統字型。標題（Noto Serif TC）與像素字（DotGothic16，`.f-px`）只載入 `index.html` 字型網址裡 `text=` 列出的字；新增這兩種字型的文字時，要把新字補進 `text=`。
+- 磚紅文字用 `--rust-ink`，`--rust` 只用於邊框與色塊（原色在深底上對比不足）。
 - 撰寫慣例：UI 文字與註解用繁體中文；JS 用 camelCase、單引號、分號。
 - 儲存：localStorage 的 key 有 `food_blocked`、`food_recent`、`food_weighting`。讀取時一律經過 `sanitizeIds` 驗證，寫入失敗也不能讓頁面壞掉。
 

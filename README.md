@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/CharlieChiu39/Don-t-know-what-to-eat-/actions/workflows/ci.yml/badge.svg)](https://github.com/CharlieChiu39/Don-t-know-what-to-eat-/actions/workflows/ci.yml)
 
-**[▶ 線上試用](https://charliechiu39.github.io/Don-t-know-what-to-eat-/)**　·　ZUTOMAYO 風格的中正大學選餐轉盤
+**[▶ 線上試用](https://charliechiu39.github.io/Don-t-know-what-to-eat-/)**　·　ZUTOMAYO × ZUTOMAYO MART 霧面復古視窗風格的中正大學選餐轉盤
 
 收錄校內、神農路、裕農路 **92 間**餐廳。用台北時間即時判斷哪些店「現在」真的有開，並標示資料可信度。可以依「想吃什麼」篩選，也能裝到手機桌面，沒有網路時照樣能用。
 
@@ -85,16 +85,23 @@ E2E 用 `page.clock.setFixedTime` 把時間固定在學期中的週二中午，�
 
 ### 效能
 
-Lighthouse（行動裝置模擬、本機未壓縮）：**Performance 93 · Accessibility 100 · Best Practices 100 · SEO 100**，CLS 0、TBT 0 ms。
+Lighthouse（行動裝置模擬、本機未壓縮），同一套視覺設計改版前後：
 
-改版前同樣條件下 Performance 只有 57，主要做了這幾件事：
+| | 改版前 | 改版後 |
+| --- | :---: | :---: |
+| Performance | 58 | **92** |
+| Accessibility | 91 | **100** |
+| Best Practices / SEO | 100 / 100 | **100 / 100** |
+| First Contentful Paint | 7.8 s | **2.3 s** |
+| Total Blocking Time / CLS | 0 ms / 0.005 | **0 ms / 0.002** |
+
+主要做了這幾件事：
 
 - 移除 Tailwind Play CDN（執行期才編譯 CSS）
-- 中文改用系統字型。Noto Sans TC 的 Google Fonts 樣式表含數百個 `unicode-range` 區塊（Lighthouse 判定約 135 KiB 未使用），而且會擋住首次繪製。拿掉之後 First Contentful Paint 從 8.5 s 降到 2.2 s
-- Orbitron 只載入標語用到的字母子集，並且非同步載入
+- 內文改用系統字型。Noto Sans TC 的 Google Fonts 樣式表含數百個 `unicode-range` 區塊（Lighthouse 判定約 135 KiB 未使用），而且會擋住首次繪製
+- 標題的 Noto Serif TC 與像素字 DotGothic16 用 `text=` 參數只載入畫面上實際出現的字，並且非同步載入
 - 用 `modulepreload` 攤平 ES module 的瀑布式載入
-- 預先保留由 JS 產生的元素高度，CLS 從 0.054 降到 0
-- 呼吸光暈改成只動 `opacity`（GPU 合成），不再逐格重繪 `box-shadow`
+- 預先保留由 JS 產生的元素高度，避免版面位移
 - 轉盤用 `ResizeObserver` 搭配 `devicePixelRatio` 繪製，Retina 螢幕不會糊，初始化也不會強制同步排版
 
 程式碼（JS 加 CSS 加資料）gzip 後約 45 KB。

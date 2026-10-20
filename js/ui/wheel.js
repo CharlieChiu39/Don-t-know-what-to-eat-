@@ -1,10 +1,16 @@
 // @ts-check
-// Canvas 轉盤：扇形大小依權重分配，指針固定在正上方。
+// Canvas 轉盤（ZUTOMAYO 霧面黑膠／機械刻度風格）：扇形大小依權重分配，指針固定在正上方。
 
 /** @typedef {{ label: string, weight: number }} WheelSlice */
 
 const TAU = Math.PI * 2;
-const COLORS = ['#003d5c', '#1a0533', '#00334d', '#2d0050', '#001f3d', '#1f0041', '#002233', '#350060', '#00293d', '#280048'];
+// 霧面色：炭黑、暗紫、石板灰，不使用霓虹色
+const COLORS = ['#181622', '#261b3a', '#1c1e29', '#31204c', '#1d1a26', '#2a243b', '#221933', '#20232e', '#191820', '#2e1d46', '#1c1d26', '#272236'];
+const PUTTY = '#dbdad2';
+const PURPLE = '#6f2add';
+const INK = '#121116';
+/** 外圈刻度數量 */
+const TICKS = 36;
 /** 超過這個數量就不畫店名，避免糊成一團 */
 const MAX_LABELED = 24;
 const FONT = 'system-ui, -apple-system, "PingFang TC", "Noto Sans CJK TC", "Microsoft JhengHei", sans-serif';
@@ -64,18 +70,19 @@ export class Wheel {
     const { ctx, size, slices } = this;
     const c = size / 2;
     const r = c - 2;
+    const rim = r - 10;
     ctx.clearRect(0, 0, size, size);
 
     if (!slices.length) {
-      ctx.fillStyle = '#12121a';
+      ctx.fillStyle = '#191820';
       ctx.beginPath();
       ctx.arc(c, c, r, 0, TAU);
       ctx.fill();
-      ctx.fillStyle = 'rgba(0,187,255,0.55)';
+      ctx.fillStyle = '#9e9aa8';
       ctx.font = `700 14px ${FONT}`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('沒有符合條件的店家', c, c + 48);
+      ctx.fillText('沒有符合條件的店家', c, c + 52);
       this.drawHub(c, '0 間');
       return;
     }
@@ -88,21 +95,53 @@ export class Wheel {
       const a1 = this.rotation + end - Math.PI / 2;
       ctx.beginPath();
       ctx.moveTo(c, c);
-      ctx.arc(c, c, r, a0, a1);
+      ctx.arc(c, c, rim, a0, a1);
       ctx.closePath();
       ctx.fillStyle = COLORS[i % COLORS.length];
       ctx.fill();
       if (i === this.highlight) {
-        ctx.fillStyle = 'rgba(0,187,255,0.35)';
+        ctx.fillStyle = 'rgba(111,42,221,0.5)';
         ctx.fill();
       }
       ctx.strokeStyle = 'rgba(0,0,0,0.45)';
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.2;
       ctx.stroke();
 
       // 扇形太窄就不放字
-      if (labeled && (a1 - a0) * r * 0.72 >= 12) this.drawLabel(c, r, (a0 + a1) / 2, slices[i].label, i === this.highlight);
+      if (labeled && (a1 - a0) * rim * 0.72 >= 12) this.drawLabel(c, rim, (a0 + a1) / 2, slices[i].label, i === this.highlight);
     });
+
+    // 黑膠紋路
+    for (const ratio of [0.72, 0.5]) {
+      ctx.beginPath();
+      ctx.arc(c, c, rim * ratio, 0, TAU);
+      ctx.strokeStyle = 'rgba(219,218,210,0.06)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // 外圈機械刻度環，跟著轉盤一起轉
+    ctx.beginPath();
+    ctx.arc(c, c, r, 0, TAU);
+    ctx.arc(c, c, rim, 0, TAU, true);
+    ctx.fillStyle = INK;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(c, c, rim, 0, TAU);
+    ctx.strokeStyle = 'rgba(219,218,210,0.35)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    for (let t = 0; t < TICKS; t++) {
+      const a = this.rotation + (t / TICKS) * TAU - Math.PI / 2;
+      const major = t % 3 === 0;
+      const outer = major ? r - 2 : r - 4;
+      ctx.beginPath();
+      ctx.moveTo(c + Math.cos(a) * (rim + 2), c + Math.sin(a) * (rim + 2));
+      ctx.lineTo(c + Math.cos(a) * outer, c + Math.sin(a) * outer);
+      ctx.strokeStyle = major ? PUTTY : PURPLE;
+      ctx.lineWidth = major ? 1.5 : 1;
+      ctx.stroke();
+    }
 
     this.drawHub(c, `${slices.length} 間`);
   }
@@ -124,9 +163,11 @@ export class Wheel {
     ctx.font = `600 12px ${FONT}`;
     ctx.textAlign = flipped ? 'left' : 'right';
     ctx.textBaseline = 'middle';
-    ctx.fillStyle = active ? '#ffffff' : 'rgba(214,236,255,0.88)';
-    ctx.shadowColor = 'rgba(0,187,255,0.6)';
-    ctx.shadowBlur = active ? 8 : 4;
+    ctx.fillStyle = active ? '#ffffff' : 'rgba(219,218,210,0.88)';
+    // 硬邊陰影（不模糊）維持霧面風格，同時讓字在深色扇形上清楚
+    ctx.shadowColor = 'rgba(0,0,0,0.8)';
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = 1;
     ctx.fillText(truncate(ctx, text, r * 0.6), flipped ? -(r - 12) : r - 12, 0);
     ctx.restore();
   }
@@ -139,16 +180,19 @@ export class Wheel {
     const { ctx } = this;
     ctx.beginPath();
     ctx.arc(c, c, 34, 0, TAU);
-    ctx.fillStyle = 'rgba(0,187,255,0.15)';
+    ctx.fillStyle = PURPLE;
     ctx.fill();
-    ctx.beginPath();
-    ctx.arc(c, c, 28, 0, TAU);
-    ctx.fillStyle = '#0a0a0f';
-    ctx.fill();
-    ctx.strokeStyle = '#00bbff';
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = PUTTY;
+    ctx.lineWidth = 1;
     ctx.stroke();
-    ctx.fillStyle = '#00bbff';
+    ctx.beginPath();
+    ctx.arc(c, c, 27, 0, TAU);
+    ctx.fillStyle = INK;
+    ctx.fill();
+    ctx.strokeStyle = PUTTY;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = PUTTY;
     ctx.font = `700 15px ${FONT}`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';

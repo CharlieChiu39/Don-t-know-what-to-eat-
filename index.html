@@ -19,13 +19,13 @@
   <link rel="icon" href="assets/icons/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
   <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#0a0a0f" />
+  <meta name="theme-color" content="#121116" />
   <meta name="color-scheme" content="dark" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- 中文用系統字型（PingFang／微軟正黑體／Noto CJK），只為英文標語非同步載入 Orbitron 的字母子集 -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap&text=SPINYOURFATE" media="print" onload="this.media='all'" />
+  <!-- 內文用系統字型；標題襯線體與像素字只載入實際用到的字（text= 子集），且非同步載入不擋首次繪製 -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&amp;family=Noto+Serif+TC:wght@900&amp;display=swap&amp;text=SPIN%20YOURFATE%2FCD%E2%99%A5LBK%5B_MH%5D%C3%970123456789%E6%9C%AC%E8%BC%AA%E9%81%B8%E9%A0%85%E6%8A%BD%E7%B5%90%E6%9E%9C%E5%B0%81%E9%8E%96%E6%B8%85%E5%96%AE%E9%BB%9E%E6%93%8A%E4%BB%BB%E6%84%8F%E8%99%95%E9%80%B2%E5%85%A5%E4%B8%AD%E6%AD%A3%E5%A4%A7%E5%AD%B8%E5%90%83%E4%BB%80%E9%BA%BC%EF%BC%9F%E6%97%A9%E5%8D%88%E4%B8%8B%E8%8C%B6%E6%99%9A%E5%AE%B5%E5%A4%9C%E9%A4%90%E5%88%B0%E9%A3%BD" media="print" onload="this.media='all'" />
   <link rel="stylesheet" href="css/app.css" />
   <link rel="preload" href="data/restaurants.json" as="fetch" crossorigin="anonymous" />
   <script type="module" src="js/app.js"></script>
@@ -62,7 +62,7 @@
   <div id="splash" class="splash" hidden>
     <div class="splash-content">
       <p id="splash-text" class="splash-title"></p>
-      <p class="splash-hint">點擊任意處進入</p>
+      <p class="splash-hint f-px">[ 點擊任意處進入 ]</p>
     </div>
   </div>
 
@@ -71,8 +71,8 @@
   <main class="app">
     <header class="app-header">
       <div class="header-icon" aria-hidden="true">🎡</div>
-      <h1 class="glitch-title" data-text="中正大學吃什麼？">中正大學吃什麼？</h1>
-      <p class="tagline">— SPIN YOUR FATE —</p>
+      <h1 class="app-title">中正大學吃什麼？</h1>
+      <p class="tagline f-px">SPIN YOUR FATE // CCU FOOD</p>
       <p id="now-line" class="now-line" aria-live="off"></p>
     </header>
 
@@ -104,7 +104,7 @@
         </div>
 
         <div id="empty-state" class="empty-state" hidden>
-          <p class="empty-emoji" aria-hidden="true">😵</p>
+          <p class="empty-code f-px" aria-hidden="true">[ ERROR // NO_MATCH ]</p>
           <p id="empty-text">沒有符合條件的店家</p>
           <button id="relax-btn" type="button" class="link-btn">一鍵放寬條件</button>
         </div>
@@ -176,20 +176,28 @@
   </main>
 
   <!-- 本輪選項 -->
-  <dialog id="list-dialog" class="sheet" aria-labelledby="list-title">
-    <div class="sheet-head">
-      <h2 id="list-title" class="sheet-title">本輪選項</h2>
-      <p class="sheet-sub">取消勾選可暫時排除，只影響這一輪</p>
+  <dialog id="list-dialog" class="win" aria-labelledby="list-title">
+    <div class="win-bar">
+      <span class="f-px" aria-hidden="true">♥ LIST // 本輪選項</span>
+      <form method="dialog"><button class="win-close" aria-label="關閉">×</button></form>
+    </div>
+    <div class="win-head">
+      <h2 id="list-title" class="win-title">本輪選項</h2>
+      <p class="win-sub">取消勾選可暫時排除，只影響這一輪</p>
     </div>
     <ul id="list" class="item-list"></ul>
-    <form method="dialog" class="sheet-foot">
+    <form method="dialog" class="win-foot">
       <button class="primary-btn" value="apply">套用並關閉</button>
     </form>
   </dialog>
 
   <!-- 抽選結果 -->
-  <dialog id="result-dialog" class="sheet result" aria-labelledby="result-name" aria-describedby="result-status">
-    <form method="dialog" class="sheet-close"><button aria-label="關閉">✕</button></form>
+  <dialog id="result-dialog" class="win" aria-labelledby="result-name" aria-describedby="result-status">
+    <div class="win-bar">
+      <span class="f-px" aria-hidden="true">♥ RESULT // 抽選結果</span>
+      <form method="dialog"><button class="win-close" aria-label="關閉">×</button></form>
+    </div>
+    <div class="result">
     <div class="result-emoji" aria-hidden="true"><span id="result-emoji">🍜</span></div>
     <p class="eyebrow">今天就吃</p>
     <h2 id="result-name" class="result-name" tabindex="-1" autofocus></h2>
@@ -216,16 +224,21 @@
       <button id="respin-btn" type="button" class="ghost-btn">再轉一次 🎲</button>
       <button id="share-btn" type="button" class="ghost-btn">分享 🔗</button>
     </div>
+    </div>
   </dialog>
 
   <!-- 封鎖清單 -->
-  <dialog id="blocked-dialog" class="sheet" aria-labelledby="blocked-title">
-    <div class="sheet-head">
-      <h2 id="blocked-title" class="sheet-title">封鎖清單</h2>
-      <p class="sheet-sub">封鎖的店不會出現在轉盤上</p>
+  <dialog id="blocked-dialog" class="win" aria-labelledby="blocked-title">
+    <div class="win-bar">
+      <span class="f-px" aria-hidden="true">♥ BLOCKED // 封鎖清單</span>
+      <form method="dialog"><button class="win-close" aria-label="關閉">×</button></form>
+    </div>
+    <div class="win-head">
+      <h2 id="blocked-title" class="win-title">封鎖清單</h2>
+      <p class="win-sub">封鎖的店不會出現在轉盤上</p>
     </div>
     <ul id="blocked-list" class="item-list"></ul>
-    <form method="dialog" class="sheet-foot sheet-foot-split">
+    <form method="dialog" class="win-foot win-foot-split">
       <button id="unblock-all-btn" type="button" class="ghost-btn ghost-danger">全部恢復</button>
       <button class="primary-btn">完成</button>
     </form>
@@ -233,7 +246,6 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <div id="sr-announcer" class="sr-only" aria-live="assertive"></div>
-  <div id="screen-flash" class="screen-flash" aria-hidden="true"></div>
 
   <noscript><p class="noscript">這個網站需要 JavaScript 才能轉動轉盤。</p></noscript>
 </body>
