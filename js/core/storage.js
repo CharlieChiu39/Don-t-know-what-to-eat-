@@ -52,3 +52,40 @@ export function safeLocalStorage() {
     return null;
   }
 }
+
+/**
+ * 只在同一天有效的 ID 清單（「今天跳過」），換日後自動清空。
+ * 存成 { day: 'YYYY-MM-DD', ids: number[] }。
+ * @param {Pick<Storage, 'getItem' | 'setItem'> | null} storage
+ */
+export function createDayStore(storage) {
+  return {
+    /**
+     * @param {string} key
+     * @param {string} today 台北日期 YYYY-MM-DD
+     * @param {ReadonlySet<number>} allowed
+     */
+    read(key, today, allowed) {
+      try {
+        const saved = JSON.parse(storage?.getItem(key) ?? 'null');
+        return saved?.day === today ? sanitizeIds(saved.ids, allowed) : [];
+      } catch {
+        return [];
+      }
+    },
+    /**
+     * @param {string} key
+     * @param {string} today
+     * @param {readonly number[]} ids
+     * @returns {boolean} 是否成功寫入
+     */
+    write(key, today, ids) {
+      try {
+        storage?.setItem(key, JSON.stringify({ day: today, ids }));
+        return storage !== null;
+      } catch {
+        return false;
+      }
+    },
+  };
+}
