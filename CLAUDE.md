@@ -27,8 +27,12 @@
 ## 資料
 
 - `data/restaurants.json`：新增餐廳時 ID 取最大值加 1，`tags` 必須是 `catalog.js` 裡定義的標籤。
-- 有來源的時段放 `openHours`，並在 `verification` 附上 https 來源與查閱日；沒有來源的放 `legacyOpenHours`。
-- 不要用外送平台或聚合地圖的時段當作已查證資料。查核過程記錄在 `docs/restaurant-audit.md`。
+- 區域：`校內`、`神農路`、`裕農路`、`大學路` 合稱「中正周邊」（`NEARBY_AREAS`），是轉盤的預設範圍；`民雄市區` 要使用者自己選。
+- 有來源的時段放 `openHours`，並在 `verification` 附上 https 來源、`label` 與查閱日；沒有來源的放 `legacyOpenHours`。
+- 來源優先順序：校方飲食資訊 → 店家官網、品牌門市頁、粉專或 IG → Google 地圖商家資訊。用 Google 時，`label` 寫「Google 地圖商家資訊」，商家頁存在 `mapUrl` 與 `verification.source`。
+- 外送平台的時段只代表外送服務時間，不要當作營業時間。
+- 流動餐車放 `data/trucks.json`（型別 `FoodTruck`）：沒有固定時段，不進轉盤，要附來源貼文與日期。
+- 查核過程記錄在 `docs/restaurant-audit.md`。
 
 ## 完成前
 

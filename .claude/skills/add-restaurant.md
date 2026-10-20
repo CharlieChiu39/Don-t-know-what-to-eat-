@@ -14,12 +14,14 @@ description: Add a new restaurant to the Food Roulette database (data/restaurant
 - **tags**：想吃什麼標籤，必須是 `js/core/catalog.js` 的 `TAGS` 之一，第一個標籤決定顯示的 emoji
 - **meals**：`breakfast` | `lunch` | `dinner` | `latenight` 的子集合
 - **price_range**：`cheap`（< 80）| `medium`（80–150）| `expensive`（> 150）| `unknown`
-- **location**：`校內` | `神農路` | `裕農路`
-- **note**：簡短描述；有的話也填 **address**、**phone**
+- **location**：`校內` | `神農路` | `裕農路` | `大學路` | `民雄市區`（前四個是「中正周邊」，轉盤預設只抽這些）
+- **note**：簡短描述；有的話也填 **address**、**phone**、**mapUrl**（Google 地圖商家頁，`https://maps.google.com/?cid=…`）
 - **營業時間**：每週七天 `mon`–`sun` 都要有值，值可以是 `"11:00-14:00、17:00-20:00"`、`"休息"`、`"24小時營業"` 或 `null`（未知）
-  - 有公開來源（校方頁面、店家官網或粉專）→ 填 `openHours`，並寫入 `verification: { status: "sourced", source: "https://…", label, checkedAt: "YYYY-MM-DD" }`
+  - 有公開來源 → 填 `openHours`，並寫入 `verification: { status: "sourced", source: "https://…", label, checkedAt: "YYYY-MM-DD" }`。來源優先順序：校方頁面 → 店家官網／粉專／IG → Google 地圖商家資訊（`label` 寫「Google 地圖商家資訊」，`source` 用商家頁）
+  - 凌晨打烊寫成跨夜時段，例如 `17:00-02:00`；Google 把整晚營業拆成「00:00–11:00、17:00–24:00」時，合併成 `17:00-11:00`
   - 沒有來源 → `openHours` 七天都填 `null`，時間放進 `legacyOpenHours`，並設 `verification: { status: "unconfirmed" }`
-  - 外送平台與聚合地圖的時段**不算**來源
+  - 外送平台的時段**不算**來源（那是外送服務時間）
+- 沒有固定時段的流動餐車不要放這裡，改放 `data/trucks.json`（型別 `FoodTruck`），附上來源貼文與日期
 
 ## 2. ID
 

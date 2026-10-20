@@ -52,6 +52,17 @@ await capture({
     await page.evaluate(() => document.getElementById('filter-panel')?.scrollIntoView({ block: 'start' }));
   },
 });
+await capture({
+  name: 'docs/screenshots/mobile-trucks.png',
+  path: '/',
+  width: 390,
+  height: 844,
+  prepare: async (page) => {
+    const box = page.locator('#truck-box');
+    await box.locator('summary').click();
+    await page.evaluate(() => document.getElementById('truck-box')?.scrollIntoView({ block: 'start' }));
+  },
+});
 await capture({ name: 'docs/screenshots/desktop.png', path: '/?tags=noodles,rice,bento', width: 1280, height: 860, scale: 1.5 });
 await capture({ name: 'assets/og-image.png', path: '/?tags=noodles,rice,bento', width: 1200, height: 630, scale: 1 });
 
