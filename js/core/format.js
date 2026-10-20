@@ -99,3 +99,30 @@ function nextDay(dateKey) {
   date.setUTCDate(date.getUTCDate() + 1);
   return date.toISOString().slice(0, 10);
 }
+
+/**
+ * 拆出店名主體與括號裡的分店名稱，順便去掉「便利商店」「門市」等贅字。
+ * @param {string} name
+ */
+function splitBranch(name) {
+  const match = name.match(/^(.+?)s*[（(](.+)[)）]$/);
+  if (!match) return { base: name, branch: '' };
+  return {
+    base: match[1].replace('便利商店', '').trim(),
+    branch: match[2].replace(/^(嘉義|民雄)/, '').replace(/(店|門市|餐廳|供應處)$/, '').trim(),
+  };
+}
+
+/**
+ * 轉盤用的短店名：只有同名的連鎖店才保留分店名，其餘去掉括號。
+ * 例：三間「全家便利商店(…)」→ 全家・活動中心、全家・共同教室大樓…
+ * @param {readonly { id: number, name: string }[]} restaurants
+ * @returns {Map<number, string>}
+ */
+export function shortNames(restaurants) {
+  const parts = restaurants.map((r) => ({ id: r.id, ...splitBranch(r.name) }));
+  // 主體相同，或一間是另一間的前綴（佳豐生活美食／佳豐生活美食坊），就視為同一連鎖
+  const ambiguous = (/** @type {(typeof parts)[number]} */ p) =>
+    parts.some((q) => q.id !== p.id && (q.base.startsWith(p.base) || p.base.startsWith(q.base)));
+  return new Map(parts.map((p) => [p.id, p.branch && ambiguous(p) ? `${p.base}・${p.branch}` : p.base]));
+}
