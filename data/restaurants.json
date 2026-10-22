@@ -7495,5 +7495,775 @@
       "fields": "每週營業時間、地址",
       "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
     }
+  },
+  {
+    "id": 205,
+    "name": "7-ELEVEN 中正大學門市",
+    "cuisine": "便利商店",
+    "tags": [
+      "convenience"
+    ],
+    "meals": [
+      "breakfast",
+      "lunch",
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "大學路",
+    "note": "24 小時營業的超商",
+    "address": "嘉義縣民雄鄉三興村大學路一段421號",
+    "phone": "05-2721647",
+    "mapUrl": "https://maps.google.com/?cid=16722915931170822158",
+    "openHours": {
+      "mon": "24小時營業",
+      "tue": "24小時營業",
+      "wed": "24小時營業",
+      "thu": "24小時營業",
+      "fri": "24小時營業",
+      "sat": "24小時營業",
+      "sun": "24小時營業"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=16722915931170822158",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 206,
+    "name": "PARTNER BURGER",
+    "cuisine": "美式漢堡",
+    "tags": [
+      "western"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "神農路",
+    "note": "露營風美式漢堡，晚上才營業；全戶外座位",
+    "address": "嘉義縣民雄鄉北斗村瑞豐路",
+    "mapUrl": "https://maps.google.com/?cid=7360641528110063718",
+    "openHours": {
+      "mon": "18:00-24:00",
+      "tue": "18:00-24:00",
+      "wed": "18:00-24:00",
+      "thu": "18:00-24:00",
+      "fri": "18:00-24:00",
+      "sat": "18:00-24:00",
+      "sun": "18:00-24:00"
+    },
+    "hoursNote": "Google 地圖列每日 18:00–01:00，店名註明最後點餐 24:00，這裡以最後點餐時間判斷。",
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=7360641528110063718",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 207,
+    "name": "馳名串燒",
+    "cuisine": "串燒（餐車）",
+    "tags": [
+      "snack"
+    ],
+    "meals": [
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "大學路",
+    "note": "固定在大學路轉正大路口的串燒餐車：甜不辣、鹹豬肉、米血、豆皮",
+    "address": "嘉義縣民雄鄉豐收村大學路一段",
+    "phone": "0908-111-928",
+    "mapUrl": "https://maps.google.com/?cid=2502997923547710716",
+    "openHours": {
+      "mon": "休息",
+      "tue": "20:00-01:00",
+      "wed": "20:15-01:00",
+      "thu": "20:00-01:00",
+      "fri": "20:00-01:00",
+      "sat": "20:00-01:00",
+      "sun": "休息"
+    },
+    "hoursNote": "固定地點與時段的餐車；評論提到偶爾提早收攤，出發前可看粉專「馳名串燒」。",
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=2502997923547710716",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 208,
+    "name": "絕佳食雞（民雄豐收店）",
+    "cuisine": "鹽酥雞",
+    "tags": [
+      "fried"
+    ],
+    "meals": [
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "大學路",
+    "note": "鹽酥雞，晚上 8 點半才開",
+    "address": "嘉義縣民雄鄉豐收村大學路二段2010號",
+    "phone": "05-2266197",
+    "mapUrl": "https://maps.google.com/?cid=3146054261757525726",
+    "openHours": {
+      "mon": "20:30-02:00",
+      "tue": "20:30-02:00",
+      "wed": "20:30-02:00",
+      "thu": "20:30-02:00",
+      "fri": "20:30-02:00",
+      "sat": "休息",
+      "sun": "20:30-02:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=3146054261757525726",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 209,
+    "name": "巴豆夭百元美味鍋物（總店）",
+    "cuisine": "火鍋",
+    "tags": [
+      "hotpot"
+    ],
+    "meals": [
+      "lunch",
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "神農路",
+    "note": "百元小火鍋，營業到凌晨 2 點",
+    "address": "嘉義縣民雄鄉三興村公園一街266號1樓",
+    "phone": "0911-077-758",
+    "mapUrl": "https://maps.google.com/?cid=8675393786692353571",
+    "openHours": {
+      "mon": "16:00-02:00",
+      "tue": "16:00-02:00",
+      "wed": "16:00-02:00",
+      "thu": "16:00-02:00",
+      "fri": "16:00-02:00",
+      "sat": "11:00-02:00",
+      "sun": "11:00-02:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=8675393786692353571",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 210,
+    "name": "21金小火鍋（民雄中正）",
+    "cuisine": "火鍋",
+    "tags": [
+      "hotpot"
+    ],
+    "meals": [
+      "lunch",
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "神農路",
+    "note": "小火鍋",
+    "address": "嘉義縣民雄鄉三興村三興路103號",
+    "phone": "05-2722121",
+    "mapUrl": "https://maps.google.com/?cid=10281840481413308291",
+    "openHours": {
+      "mon": "11:00-14:00、16:30-23:00",
+      "tue": "11:00-14:00、16:30-23:00",
+      "wed": "11:00-14:00、16:30-23:00",
+      "thu": "11:00-14:00、16:30-23:00",
+      "fri": "11:00-14:00、16:30-23:00",
+      "sat": "11:00-14:00、16:30-23:00",
+      "sun": "16:30-23:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=10281840481413308291",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 211,
+    "name": "王仔滷味",
+    "cuisine": "滷味",
+    "tags": [
+      "luwei"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "神農路",
+    "note": "滷味，營業到 00:30",
+    "address": "嘉義縣民雄鄉神農路",
+    "mapUrl": "https://maps.google.com/?cid=9261825074297874506",
+    "openHours": {
+      "mon": "17:30-00:30",
+      "tue": "17:30-00:30",
+      "wed": "17:30-00:30",
+      "thu": "17:30-00:30",
+      "fri": "17:30-00:30",
+      "sat": "17:00-00:30",
+      "sun": "17:00-00:30"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=9261825074297874506",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 212,
+    "name": "有go滷乾式炒滷味（燕京烙餅）",
+    "cuisine": "炒滷味",
+    "tags": [
+      "luwei"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "神農路",
+    "note": "乾式炒滷味、燕京烙餅",
+    "address": "嘉義縣民雄鄉北斗村神農路",
+    "mapUrl": "https://maps.google.com/?cid=3507720025707243089",
+    "openHours": {
+      "mon": "17:30-24:00",
+      "tue": "17:30-24:00",
+      "wed": "17:30-24:00",
+      "thu": "17:30-24:00",
+      "fri": "17:30-24:00",
+      "sat": "休息",
+      "sun": "17:30-24:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=3507720025707243089",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 213,
+    "name": "豪記魯味",
+    "cuisine": "滷味",
+    "tags": [
+      "luwei"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "大學路",
+    "note": "滷味，在大學路一段 7-ELEVEN 附近；和神農一街的「豪記滷味」是不同的店",
+    "address": "嘉義縣民雄鄉三興村",
+    "mapUrl": "https://maps.google.com/?cid=12882536491277208672",
+    "openHours": {
+      "mon": "17:30-01:00",
+      "tue": "17:30-01:00",
+      "wed": "17:30-01:00",
+      "thu": "17:30-01:00",
+      "fri": "17:30-01:00",
+      "sat": "休息",
+      "sun": "17:30-01:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=12882536491277208672",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 214,
+    "name": "中正鹹水雞",
+    "cuisine": "鹹水雞",
+    "tags": [
+      "snack"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "神農路",
+    "note": "鹹水雞",
+    "address": "嘉義縣民雄鄉三興村神農路135號",
+    "phone": "0906-646-998",
+    "mapUrl": "https://maps.google.com/?cid=9245901902573142685",
+    "openHours": {
+      "mon": "17:30-24:00",
+      "tue": "17:30-24:00",
+      "wed": "17:30-24:00",
+      "thu": "17:30-24:00",
+      "fri": "17:30-24:00",
+      "sat": "17:30-24:00",
+      "sun": "17:30-24:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=9245901902573142685",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 215,
+    "name": "愛恨椒雞",
+    "cuisine": "椒麻雞",
+    "tags": [
+      "fried"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "神農路",
+    "note": "椒麻雞",
+    "address": "嘉義縣民雄鄉三興村神農路",
+    "phone": "0963-426-008",
+    "mapUrl": "https://maps.google.com/?cid=9069498415992161729",
+    "openHours": {
+      "mon": "休息",
+      "tue": "17:30-23:00",
+      "wed": "17:30-23:00",
+      "thu": "17:30-23:00",
+      "fri": "17:30-23:00",
+      "sat": "17:30-23:00",
+      "sun": "休息"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=9069498415992161729",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 216,
+    "name": "一番食堂（中正店）",
+    "cuisine": "鐵板燒",
+    "tags": [
+      "rice"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "神農路",
+    "note": "鐵板燒",
+    "address": "嘉義縣民雄鄉神農一街5號附2",
+    "phone": "05-2721223",
+    "mapUrl": "https://maps.google.com/?cid=9942741628729968956",
+    "openHours": {
+      "mon": "16:00-23:00",
+      "tue": "16:00-23:00",
+      "wed": "16:00-23:00",
+      "thu": "16:00-23:00",
+      "fri": "16:00-23:00",
+      "sat": "休息",
+      "sun": "休息"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=9942741628729968956",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 217,
+    "name": "老煙囪碳烤",
+    "cuisine": "炭烤串燒",
+    "tags": [
+      "snack"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "民雄市區",
+    "note": "炭烤串燒，營業到凌晨 3 點",
+    "address": "嘉義縣民雄鄉頂崙村建國路一段168號",
+    "phone": "0901-156-334",
+    "mapUrl": "https://maps.google.com/?cid=15500417543412126719",
+    "openHours": {
+      "mon": "18:00-03:00",
+      "tue": "18:00-03:00",
+      "wed": "18:00-03:00",
+      "thu": "18:00-03:00",
+      "fri": "18:00-03:00",
+      "sat": "18:00-03:00",
+      "sun": "18:00-03:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=15500417543412126719",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 218,
+    "name": "祥琪有間烤肉",
+    "cuisine": "烤肉串燒",
+    "tags": [
+      "snack"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "民雄市區",
+    "note": "烤肉串燒",
+    "address": "嘉義縣民雄鄉東榮村和平路39-6號",
+    "phone": "0908-073-727",
+    "mapUrl": "https://maps.google.com/?cid=16649818398527372187",
+    "openHours": {
+      "mon": "17:30-01:00",
+      "tue": "休息",
+      "wed": "17:30-01:00",
+      "thu": "17:30-01:00",
+      "fri": "17:30-01:00",
+      "sat": "17:30-01:00",
+      "sun": "17:30-01:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=16649818398527372187",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 219,
+    "name": "楓之燒",
+    "cuisine": "燒烤",
+    "tags": [
+      "snack"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "民雄市區",
+    "note": "燒烤串燒",
+    "address": "嘉義縣民雄鄉東榮村建國路二段331附10號",
+    "phone": "05-2260676",
+    "mapUrl": "https://maps.google.com/?cid=9455651110573399546",
+    "openHours": {
+      "mon": "休息",
+      "tue": "17:00-23:00",
+      "wed": "17:00-23:00",
+      "thu": "17:00-23:00",
+      "fri": "17:00-23:00",
+      "sat": "17:00-23:00",
+      "sun": "17:00-23:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=9455651110573399546",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 220,
+    "name": "古早味來呷鹹酥雞",
+    "cuisine": "鹽酥雞",
+    "tags": [
+      "fried"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "民雄市區",
+    "note": "古早味鹹酥雞",
+    "address": "嘉義縣民雄鄉西安村保生街287號",
+    "phone": "0987-153-889",
+    "mapUrl": "https://maps.google.com/?cid=11853108021456943629",
+    "openHours": {
+      "mon": "休息",
+      "tue": "休息",
+      "wed": "16:00-24:00",
+      "thu": "16:00-24:00",
+      "fri": "16:00-24:00",
+      "sat": "16:00-24:00",
+      "sun": "16:00-24:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=11853108021456943629",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 221,
+    "name": "宵朋友（民雄店）",
+    "cuisine": "宵夜小吃",
+    "tags": [
+      "snack"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "民雄市區",
+    "note": "晚餐、宵夜小吃",
+    "address": "嘉義縣民雄鄉西安村菜園6-9號",
+    "phone": "0988-127-300",
+    "mapUrl": "https://maps.google.com/?cid=18147613682976186691",
+    "openHours": {
+      "mon": "17:30-23:00",
+      "tue": "17:30-23:00",
+      "wed": "17:30-23:00",
+      "thu": "17:30-23:00",
+      "fri": "17:30-23:00",
+      "sat": "休息",
+      "sun": "休息"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=18147613682976186691",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 222,
+    "name": "北門滷味",
+    "cuisine": "滷味",
+    "tags": [
+      "luwei"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "民雄市區",
+    "note": "滷味，民雄火車站附近",
+    "address": "嘉義縣民雄鄉中樂村民生路43號",
+    "mapUrl": "https://maps.google.com/?cid=11369708054877997346",
+    "openHours": {
+      "mon": "17:00-00:30",
+      "tue": "17:00-00:30",
+      "wed": "17:00-00:30",
+      "thu": "17:00-00:30",
+      "fri": "17:00-00:30",
+      "sat": "休息",
+      "sun": "17:00-00:30"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=11369708054877997346",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 223,
+    "name": "蒸極軒（民雄店）",
+    "cuisine": "蒸餃・臭豆腐",
+    "tags": [
+      "snack",
+      "noodles"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "民雄市區",
+    "note": "蒸餃、臭豆腐",
+    "address": "嘉義縣民雄鄉建國路一段219號",
+    "phone": "0989-725-933",
+    "mapUrl": "https://maps.google.com/?cid=2535962490168187649",
+    "openHours": {
+      "mon": "休息",
+      "tue": "15:30-24:00",
+      "wed": "15:30-24:00",
+      "thu": "15:30-24:00",
+      "fri": "15:30-24:00",
+      "sat": "15:30-24:00",
+      "sun": "15:30-24:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=2535962490168187649",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 224,
+    "name": "鹿霸雞白湯鍋燒意麵（民雄店）",
+    "cuisine": "鍋燒意麵",
+    "tags": [
+      "noodles"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "民雄市區",
+    "note": "雞白湯鍋燒意麵",
+    "address": "嘉義縣民雄鄉東榮村東榮路32號",
+    "phone": "0906-859-120",
+    "mapUrl": "https://maps.google.com/?cid=1036277109660179961",
+    "openHours": {
+      "mon": "16:30-23:15",
+      "tue": "16:30-23:15",
+      "wed": "16:30-23:15",
+      "thu": "16:30-23:15",
+      "fri": "16:30-23:15",
+      "sat": "休息",
+      "sun": "16:30-23:15"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=1036277109660179961",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 225,
+    "name": "巧之脆中美式炸雞（民雄店）",
+    "cuisine": "炸雞",
+    "tags": [
+      "fried"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "民雄市區",
+    "note": "中美式炸雞",
+    "address": "嘉義縣民雄鄉東榮村建國路一段119號",
+    "phone": "05-2268252",
+    "mapUrl": "https://maps.google.com/?cid=14802641383067361055",
+    "openHours": {
+      "mon": "15:00-23:00",
+      "tue": "休息",
+      "wed": "15:00-23:00",
+      "thu": "15:00-23:00",
+      "fri": "15:00-23:00",
+      "sat": "15:00-23:00",
+      "sun": "15:00-23:00"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=14802641383067361055",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
+  },
+  {
+    "id": 226,
+    "name": "阿亮香雞排（民雄店）",
+    "cuisine": "雞排",
+    "tags": [
+      "fried"
+    ],
+    "meals": [
+      "dinner",
+      "latenight"
+    ],
+    "price_range": "unknown",
+    "location": "民雄市區",
+    "note": "雞排、炸物",
+    "address": "嘉義縣民雄鄉東榮村文化路84號",
+    "phone": "05-2269296",
+    "mapUrl": "https://maps.google.com/?cid=3084555492267534644",
+    "openHours": {
+      "mon": "16:00-22:30",
+      "tue": "16:00-22:30",
+      "wed": "16:00-22:30",
+      "thu": "16:00-22:30",
+      "fri": "16:00-22:30",
+      "sat": "16:00-22:30",
+      "sun": "16:00-22:30"
+    },
+    "verification": {
+      "status": "sourced",
+      "checkedAt": "2026-10-22",
+      "source": "https://maps.google.com/?cid=3084555492267534644",
+      "label": "Google 地圖商家資訊",
+      "fields": "每週營業時間、地址、電話",
+      "note": "Google 地圖商家頁列出的時段；臨時店休請以店家社群或現場公告為準。"
+    }
   }
 ]
