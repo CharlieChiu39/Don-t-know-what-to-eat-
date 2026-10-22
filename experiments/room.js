@@ -12,9 +12,11 @@
  *   room.leave()
  */
 
-// NOTE: Replace with your own Ably publishable API key.
-// Get one free at https://ably.com (no credit card needed).
-const ABLY_KEY = 'YOUR_ABLY_API_KEY_HERE';
+// NOTE: Never put an Ably API key in client code — every visitor can read it.
+// Keep the key server-side and point this at a token endpoint that uses it to
+// return a short-lived token request (createTokenRequest), limited to the
+// food-room-* channels, for the clientId the SDK sends.
+const ABLY_AUTH_URL = 'YOUR_ABLY_TOKEN_ENDPOINT_HERE';
 
 class RoomManager {
   constructor(onEvent) {
@@ -57,7 +59,7 @@ class RoomManager {
       document.head.appendChild(s);
     });
     this.ably = new Ably.Realtime({
-      key:      ABLY_KEY,
+      authUrl:  ABLY_AUTH_URL,
       clientId: this._clientId(),
     });
     await new Promise(resolve => {

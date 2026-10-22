@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <!-- GitHub Pages 不能設定回應標頭，CSP 只能放在 meta（因此無法設定 frame-ancestors）。
+       script-src 的 sha256 是字型 <link> 的 onload="this.media='all'"，改動那段時要重新計算 -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-hashes' 'sha256-MhtPZXr7+LpJUY5qtMutB+qWfQtMaPccfe7QXtCcEYc='; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
   <title>中正大學吃什麼？ — 嘉義 CCU 美食轉盤</title>
 
   <meta name="description" content="中正大學學生的選餐轉盤：校園周邊 92 間加上民雄市區 112 間餐廳，依台北時間判斷營業狀態，用「想吃什麼」標籤篩選，還列出附近的流動餐車，離線也能用。" />

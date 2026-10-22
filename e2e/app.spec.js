@@ -174,6 +174,36 @@ test('載入與轉動過程沒有 console 錯誤', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test.describe('CSP', () => {
+  // 完整動畫才會載入開場 GIF、跑背景符號與彩帶（行內樣式都經由 element.style 設定）
+  test.use({ reducedMotion: 'no-preference' });
+  test('載入到抽出結果都沒有違規，字型照常非同步載入', async ({ page }) => {
+    /** @type {string[]} */
+    const violations = [];
+    page.on('console', (message) => {
+      if (/Content[ -]Security[ -]Policy/i.test(message.text())) violations.push(message.text());
+    });
+    await page.exposeFunction('reportCspViolation', (/** @type {string} */ text) => violations.push(text));
+    // 在頁面任何資源載入前就開始監聽
+    await page.addInitScript(() => {
+      document.addEventListener('securitypolicyviolation', (event) => {
+        // @ts-expect-error 由 exposeFunction 注入
+        window.reportCspViolation(`${event.violatedDirective} ${event.blockedURI}`);
+      });
+    });
+    await page.goto('/');
+    // onload="this.media='all'" 靠 CSP 的 hash 放行；被擋下時會一直停在 print
+    await expect(page.locator('link[rel="stylesheet"][href^="https://fonts.googleapis.com/"]')).toHaveAttribute('media', 'all');
+    await page.keyboard.press('Escape');
+    await expect(page.locator('#splash')).toBeHidden();
+    await page.locator('#spin-btn').click();
+    await page.locator('#spin-btn').click(); // 略過動畫
+    await expect(page.locator('#result-dialog')).toBeVisible();
+    await page.evaluate(() => navigator.serviceWorker.ready);
+    expect(violations).toEqual([]);
+  });
+});
+
 test('第一次載入後，離線也能開啟並轉動', async ({ page, context }) => {
   await page.goto('/');
   await page.evaluate(() => navigator.serviceWorker.ready);
