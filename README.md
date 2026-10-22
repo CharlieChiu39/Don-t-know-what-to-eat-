@@ -125,7 +125,7 @@ Lighthouse（行動裝置模擬、本機未壓縮），同一套視覺設計改�
 - 預先保留由 JS 產生的元素高度，避免版面位移
 - 轉盤用 `ResizeObserver` 搭配 `devicePixelRatio` 繪製，Retina 螢幕不會糊，初始化也不會強制同步排版
 
-程式碼加資料（HTML、JS、CSS、JSON）gzip 後約 57 KB，其中 226 間餐廳的資料約 23 KB。
+程式碼加資料（HTML、JS、CSS、JSON）gzip 後約 57 KB，其中 226 間餐廳的資料約 25 KB。
 
 ## 設計決策與取捨
 
